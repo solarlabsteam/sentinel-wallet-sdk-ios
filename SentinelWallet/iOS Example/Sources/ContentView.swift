@@ -9,6 +9,11 @@ import SwiftUI
 import SentinelWallet
 
 struct ContentView: View {
+    private let service: WalletService
+    init() {
+        service = WalletService(for: "sent1gphdcu06s6m8a8quwkdttxny83zpgx70aur9jv")
+        service.fetch()
+    }
     var body: some View {
         NavigationView {
             List {
