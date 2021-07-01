@@ -7,10 +7,10 @@
 
 import Foundation
 
-final class WalletData: NSObject {
-    static let instance = WalletData()
-
+final class WalletData {
     var exchangeRates = [ExchangeRates]()
+
+    let accountAddress: String
 
     // For ProtoBuf and gRPC
     var nodeInfo: Tendermint_P2p_DefaultNodeInfo?
@@ -24,7 +24,11 @@ final class WalletData: NSObject {
     var myDelegations = [Cosmos_Staking_V1beta1_DelegationResponse]()
     var unbondingsDelegations = [Cosmos_Staking_V1beta1_UnbondingDelegation]()
 
-    var myBalances = [Coin]()
-    var myVestings = [Coin]()
+    var myBalances = [CoinToken]()
+    var myVestings = [CoinToken]()
     var myReward = [Cosmos_Distribution_V1beta1_DelegationDelegatorReward]()
+
+    init(accountAddress: String) {
+        self.accountAddress = accountAddress
+    }
 }

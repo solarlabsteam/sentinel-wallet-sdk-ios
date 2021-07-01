@@ -8,7 +8,7 @@
 import Foundation
 import SwiftyBeaver
 
-let log = SwiftyBeaver.self
+public let log = SwiftyBeaver.self
 
 public struct Config {
     static let sharedContainerIdentifier: String = "group.\(Bundle.main.bundleIdentifier!)"

@@ -9,11 +9,20 @@ import SwiftUI
 import SentinelWallet
 
 struct ContentView: View {
-    private let service: WalletService
+
     init() {
-        service = WalletService(for: "sent1gphdcu06s6m8a8quwkdttxny83zpgx70aur9jv")
-        service.fetch()
+        Config.setup()
+        let mnemonicsToAdd = [
+            "inherit", "child", "tumble", "brick", "lizard", "old", "style", "captain", "hand",
+            "echo", "rookie", "flower", "topic", "curve", "kangaroo", "mail", "shaft", "improve",
+            "fun", "beach", "recycle", "scrap", "icon", "involve"
+        ]
+        let wallet = WalletManager().wallet(for: "sent1gphdcu06s6m8a8quwkdttxny83zpgx70aur9jv")
+        wallet.add(mnemonics: mnemonicsToAdd)
+        wallet.fetch()
+        log.debug(wallet.showMnemonics())
     }
+
     var body: some View {
         NavigationView {
             List {

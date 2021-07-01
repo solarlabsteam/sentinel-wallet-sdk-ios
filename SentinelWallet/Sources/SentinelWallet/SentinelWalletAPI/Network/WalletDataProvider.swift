@@ -113,7 +113,7 @@ final public class WalletDataProvider {
     func fetchRPCBalance(
         for address: String,
         offset: Int,
-        completion: @escaping (Result<[Coin], Error>) -> Void
+        completion: @escaping (Result<[CoinToken], Error>) -> Void
     ) {
         openConnection(for: { [weak self] channel in
             guard let self = self else { return }
@@ -127,7 +127,7 @@ final public class WalletDataProvider {
                     .response
                     .wait()
 
-                completion(.success(response.balances.map { Coin(denom: $0.denom, amount: $0.amount) }))
+                completion(.success(response.balances.map { CoinToken(denom: $0.denom, amount: $0.amount) }))
             } catch {
                 completion(.failure(error))
             }

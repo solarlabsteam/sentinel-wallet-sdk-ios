@@ -9,10 +9,10 @@ let package = Package(
         .iOS(.v13)
     ],
     products: [
-        // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "SentinelWallet",
-            targets: ["SentinelWallet"]),
+            targets: ["SentinelWallet"]
+        ),
     ],
     dependencies: [
         .package(name: "SwiftProtobuf", url: "https://github.com/apple/swift-protobuf.git", from: "1.6.0"),
@@ -20,20 +20,17 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.0.0"),
         .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.4.0")),
         .package(url: "https://github.com/SwiftyBeaver/SwiftyBeaver.git", .upToNextMajor(from: "1.9.0")),
-
+        .package(url: "https://github.com/jrendel/SwiftKeychainWrapper", .upToNextMajor(from: "4.0.1")),
+        .package(url: "https://github.com/lika-vorobeva/HDWallet", .branch("spm"))
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "SentinelWallet",
             dependencies: [
-                "SwiftProtobuf",
+                "SwiftProtobuf", "SwiftKeychainWrapper", "HDWallet", "Alamofire", "SwiftyBeaver",
                 .product(name: "GRPC", package: "grpc-swift"),
                 .product(name: "NIO", package: "swift-nio"),
                 .product(name: "NIOHTTP1", package: "swift-nio"),
-                .product(name: "Alamofire", package: "Alamofire"),
-                .product(name: "SwiftyBeaver", package: "SwiftyBeaver")
             ]
         ),
         .testTarget(

@@ -1,5 +1,5 @@
 //
-//  Coin.swift
+//  CoinToken.swift
 //  SentinelWallet
 //
 //  Created by Lika Vorobyeva on 25.06.2021.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Coin: Codable {
+public struct CoinToken: Codable {
     var denom: String
     var amount: String
 
