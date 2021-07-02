@@ -63,19 +63,22 @@ final public class SecurityService {
 
         completion(.success(restoredAddress))
     }
+
+    func getKey(for mnemonics: [String]) -> PrivateKey {
+        let masterKey = PrivateKey(seed: Mnemonic.createSeed(mnemonic: mnemonics.joined(separator: " ")), coin: .bitcoin)
+
+        return masterKey
+            .derived(at: .hardened(44))
+            .derived(at: .hardened(118))
+            .derived(at: .hardened(0))
+            .derived(at: .notHardened(0))
+            .derived(at: .notHardened(0))
+    }
 }
 
 private extension SecurityService {
-    func restoreAddress(for mnemonic: [String]) -> String? {
-        let key = PrivateKey(
-            seed: Mnemonic.createSeed(mnemonic: mnemonic.joined(separator: " ")),
-            coin: .bitcoin
-        )
-        .derived(at: .hardened(44))
-        .derived(at: .hardened(118))
-        .derived(at: .hardened(0))
-        .derived(at: .notHardened(0))
-        .derived(at: .notHardened(UInt32(0)))
+    func restoreAddress(for mnemonics: [String]) -> String? {
+        let key = getKey(for: mnemonics)
 
         let ripemd160 = RIPEMD160.hash(key.publicKey.data.sha256())
 

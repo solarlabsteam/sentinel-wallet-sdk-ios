@@ -9,6 +9,7 @@ import Foundation
 import GRPC
 import NIO
 import Alamofire
+import HDWallet
 
 private struct Constants {
     let baseURLString = "https://api-utility.cosmostation.io/"
@@ -191,6 +192,24 @@ final public class WalletDataProvider {
                     .response
                     .wait()
                 completion(.success(response.rewards))
+            } catch {
+                completion(.failure(error))
+            }
+        })
+    }
+
+
+    func onBroadcastGrpcTx(
+        signedRequest: Cosmos_Tx_V1beta1_BroadcastTxRequest,
+        completion: @escaping (Result<Cosmos_Tx_V1beta1_BroadcastTxResponse, Error>) -> Void
+    ) {
+        openConnection(for: { channel in
+            do {
+                let response = try Cosmos_Tx_V1beta1_ServiceClient(channel: channel)
+                    .broadcastTx(signedRequest)
+                    .response
+                    .wait()
+                completion(.success(response))
             } catch {
                 completion(.failure(error))
             }

@@ -12,6 +12,13 @@ import Alamofire
 import SwiftKeychainWrapper
 import HDWallet
 
+private struct Constants {
+    let defaultFeeAmount = 1000
+    let defaultFee = Fee("100000", [.init(denom: GlobalConstants.denom, amount: "1000")])
+}
+
+private let constants = Constants()
+
 final public class WalletService {
     private let provider: WalletDataProvider
     private let dispatchGroup = DispatchGroup()
@@ -66,9 +73,68 @@ final public class WalletService {
     public func showMnemonics() -> [String]? {
         securityService.loadMnemonics(for: walletData.accountAddress)
     }
+
+    public func transfer(tokens: CoinToken, to account: String) {
+        guard account != walletData.accountAddress else {
+            log.error("Self-sending is not supported")
+            return
+        }
+
+        guard let mnemonics = securityService.loadMnemonics(for: walletData.accountAddress) else {
+            log.error("Mnemonics are missing")
+            return
+        }
+
+        dispatchGroup.notify(queue: .main, execute: { [weak self] in
+            guard let self = self else { return }
+            guard let accountGRPC = self.walletData.accountGRPC else {
+                log.error("Authorization is missing")
+                return
+            }
+
+            let total = constants.defaultFeeAmount + (Int(tokens.amount) ?? 0)
+            guard total <= self.availableAmount() else {
+                log.error("Not enough tokens on wallet")
+                return
+            }
+
+            let request = Signer.generateSignedRequest(
+                with: accountGRPC,
+                to: account,
+                tokens: tokens,
+                fee: constants.defaultFee,
+                memo: "",
+                privateKey: self.securityService.getKey(for: mnemonics),
+                chainId: self.walletData.getChainId()
+            )
+
+            self.provider.onBroadcastGrpcTx(signedRequest: request, completion: { result in
+                switch result {
+                case .failure(let error):
+                    log.error(error)
+                case .success(let response):
+                    log.debug(
+                        """
+                        Transaction code: \(response.txResponse.code)
+                        Transaction hash: \(response.txResponse.txhash)
+                        Transaction rawLog: \(response.txResponse.rawLog)
+                        Link: https://www.mintscan.io/sentinel/txs/\(response.txResponse.txhash)
+                        """
+                    )
+                }
+            })
+        })
+    }
 }
 
 private extension WalletService {
+    func availableAmount() -> Int {
+        walletData.myBalances
+            .filter { $0.denom == GlobalConstants.denom }
+            .map { Int($0.amount) ?? 0 }
+            .reduce(0, +)
+    }
+
     func fetchRPCNodeInfo() {
         dispatchGroup.enter()
 
@@ -200,8 +266,8 @@ private extension WalletService {
     }
 
     func dataLoaded() {
-        walletData.validators.append(contentsOf:walletData.bondedValidators)
-        walletData.validators.append(contentsOf:walletData.unbondedValidators)
+        walletData.validators.append(contentsOf: walletData.bondedValidators)
+        walletData.validators.append(contentsOf: walletData.unbondedValidators)
 
         let myValidators = walletData.validators
             .filter { validator in

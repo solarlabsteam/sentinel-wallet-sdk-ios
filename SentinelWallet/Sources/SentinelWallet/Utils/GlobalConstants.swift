@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct GlobalConstants {
-    static let mainDenom = "DVPN"
-    static let denom = "udvpn"
-    static let marketPrice = "usdt,udvpn"
+public struct GlobalConstants {
+    public static let mainDenom = "DVPN"
+    public static let denom = "udvpn"
+    public static let marketPrice = "usdt,udvpn"
 }
