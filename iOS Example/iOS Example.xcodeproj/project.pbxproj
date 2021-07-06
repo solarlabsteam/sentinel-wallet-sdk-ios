@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		755970E0268A10D40046BB6A /* WalletExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755970DF268A10D40046BB6A /* WalletExampleApp.swift */; };
-		755970E2268A14AA0046BB6A /* SentinelWallet in Frameworks */ = {isa = PBXBuildFile; productRef = 755970E1268A14AA0046BB6A /* SentinelWallet */; };
+		75B9E59B2694231E00C6E2D1 /* SentinelWallet in Frameworks */ = {isa = PBXBuildFile; productRef = 75B9E59A2694231E00C6E2D1 /* SentinelWallet */; };
 		D97F1F0725951C1A004C7A4E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D97F1F0625951C1A004C7A4E /* ContentView.swift */; };
 		D97F1F0925951C1A004C7A4E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D97F1F0825951C1A004C7A4E /* Assets.xcassets */; };
 		D97F1F0C25951C1A004C7A4E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D97F1F0B25951C1A004C7A4E /* Preview Assets.xcassets */; };
@@ -28,7 +28,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				755970E2268A14AA0046BB6A /* SentinelWallet in Frameworks */,
+				75B9E59B2694231E00C6E2D1 /* SentinelWallet in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,7 +96,7 @@
 			);
 			name = "iOS Example";
 			packageProductDependencies = (
-				755970E1268A14AA0046BB6A /* SentinelWallet */,
+				75B9E59A2694231E00C6E2D1 /* SentinelWallet */,
 			);
 			productName = "iOS Example";
 			productReference = D97F1F0125951C1A004C7A4E /* iOS Example.app */;
@@ -341,7 +341,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		755970E1268A14AA0046BB6A /* SentinelWallet */ = {
+		75B9E59A2694231E00C6E2D1 /* SentinelWallet */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SentinelWallet;
 		};

@@ -20,10 +20,10 @@ struct ContentView: View {
 
         wallet.add(mnemonics: mnemonicsToAdd)
         wallet.fetch()
-        wallet.transfer(
-            tokens: .init(denom: GlobalConstants.denom, amount: "10000"),
-            to: "sent1gphdcu06s6m8a8quwkdttxny83zpgx70aur9jv"
-        )
+//        wallet.transfer(
+//            tokens: .init(denom: GlobalConstants.denom, amount: "10000"),
+//            to: "sent1gphdcu06s6m8a8quwkdttxny83zpgx70aur9jv"
+//        )
     }
 
     var body: some View {
