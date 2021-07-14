@@ -38,7 +38,22 @@ final class SentinelWalletTests: XCTestCase {
         })
     }
 
+    func testFetchActiveNodes() {
+        Config.setup()
+        SentinelProvider().fetchAvailableNodes(offset: 0) { result in
+            switch result {
+            case .failure(let error):
+                XCTFail("Expected to be a success but got a failure with \(error)")
+            case .success(let nodes):
+                log.debug("Loaded nodes: \(nodes.count)")
+                XCTAssert(nodes.allSatisfy { $0.key.address == $0.value.address })
+            }
+        }
+    }
+
     static var allTests = [
-        ("testGenerateWallet", testGenerateWallet), ("testRestoreWallet", testRestoreWallet)
+        ("testGenerateWallet", testGenerateWallet),
+        ("testRestoreWallet", testRestoreWallet),
+        ("testFetchActiveNodes", testFetchActiveNodes)
     ]
 }

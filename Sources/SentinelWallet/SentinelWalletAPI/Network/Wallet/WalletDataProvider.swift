@@ -9,11 +9,9 @@ import Foundation
 import GRPC
 import NIO
 import Alamofire
-import HDWallet
 
 private struct Constants {
     let baseURLString = "https://api-utility.cosmostation.io/"
-    let hostString = "lcd-sentinel-app.cosmostation.io"
 }
 
 private let constants = Constants()
@@ -24,15 +22,49 @@ enum ValidatorType: String {
     case unbonded = "BOND_STATUS_UNBONDED"
 }
 
-final public class WalletDataProvider {
-    var callOptions: CallOptions {
+protocol WalletDataProviderType {
+    func getPrices(for denoms: String, completion: @escaping (Result<[ExchangeRates], Error>) -> Void)
+    func fetchTendermintNodeInfo(completion: @escaping (Result<Tendermint_P2p_DefaultNodeInfo, Error>) -> Void)
+    func fetchAuthorization(for address: String, completion: @escaping (Result<Google_Protobuf2_Any, Error>) -> Void)
+    func fetchValidators(
+        offset: Int,
+        type: ValidatorType,
+        completion: @escaping (Result<[Cosmos_Staking_V1beta1_Validator], Error>) -> Void
+    )
+    func fetchBalance(
+        for address: String,
+        completion: @escaping (Result<[CoinToken], Error>) -> Void
+    )
+    func fetchDelegations(
+        for address: String,
+        offset: Int,
+        completion: @escaping (Result<[Cosmos_Staking_V1beta1_DelegationResponse], Error>) -> Void
+    )
+    func fetchUnboundingDelegations(
+        for address: String,
+        offset: Int,
+        completion: @escaping (Result<[Cosmos_Staking_V1beta1_UnbondingDelegation], Error>) -> Void
+    )
+    func fetchRewards(
+        for address: String,
+        completion: @escaping (Result<[Cosmos_Distribution_V1beta1_DelegationDelegatorReward], Error>) -> Void
+    )
+    func onBroadcastGrpcTx(
+        signedRequest: Cosmos_Tx_V1beta1_BroadcastTxRequest,
+        completion: @escaping (Result<Cosmos_Tx_V1beta1_BroadcastTxResponse, Error>) -> Void
+    )
+}
+
+final class WalletDataProvider: WalletDataProviderType {
+    private let connectionProvider: ClientConnectionProviderType
+    private var callOptions: CallOptions {
         var callOptions = CallOptions()
         callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(8000))
         return callOptions
     }
 
-    func connection(for group: MultiThreadedEventLoopGroup) -> ClientConnection {
-        ClientConnection.insecure(group: group).connect(host: constants.hostString, port: 9090)
+    init(connectionProvider: ClientConnectionProviderType = ClientConnectionProvider()) {
+        self.connectionProvider = connectionProvider
     }
 
     func getPrices(for denoms: String, completion: @escaping (Result<[ExchangeRates], Error>) -> Void) {
@@ -50,8 +82,8 @@ final public class WalletDataProvider {
             }
     }
 
-    func fetchRPCNodeInfo(completion: @escaping (Result<Tendermint_P2p_DefaultNodeInfo, Error>) -> Void) {
-        openConnection(for: { [weak self] channel in
+    func fetchTendermintNodeInfo(completion: @escaping (Result<Tendermint_P2p_DefaultNodeInfo, Error>) -> Void) {
+        connectionProvider.openConnection(for: { [weak self] channel in
             guard let self = self else { return }
             do {
                 let request = Cosmos_Base_Tendermint_V1beta1_GetNodeInfoRequest()
@@ -66,11 +98,11 @@ final public class WalletDataProvider {
         })
     }
 
-    func fetchRPCAuthorization(
+    func fetchAuthorization(
         for address: String,
         completion: @escaping (Result<Google_Protobuf2_Any, Error>) -> Void
     ) {
-        openConnection(for: { [weak self] channel in
+        connectionProvider.openConnection(for: { [weak self] channel in
             guard let self = self else { return }
             do {
                 let request = Cosmos_Auth_V1beta1_QueryAccountRequest.with { $0.address = address }
@@ -85,15 +117,19 @@ final public class WalletDataProvider {
         })
     }
 
-    func fetchRPCValidators(
+    func fetchValidators(
         offset: Int,
         type: ValidatorType,
         completion: @escaping (Result<[Cosmos_Staking_V1beta1_Validator], Error>) -> Void
     ) {
-        openConnection(for: { [weak self] channel in
+        connectionProvider.openConnection(for: { [weak self] channel in
             guard let self = self else { return }
 
-            let page = Cosmos_Base_Query_V1beta1_PageRequest.with { $0.limit = 125 }
+            let page = Cosmos_Base_Query_V1beta1_PageRequest.with {
+                $0.limit = 125
+                $0.offset = UInt64(offset)
+            }
+
             let req = Cosmos_Staking_V1beta1_QueryValidatorsRequest.with {
                 $0.pagination = page
                 $0.status = type.rawValue
@@ -111,17 +147,17 @@ final public class WalletDataProvider {
         })
     }
 
-    func fetchRPCBalance(
+    func fetchBalance(
         for address: String,
-        offset: Int,
         completion: @escaping (Result<[CoinToken], Error>) -> Void
     ) {
-        openConnection(for: { [weak self] channel in
+        connectionProvider.openConnection(for: { [weak self] channel in
             guard let self = self else { return }
 
             let req = Cosmos_Bank_V1beta1_QueryAllBalancesRequest.with {
                 $0.address = address
             }
+
             do {
                 let response = try Cosmos_Bank_V1beta1_QueryClient(channel: channel)
                     .allBalances(req, callOptions: self.callOptions)
@@ -135,15 +171,23 @@ final public class WalletDataProvider {
         })
     }
 
-
-    func fetchRPCDelegations(
+    func fetchDelegations(
         for address: String,
         offset: Int,
         completion: @escaping (Result<[Cosmos_Staking_V1beta1_DelegationResponse], Error>) -> Void
     ) {
-        openConnection(for: { [weak self] channel in
+        connectionProvider.openConnection(for: { [weak self] channel in
             guard let self = self else { return }
-            let request = Cosmos_Staking_V1beta1_QueryDelegatorDelegationsRequest.with { $0.delegatorAddr = address }
+            let page = Cosmos_Base_Query_V1beta1_PageRequest.with {
+                $0.limit = 100
+                $0.offset = UInt64(offset)
+            }
+
+            let request = Cosmos_Staking_V1beta1_QueryDelegatorDelegationsRequest.with {
+                $0.delegatorAddr = address
+                $0.pagination = page
+            }
+
             do {
                 let response = try Cosmos_Staking_V1beta1_QueryClient(channel: channel)
                     .delegatorDelegations(request, callOptions: self.callOptions)
@@ -156,15 +200,23 @@ final public class WalletDataProvider {
         })
     }
 
-    func fetchRPCUnboundingDelegations(
+    func fetchUnboundingDelegations(
         for address: String,
         offset: Int,
         completion: @escaping (Result<[Cosmos_Staking_V1beta1_UnbondingDelegation], Error>) -> Void
     ) {
-        openConnection(for: { [weak self] channel in
+        connectionProvider.openConnection(for: { [weak self] channel in
             guard let self = self else { return }
-            let request = Cosmos_Staking_V1beta1_QueryDelegatorUnbondingDelegationsRequest
-                .with { $0.delegatorAddr = address }
+            let page = Cosmos_Base_Query_V1beta1_PageRequest.with {
+                $0.limit = 100
+                $0.offset = UInt64(offset)
+            }
+
+            let request = Cosmos_Staking_V1beta1_QueryDelegatorUnbondingDelegationsRequest.with {
+                $0.delegatorAddr = address
+                $0.pagination = page
+            }
+
             do {
                 let response = try Cosmos_Staking_V1beta1_QueryClient(channel: channel)
                     .delegatorUnbondingDelegations(request, callOptions: self.callOptions)
@@ -177,12 +229,11 @@ final public class WalletDataProvider {
         })
     }
 
-    func fetchRPCRewards(
+    func fetchRewards(
         for address: String,
-        offset: Int,
         completion: @escaping (Result<[Cosmos_Distribution_V1beta1_DelegationDelegatorReward], Error>) -> Void
     ) {
-        openConnection(for: { [weak self] channel in
+        connectionProvider.openConnection(for: { [weak self] channel in
             guard let self = self else { return }
             let request = Cosmos_Distribution_V1beta1_QueryDelegationTotalRewardsRequest
                 .with { $0.delegatorAddress = address }
@@ -198,12 +249,11 @@ final public class WalletDataProvider {
         })
     }
 
-
     func onBroadcastGrpcTx(
         signedRequest: Cosmos_Tx_V1beta1_BroadcastTxRequest,
         completion: @escaping (Result<Cosmos_Tx_V1beta1_BroadcastTxResponse, Error>) -> Void
     ) {
-        openConnection(for: { channel in
+        connectionProvider.openConnection(for: { channel in
             do {
                 let response = try Cosmos_Tx_V1beta1_ServiceClient(channel: channel)
                     .broadcastTx(signedRequest)
@@ -214,19 +264,5 @@ final public class WalletDataProvider {
                 completion(.failure(error))
             }
         })
-    }
-}
-
-private extension WalletDataProvider {
-    func openConnection(for work: @escaping (ClientConnection) -> Void) {
-        DispatchQueue.global().async {
-            let group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-            defer { try! group.syncShutdownGracefully() }
-
-            let channel = ClientConnection.insecure(group: group).connect(host: constants.hostString, port: 9090)
-            defer { try! channel.close().wait() }
-
-            work(channel)
-        }
     }
 }

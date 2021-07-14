@@ -6,42 +6,40 @@
 //
 
 import Foundation
-import NIO
-import GRPC
-import Alamofire
-import SwiftKeychainWrapper
-import HDWallet
 
 private struct Constants {
-    let defaultFeeAmount = 1000
-    let defaultFee = Fee("100000", [.init(denom: GlobalConstants.denom, amount: "1000")])
+    let defaultFeeAmount = 750
+    let defaultFee = Fee("75000", [.init(denom: GlobalConstants.denom, amount: "750")])
 }
 
 private let constants = Constants()
 
 final public class WalletService {
-    private let provider: WalletDataProvider
+    private let provider: WalletDataProviderType
     private let dispatchGroup = DispatchGroup()
     private let securityService: SecurityService
     private let walletData: WalletData
 
-    public init(for accountAddress: String, securityService: SecurityService = SecurityService()) {
+    public init(
+        for accountAddress: String,
+        securityService: SecurityService = SecurityService()
+    ) {
         self.walletData = .init(accountAddress: accountAddress)
         self.provider = WalletDataProvider()
         self.securityService = securityService
     }
 
     public func fetch() {
-        fetchRPCNodeInfo()
-        fetchRPCAuthorization(for: walletData.accountAddress)
-        fetchRPCBondedValidators(with: 0)
-        fetchRPCUnbondedValidators(with: 0)
-        fetchRPCUnbondingValidators(with: 0)
+        fetchTendermintNodeInfo()
+        fetchAuthorization(for: walletData.accountAddress)
+        fetchBondedValidators(with: 0)
+        fetchUnbondedValidators(with: 0)
+        fetchUnbondingValidators(with: 0)
 
-        fetchRPCBalance(for: walletData.accountAddress, offset: 0)
-        fetchRPCDelegations(for: walletData.accountAddress, offset: 0)
-        fetchRPCUnboundingDelegations(for: walletData.accountAddress, offset: 0)
-        fetchRPCRewards(for: walletData.accountAddress, offset: 0)
+        fetchBalance(for: walletData.accountAddress)
+        fetchDelegations(for: walletData.accountAddress, offset: 0)
+        fetchUnboundingDelegations(for: walletData.accountAddress, offset: 0)
+        fetchRewards(for: walletData.accountAddress, offset: 0)
 
         dispatchGroup.notify(queue: .main, work: .init(block: dataLoaded))
     }
@@ -135,10 +133,10 @@ private extension WalletService {
             .reduce(0, +)
     }
 
-    func fetchRPCNodeInfo() {
+    func fetchTendermintNodeInfo() {
         dispatchGroup.enter()
 
-        provider.fetchRPCNodeInfo { [weak self] result in
+        provider.fetchTendermintNodeInfo { [weak self] result in
             self?.dispatchGroup.leave()
             switch result {
             case .failure(let error):
@@ -149,10 +147,10 @@ private extension WalletService {
         }
     }
 
-    func fetchRPCAuthorization(for address: String) {
+    func fetchAuthorization(for address: String) {
         dispatchGroup.enter()
 
-        provider.fetchRPCAuthorization(for: address) { [weak self] result in
+        provider.fetchAuthorization(for: address) { [weak self] result in
             self?.dispatchGroup.leave()
             switch result {
             case .failure(let error):
@@ -163,10 +161,10 @@ private extension WalletService {
         }
     }
 
-    func fetchRPCBondedValidators(with offset: Int) {
+    func fetchBondedValidators(with offset: Int) {
         dispatchGroup.enter()
 
-        provider.fetchRPCValidators(offset: offset, type: .bonded) { [weak self] result in
+        provider.fetchValidators(offset: offset, type: .bonded) { [weak self] result in
             self?.dispatchGroup.leave()
             switch result {
             case .failure(let error):
@@ -177,10 +175,10 @@ private extension WalletService {
         }
     }
 
-    func fetchRPCUnbondedValidators(with offset: Int) {
+    func fetchUnbondedValidators(with offset: Int) {
         dispatchGroup.enter()
 
-        provider.fetchRPCValidators(offset: offset, type: .unbonded) { [weak self] result in
+        provider.fetchValidators(offset: offset, type: .unbonded) { [weak self] result in
             self?.dispatchGroup.leave()
             switch result {
             case .failure(let error):
@@ -191,10 +189,10 @@ private extension WalletService {
         }
     }
 
-    func fetchRPCUnbondingValidators(with offset: Int) {
+    func fetchUnbondingValidators(with offset: Int) {
         dispatchGroup.enter()
 
-        provider.fetchRPCValidators(offset: offset, type: .undonding) { [weak self] result in
+        provider.fetchValidators(offset: offset, type: .undonding) { [weak self] result in
             self?.dispatchGroup.leave()
             switch result {
             case .failure(let error):
@@ -205,28 +203,28 @@ private extension WalletService {
         }
     }
 
-    func fetchRPCBalance(for address: String, offset: Int) {
+    func fetchBalance(for address: String) {
         dispatchGroup.enter()
 
-        provider.fetchRPCBalance(for: address, offset: offset) { [weak self] result in
+        provider.fetchBalance(for: address) { [weak self] result in
             self?.dispatchGroup.leave()
             switch result {
             case .failure(let error):
                 log.error(error)
             case .success(let balance):
                 guard !balance.isEmpty else {
-                    self?.walletData.myBalances.append(CoinToken(denom: GlobalConstants.mainDenom, amount: "0"))
+                    self?.walletData.myBalances = [CoinToken(denom: GlobalConstants.mainDenom, amount: "0")]
                     return
                 }
-                self?.walletData.myBalances.append(contentsOf: balance)
+                self?.walletData.myBalances = balance
             }
         }
     }
 
-    func fetchRPCDelegations(for address: String, offset: Int) {
+    func fetchDelegations(for address: String, offset: Int) {
         dispatchGroup.enter()
 
-        provider.fetchRPCDelegations(for: address, offset: offset) { [weak self] result in
+        provider.fetchDelegations(for: address, offset: offset) { [weak self] result in
             self?.dispatchGroup.leave()
             switch result {
             case .failure(let error):
@@ -237,10 +235,10 @@ private extension WalletService {
         }
     }
 
-    func fetchRPCUnboundingDelegations(for address: String, offset: Int) {
+    func fetchUnboundingDelegations(for address: String, offset: Int) {
         dispatchGroup.enter()
 
-        provider.fetchRPCUnboundingDelegations(for: address, offset: offset) { [weak self] result in
+        provider.fetchUnboundingDelegations(for: address, offset: offset) { [weak self] result in
             self?.dispatchGroup.leave()
             switch result {
             case .failure(let error):
@@ -251,16 +249,16 @@ private extension WalletService {
         }
     }
 
-    func fetchRPCRewards(for address: String, offset: Int) {
+    func fetchRewards(for address: String, offset: Int) {
         dispatchGroup.enter()
 
-        provider.fetchRPCRewards(for: address, offset: offset) { [weak self] result in
+        provider.fetchRewards(for: address) { [weak self] result in
             self?.dispatchGroup.leave()
             switch result {
             case .failure(let error):
                 log.error(error)
             case .success(let reward):
-                self?.walletData.myReward.append(contentsOf: reward)
+                self?.walletData.myReward = reward
             }
         }
     }
@@ -283,7 +281,7 @@ private extension WalletService {
         log.debug("my validators: \(walletData.myValidators.count)")
         log.debug("balances count: \(walletData.myBalances.count)")
 
-       walletData.myBalances
+        walletData.myBalances
             .filter { $0.denom == GlobalConstants.denom }
             .forEach { log.debug("DVPN Balance fetched: \($0.amount)") }
 

@@ -8,16 +8,11 @@
 import Foundation
 
 public struct CoinToken: Codable {
-    public var denom: String
-    public var amount: String
+    var denom: String
+    var amount: String
 
     enum CodingKeys: String, CodingKey {
         case denom
         case amount
-    }
-
-    public init(denom: String, amount: String) {
-        self.denom = denom
-        self.amount = amount
     }
 }
