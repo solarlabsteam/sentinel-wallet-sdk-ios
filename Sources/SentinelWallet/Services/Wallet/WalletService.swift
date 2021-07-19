@@ -85,6 +85,16 @@ final public class WalletService {
         securityService.loadMnemonics(for: walletData.accountAddress)
     }
 
+    public func generateSignature(for data: Data) -> String? {
+        guard let mnemonics = showMnemonics() else {
+            log.error(WalletServiceError.missingMnemonics)
+            return nil
+        }
+
+        let key = securityService.getKey(for: mnemonics)
+        return try? ECDSA.compactSign(data: data.sha256(), privateKey: key.raw).base64EncodedString()
+    }
+
     func generateSignedRequest(
         to account: String,
         messages: [Google_Protobuf2_Any],
@@ -94,7 +104,7 @@ final public class WalletService {
             return
         }
 
-        guard let mnemonics = securityService.loadMnemonics(for: walletData.accountAddress) else {
+        guard let mnemonics = showMnemonics() else {
             completion(.failure(WalletServiceError.missingMnemonics))
             return
         }
