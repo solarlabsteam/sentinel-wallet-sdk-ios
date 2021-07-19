@@ -138,7 +138,7 @@ final public class SentinelService {
                     return
                 }
 
-                guard let node = sessions.first?.address else {
+                guard let node = sessions.first?.node else {
                     completion(false)
                     return
                 }
