@@ -12,6 +12,43 @@ final class Signer {
     static func generateSignedRequest(
         with account: Google_Protobuf2_Any,
         to address: String,
+        fee: Fee,
+        for messages: [Google_Protobuf2_Any],
+        privateKey: PrivateKey,
+        chainId: String
+    ) -> Cosmos_Tx_V1beta1_BroadcastTxRequest {
+        guard let authorization = Utils.parseAuthorization(for: account) else {
+            fatalError("Failed to get authorization")
+        }
+        let txBody = Cosmos_Tx_V1beta1_TxBody.with {
+            $0.memo = ""
+            $0.messages = messages
+        }
+        let signerInfo = getGrpcSignerInfo(
+            account: account,
+            privateKey: privateKey,
+            sequence: authorization.sequence
+        )
+        let authInfo = getGrpcAuthInfo(from: signerInfo, with: fee)
+        let rawTx = getGrpcRawTx(
+            account: account,
+            accountNumber: authorization.accountNumber,
+            txBody: txBody,
+            authInfo: authInfo,
+            privateKey: privateKey,
+            chainId: chainId
+        )
+
+        return Cosmos_Tx_V1beta1_BroadcastTxRequest.with {
+            #warning("TODO @lika pass here correct mode block/async for start/stop session")
+            $0.mode = Cosmos_Tx_V1beta1_BroadcastMode.async
+            $0.txBytes = try! rawTx.serializedData()
+        }
+    }
+
+    static func generateSignedRequest(
+        with account: Google_Protobuf2_Any,
+        to address: String,
         tokens: CoinToken,
         fee: Fee,
         memo: String,
@@ -81,7 +118,10 @@ private extension Signer {
         }
     }
 
-    static func getGrpcAuthInfo(from signerInfo: Cosmos_Tx_V1beta1_SignerInfo, with fee: Fee) -> Cosmos_Tx_V1beta1_AuthInfo{
+    static func getGrpcAuthInfo(
+        from signerInfo: Cosmos_Tx_V1beta1_SignerInfo,
+        with fee: Fee
+    ) -> Cosmos_Tx_V1beta1_AuthInfo {
         let feeCoin = Cosmos_Base_V1beta1_Coin.with {
             $0.denom = fee.tokens[0].denom
             $0.amount = fee.tokens[0].amount

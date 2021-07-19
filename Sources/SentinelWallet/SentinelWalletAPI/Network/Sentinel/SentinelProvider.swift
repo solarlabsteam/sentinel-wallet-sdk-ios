@@ -39,7 +39,6 @@ protocol SentinelProviderType {
     )
 
     func fetchNode(
-        offset: UInt64,
         completion: @escaping (Result<Sentinel_Node_V1_Node, Error>) -> Void
     )
 }
@@ -105,7 +104,6 @@ final class SentinelProvider: SentinelProviderType {
     }
 
     func fetchNode(
-        offset: UInt64,
         completion: @escaping (Result<Sentinel_Node_V1_Node, Error>) -> Void
     ) {
         connectionProvider.openConnection(for: { channel in

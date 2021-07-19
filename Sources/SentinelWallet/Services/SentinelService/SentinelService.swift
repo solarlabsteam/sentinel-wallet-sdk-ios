@@ -7,6 +7,10 @@
 
 import Foundation
 
+enum SentinelServiceError: Error {
+    case broadcastFailed
+}
+
 final public class SentinelService {
     private let provider: SentinelProviderType
     private let walletService: WalletService
@@ -37,11 +41,22 @@ final public class SentinelService {
             self.generateAndBroadcast(to: subscription.node, messages: [anyMessage]) { isSuccess in
                 guard isSuccess else {
                     log.error("Failed to start a session")
-                    completion(.failure(GenericError.default))
+                    completion(.failure(SentinelServiceError.broadcastFailed))
                     return
                 }
 
                 self.loadActiveSession(completion: completion)
+            }
+        }
+    }
+
+    public func queryNodeInfo(completion: @escaping (Result<(address: String, url: String), Error>) -> Void) {
+        provider.fetchNode() { result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let node):
+                completion(.success((node.address, node.remoteURL)))
             }
         }
     }
@@ -54,7 +69,7 @@ final public class SentinelService {
             case .success(let sessions):
                 guard let sessionID = sessions.first?.id else {
                     log.error("Failed to start a session: no id or empty array")
-                    completion(.failure(GenericError.default))
+                    completion(.failure(SentinelServiceError.broadcastFailed))
                     return
                 }
                 completion(.success(sessionID))
