@@ -6,19 +6,32 @@
 //
 
 import Foundation
+import Alamofire
+import HDWallet
 
 private struct Constants {
-    let defaultFeeAmount = 750
-    let defaultFee = Fee("75000", [.init(denom: GlobalConstants.denom, amount: "750")])
+    #warning("TODO @lika Calculate gas amount correctly")
+    let defaultFeeAmount = 800
+    let defaultFee = Fee("80000", [.init(denom: GlobalConstants.denom, amount: "800")])
 }
 
 private let constants = Constants()
+
+enum WalletServiceError: LocalizedError {
+    case accountMatchesDestination
+    case missingMnemonics
+    case missingAuthorization
+}
 
 final public class WalletService {
     private let provider: WalletDataProviderType
     private let dispatchGroup = DispatchGroup()
     private let securityService: SecurityService
     private let walletData: WalletData
+
+    var accountAddress: String {
+        walletData.accountAddress
+    }
 
     public init(
         for accountAddress: String,
@@ -70,6 +83,39 @@ final public class WalletService {
 
     public func showMnemonics() -> [String]? {
         securityService.loadMnemonics(for: walletData.accountAddress)
+    }
+
+    func generateSignedRequest(
+        to account: String,
+        messages: [Google_Protobuf2_Any],
+        completion: @escaping ((Result<Cosmos_Tx_V1beta1_BroadcastTxRequest, Error>) -> Void)) {
+        guard account != walletData.accountAddress else {
+            completion(.failure(WalletServiceError.accountMatchesDestination))
+            return
+        }
+
+        guard let mnemonics = securityService.loadMnemonics(for: walletData.accountAddress) else {
+            completion(.failure(WalletServiceError.missingMnemonics))
+            return
+        }
+
+        dispatchGroup.notify(queue: .main, execute: { [weak self] in
+            guard let self = self, let accountGRPC = self.walletData.accountGRPC else {
+                completion(.failure(WalletServiceError.missingAuthorization))
+                return
+            }
+
+            let request = Signer.generateSignedRequest(
+                with: accountGRPC,
+                to: account,
+                fee: constants.defaultFee,
+                for: messages,
+                privateKey: self.securityService.getKey(for: mnemonics),
+                chainId: self.walletData.getChainId()
+            )
+
+            completion(.success(request))
+        })
     }
 
     public func transfer(tokens: CoinToken, to account: String) {

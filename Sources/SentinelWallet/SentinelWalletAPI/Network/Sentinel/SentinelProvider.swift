@@ -22,19 +22,44 @@ protocol SentinelProviderType {
         offset: UInt64,
         completion: @escaping (Result<[Sentinel_Node_V1_Node: DVPNNodeInfo], Error>) -> Void
     )
+
+    func fetchSubscriptions(
+        for account: String,
+        completion: @escaping (Result<[Sentinel_Subscription_V1_Subscription], Error>) -> Void
+    )
+
+    func loadActiveSessions(
+        for account: String,
+        completion: @escaping (Result<[Sentinel_Session_V1_Session], Error>) -> Void
+    )
+
+    func broadcastGrpcTx(
+        signedRequest: Cosmos_Tx_V1beta1_BroadcastTxRequest,
+        completion: @escaping (Result<Cosmos_Tx_V1beta1_BroadcastTxResponse, Error>) -> Void
+    )
+
+    func fetchNode(
+        offset: UInt64,
+        completion: @escaping (Result<Sentinel_Node_V1_Node, Error>) -> Void
+    )
 }
 
 final class SentinelProvider: SentinelProviderType {
     private var sessionManagers = [Session]()
     private let connectionProvider: ClientConnectionProviderType
+    private let transactionProvider: TransactionProviderType
     private var callOptions: CallOptions {
         var callOptions = CallOptions()
         callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(5000))
         return callOptions
     }
 
-    init(connectionProvider: ClientConnectionProviderType = ClientConnectionProvider()) {
+    init(
+        connectionProvider: ClientConnectionProviderType = ClientConnectionProvider(),
+        transactionProvider: TransactionProviderType = TransactionProvider()
+    ) {
         self.connectionProvider = connectionProvider
+        self.transactionProvider = transactionProvider
     }
 
     func fetchAvailableNodes(
@@ -50,9 +75,78 @@ final class SentinelProvider: SentinelProviderType {
             }
         }
     }
-}
 
-private extension SentinelProvider {
+    func fetchSubscriptions(
+        for account: String,
+        completion: @escaping (Result<[Sentinel_Subscription_V1_Subscription], Error>) -> Void
+    ) {
+        connectionProvider.openConnection(for: { channel in
+            do {
+                let request = Sentinel_Subscription_V1_QuerySubscriptionsForAddressRequest.with {
+                    $0.address = account
+                }
+                let response = try Sentinel_Subscription_V1_QueryServiceClient(channel: channel)
+                    .querySubscriptionsForAddress(request)
+                    .response
+                    .wait()
+
+                completion(.success(response.subscriptions))
+            } catch {
+                completion(.failure(error))
+            }
+        })
+    }
+
+    func broadcastGrpcTx(
+        signedRequest: Cosmos_Tx_V1beta1_BroadcastTxRequest,
+        completion: @escaping (Result<Cosmos_Tx_V1beta1_BroadcastTxResponse, Error>) -> Void
+    ) {
+        transactionProvider.broadcastGrpcTx(signedRequest: signedRequest, completion: completion)
+    }
+
+    func fetchNode(
+        offset: UInt64,
+        completion: @escaping (Result<Sentinel_Node_V1_Node, Error>) -> Void
+    ) {
+        connectionProvider.openConnection(for: { channel in
+            do {
+                let request = Sentinel_Node_V1_QueryNodeRequest.with {
+                    $0.address = "sentnode1qeyrwxduwnmz8rfvxpgz88d43e4mvul2vyxpvp"
+                }
+                let response = try Sentinel_Node_V1_QueryServiceClient(channel: channel)
+                    .queryNode(request)
+                    .response
+                    .wait()
+                completion(.success(response.node))
+            } catch {
+                completion(.failure(error))
+            }
+        })
+    }
+
+
+    func loadActiveSessions(
+        for account: String,
+        completion: @escaping (Result<[Sentinel_Session_V1_Session], Error>) -> Void
+    ) {
+        connectionProvider.openConnection(for: { channel in
+            do {
+                let request = Sentinel_Session_V1_QuerySessionsForAddressRequest.with {
+                    $0.address = account
+                    $0.status = .active
+                }
+                let response = try Sentinel_Session_V1_QueryServiceClient(channel: channel)
+                    .querySessionsForAddress(request)
+                    .response
+                    .wait()
+
+                completion(.success(response.sessions))
+            } catch {
+                completion(.failure(error))
+            }
+        })
+    }
+
     func fetchActiveNodes(
         offset: UInt64,
         completion: @escaping (Result<[Sentinel_Node_V1_Node], Error>) -> Void
@@ -77,7 +171,9 @@ private extension SentinelProvider {
             }
         })
     }
+}
 
+private extension SentinelProvider {
 
     #warning("TODO: remove dictionary")
     /// DVPNNodeInfo doesn't have all needed info probably, like status. If it's decided that keeping Sentinel_Node_V1_Node is not needed after getting the info,
