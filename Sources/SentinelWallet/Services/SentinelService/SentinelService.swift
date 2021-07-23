@@ -24,9 +24,11 @@ final public class SentinelService {
         to subscription: Sentinel_Subscription_V1_Subscription,
         completion: @escaping (Result<UInt64, Error>) -> Void
     ) {
-        stopActiveSessions { [weak self] isSuccess in
-            guard let self = self else { return }
-            log.debug("Active sessions are stopped: \(isSuccess). Try to start a new one anyway")
+        stopActiveSessionsMessages { [weak self] messages in
+            guard let self = self else {
+                completion(.failure(SentinelServiceError.broadcastFailed))
+                return
+            }
             let startMessage = Sentinel_Session_V1_MsgStartRequest.with {
                 $0.id = subscription.id
                 $0.from = self.walletService.accountAddress
@@ -38,7 +40,9 @@ final public class SentinelService {
                 $0.value = try! startMessage.serializedData()
             }
 
-            self.generateAndBroadcast(to: subscription.node, messages: [anyMessage]) { isSuccess in
+            let messages = messages + [anyMessage]
+
+            self.generateAndBroadcast(to: subscription.node, messages: messages) { isSuccess in
                 guard isSuccess else {
                     log.error("Failed to start a session")
                     completion(.failure(SentinelServiceError.broadcastFailed))
@@ -67,7 +71,7 @@ final public class SentinelService {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let sessions):
-                guard let sessionID = sessions.first?.id else {
+                guard let sessionID = sessions.last?.id else {
                     log.error("Failed to start a session: no id or empty array")
                     completion(.failure(SentinelServiceError.broadcastFailed))
                     return
@@ -77,7 +81,7 @@ final public class SentinelService {
         }
     }
 
-    public func connectToActiveSubscription(completion: @escaping (Result<UInt64, Error>) -> Void) {
+    public func startNewSessionOnActiveSubscription(completion: @escaping (Result<UInt64, Error>) -> Void) {
         // fetch account subscriptions
         provider.fetchSubscriptions(for: walletService.accountAddress) { [weak self] result in
             switch result {
@@ -122,24 +126,19 @@ final public class SentinelService {
         }
     }
 
-    func stopActiveSessions(completion: @escaping (Bool) -> Void) {
+    func stopActiveSessionsMessages(completion: @escaping ([Google_Protobuf2_Any]) -> Void) {
         provider.loadActiveSessions(for: walletService.accountAddress) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .failure(let error):
                 log.error(error)
-                completion(false)
+                completion([])
 
             case .success(let sessions):
                 log.debug(sessions)
 
                 guard !sessions.isEmpty else {
-                    completion(true)
-                    return
-                }
-
-                guard let node = sessions.first?.node else {
-                    completion(false)
+                    completion([])
                     return
                 }
 
@@ -154,7 +153,7 @@ final public class SentinelService {
                         }
                     }
 
-                self.generateAndBroadcast(to: node, messages: messages, completion: completion)
+                completion(messages)
             }
         }
     }

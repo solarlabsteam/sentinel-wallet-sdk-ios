@@ -11,8 +11,8 @@ import HDWallet
 
 private struct Constants {
     #warning("TODO @lika Calculate gas amount correctly")
-    let defaultFeeAmount = 800
-    let defaultFee = Fee("80000", [.init(denom: GlobalConstants.denom, amount: "800")])
+    let defaultFeeAmount = 10000
+    let defaultFee = Fee("100000", [.init(denom: GlobalConstants.denom, amount: "10000")])
 }
 
 private let constants = Constants()
@@ -95,10 +95,16 @@ final public class WalletService {
         return try? ECDSA.compactSign(data: data.sha256(), privateKey: key.raw).base64EncodedString()
     }
 
+    public func generateSignature(for data: Data, with mnemonics: [String]) -> String? {
+        let key = securityService.getKey(for: mnemonics)
+        return try? ECDSA.compactSign(data: data.sha256(), privateKey: key.raw).base64EncodedString()
+    }
+
     func generateSignedRequest(
         to account: String,
         messages: [Google_Protobuf2_Any],
-        completion: @escaping ((Result<Cosmos_Tx_V1beta1_BroadcastTxRequest, Error>) -> Void)) {
+        completion: @escaping ((Result<Cosmos_Tx_V1beta1_BroadcastTxRequest, Error>) -> Void)
+    ) {
         guard account != walletData.accountAddress else {
             completion(.failure(WalletServiceError.accountMatchesDestination))
             return

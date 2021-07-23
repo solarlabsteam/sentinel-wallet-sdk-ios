@@ -40,8 +40,7 @@ final class Signer {
         )
 
         return Cosmos_Tx_V1beta1_BroadcastTxRequest.with {
-            #warning("TODO @lika pass here correct mode block/async for start/stop session")
-            $0.mode = Cosmos_Tx_V1beta1_BroadcastMode.async
+            $0.mode = .block
             $0.txBytes = try! rawTx.serializedData()
         }
     }
