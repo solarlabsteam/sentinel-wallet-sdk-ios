@@ -52,7 +52,7 @@ final public class WalletService {
     public func add(mnemonics: [String], completion: @escaping (Error?) -> Void) {
         guard !securityService.mnemonicsExists(for: walletData.accountAddress) else {
             log.info("Mnemonics're already added")
-            return
+            completion(nil)
         }
         securityService.restore(from: mnemonics, completion: { [weak self] result in
             guard let self = self else { return }
