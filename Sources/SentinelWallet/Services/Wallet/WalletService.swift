@@ -53,6 +53,7 @@ final public class WalletService {
         guard !securityService.mnemonicsExists(for: walletData.accountAddress) else {
             log.info("Mnemonics're already added")
             completion(nil)
+            return
         }
         securityService.restore(from: mnemonics, completion: { [weak self] result in
             guard let self = self else { return }
