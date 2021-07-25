@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class WalletData {
+final public class WalletData {
     var exchangeRates = [ExchangeRates]()
 
     let accountAddress: String
@@ -19,6 +19,7 @@ final class WalletData {
     var validators = [Cosmos_Staking_V1beta1_Validator]()
     var bondedValidators = [Cosmos_Staking_V1beta1_Validator]()
     var unbondedValidators = [Cosmos_Staking_V1beta1_Validator]()
+    var unbondingValidators = [Cosmos_Staking_V1beta1_Validator]()
     var myValidators = [Cosmos_Staking_V1beta1_Validator]()
 
     var myDelegations = [Cosmos_Staking_V1beta1_DelegationResponse]()
@@ -36,5 +37,4 @@ final class WalletData {
     func getChainId() -> String {
         nodeInfo?.network ?? ""
     }
-
 }

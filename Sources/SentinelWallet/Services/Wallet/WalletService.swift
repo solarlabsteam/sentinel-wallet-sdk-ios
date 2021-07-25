@@ -21,18 +21,18 @@ enum WalletServiceError: LocalizedError {
     case accountMatchesDestination
     case missingMnemonics
     case missingAuthorization
+    case notEnoughTokens
 }
 
 final public class WalletService {
     private let provider: WalletDataProviderType
-    private let dispatchGroup = DispatchGroup()
     private let securityService: SecurityService
     private let walletData: WalletData
-
+    
     var accountAddress: String {
         walletData.accountAddress
     }
-
+    
     public init(
         for accountAddress: String,
         securityService: SecurityService = SecurityService()
@@ -41,23 +41,15 @@ final public class WalletService {
         self.provider = WalletDataProvider()
         self.securityService = securityService
     }
-
-    public func fetch() {
-        fetchTendermintNodeInfo()
-        fetchAuthorization(for: walletData.accountAddress)
-        fetchBondedValidators(with: 0)
-        fetchUnbondedValidators(with: 0)
-        fetchUnbondingValidators(with: 0)
-
-        fetchBalance(for: walletData.accountAddress)
-        fetchDelegations(for: walletData.accountAddress, offset: 0)
-        fetchUnboundingDelegations(for: walletData.accountAddress, offset: 0)
-        fetchRewards(for: walletData.accountAddress, offset: 0)
-
-        dispatchGroup.notify(queue: .main, work: .init(block: dataLoaded))
+    
+    private func availableAmount() -> Int {
+        walletData.myBalances
+            .filter { $0.denom == GlobalConstants.denom }
+            .map { Int($0.amount) ?? 0 }
+            .reduce(0, +)
     }
-
-    public func add(mnemonics: [String]) {
+    
+    public func add(mnemonics: [String], completion: @escaping (Error?) -> Void) {
         guard !securityService.mnemonicsExists(for: walletData.accountAddress) else {
             log.info("Mnemonics're already added")
             return
@@ -66,7 +58,7 @@ final public class WalletService {
             guard let self = self else { return }
             switch result {
             case .failure(let error):
-                log.error(error)
+                completion(error)
             case .success(let account):
                 guard account == self.walletData.accountAddress else {
                     log.error("Mnemonics do not match")
@@ -77,29 +69,30 @@ final public class WalletService {
                     return
                 }
                 log.debug("Mnemonics are added for \(account)")
+                completion(nil)
             }
         })
     }
-
+    
     public func showMnemonics() -> [String]? {
         securityService.loadMnemonics(for: walletData.accountAddress)
     }
-
+    
     public func generateSignature(for data: Data) -> String? {
         guard let mnemonics = showMnemonics() else {
             log.error(WalletServiceError.missingMnemonics)
             return nil
         }
-
+        
         let key = securityService.getKey(for: mnemonics)
         return try? ECDSA.compactSign(data: data.sha256(), privateKey: key.raw).base64EncodedString()
     }
-
+    
     public func generateSignature(for data: Data, with mnemonics: [String]) -> String? {
         let key = securityService.getKey(for: mnemonics)
         return try? ECDSA.compactSign(data: data.sha256(), privateKey: key.raw).base64EncodedString()
     }
-
+    
     func generateSignedRequest(
         to account: String,
         messages: [Google_Protobuf2_Any],
@@ -109,259 +102,236 @@ final public class WalletService {
             completion(.failure(WalletServiceError.accountMatchesDestination))
             return
         }
-
+        
         guard let mnemonics = showMnemonics() else {
             completion(.failure(WalletServiceError.missingMnemonics))
             return
         }
-
-        dispatchGroup.notify(queue: .main, execute: { [weak self] in
-            guard let self = self, let accountGRPC = self.walletData.accountGRPC else {
-                completion(.failure(WalletServiceError.missingAuthorization))
-                return
-            }
-
-            let request = Signer.generateSignedRequest(
-                with: accountGRPC,
-                to: account,
-                fee: constants.defaultFee,
-                for: messages,
-                privateKey: self.securityService.getKey(for: mnemonics),
-                chainId: self.walletData.getChainId()
-            )
-
-            completion(.success(request))
-        })
+        
+        guard let accountGRPC = self.walletData.accountGRPC else {
+            completion(.failure(WalletServiceError.missingAuthorization))
+            return
+        }
+        
+        let request = Signer.generateSignedRequest(
+            with: accountGRPC,
+            to: account,
+            fee: constants.defaultFee,
+            for: messages,
+            privateKey: self.securityService.getKey(for: mnemonics),
+            chainId: self.walletData.getChainId()
+        )
+        
+        completion(.success(request))
     }
-
-    public func transfer(tokens: CoinToken, to account: String) {
+    
+    public func transfer(
+        tokens: CoinToken,
+        to account: String,
+        memo: String? = nil,
+        completion: @escaping (Result<WalletTransactionDTO, Error>) -> Void
+    ) {
         guard account != walletData.accountAddress else {
             log.error("Self-sending is not supported")
             return
         }
-
+        
         guard let mnemonics = securityService.loadMnemonics(for: walletData.accountAddress) else {
             log.error("Mnemonics are missing")
+            completion(.failure(WalletServiceError.missingMnemonics))
             return
         }
-
-        dispatchGroup.notify(queue: .main, execute: { [weak self] in
-            guard let self = self else { return }
-            guard let accountGRPC = self.walletData.accountGRPC else {
-                log.error("Authorization is missing")
-                return
+        
+        guard let accountGRPC = self.walletData.accountGRPC else {
+            log.error("Authorization is missing")
+            completion(.failure(WalletServiceError.missingAuthorization))
+            return
+        }
+        
+        let total = constants.defaultFeeAmount + (Int(tokens.amount) ?? 0)
+        guard total <= self.availableAmount() else {
+            log.error("Not enough tokens on wallet")
+            completion(.failure(WalletServiceError.notEnoughTokens))
+            return
+        }
+        
+        let request = Signer.generateSignedRequest(
+            with: accountGRPC,
+            to: account,
+            tokens: tokens,
+            fee: constants.defaultFee,
+            memo: "",
+            privateKey: self.securityService.getKey(for: mnemonics),
+            chainId: self.walletData.getChainId()
+        )
+        
+        self.provider.onBroadcastGrpcTx(signedRequest: request, completion: { result in
+            switch result {
+            case .failure(let error):
+                log.error(error)
+                completion(.failure(error))
+            case .success(let response):
+                log.debug(
+                    """
+                    Transaction code: \(response.txResponse.code)
+                    Transaction hash: \(response.txResponse.txhash)
+                    Transaction rawLog: \(response.txResponse.rawLog)
+                    Link: https://www.mintscan.io/sentinel/txs/\(response.txResponse.txhash)
+                    """
+                )
+                completion(.success(response.toDTO()))
             }
-
-            let total = constants.defaultFeeAmount + (Int(tokens.amount) ?? 0)
-            guard total <= self.availableAmount() else {
-                log.error("Not enough tokens on wallet")
-                return
-            }
-
-            let request = Signer.generateSignedRequest(
-                with: accountGRPC,
-                to: account,
-                tokens: tokens,
-                fee: constants.defaultFee,
-                memo: "",
-                privateKey: self.securityService.getKey(for: mnemonics),
-                chainId: self.walletData.getChainId()
-            )
-
-            self.provider.onBroadcastGrpcTx(signedRequest: request, completion: { result in
-                switch result {
-                case .failure(let error):
-                    log.error(error)
-                case .success(let response):
-                    log.debug(
-                        """
-                        Transaction code: \(response.txResponse.code)
-                        Transaction hash: \(response.txResponse.txhash)
-                        Transaction rawLog: \(response.txResponse.rawLog)
-                        Link: https://www.mintscan.io/sentinel/txs/\(response.txResponse.txhash)
-                        """
-                    )
-                }
-            })
         })
     }
-}
-
-private extension WalletService {
-    func availableAmount() -> Int {
-        walletData.myBalances
-            .filter { $0.denom == GlobalConstants.denom }
-            .map { Int($0.amount) ?? 0 }
-            .reduce(0, +)
-    }
-
-    func fetchTendermintNodeInfo() {
-        dispatchGroup.enter()
-
+    
+    public func fetchTendermintNodeInfo(
+        callback: @escaping (Result<WalletNodeDTO, Error>) -> Void
+    ) {
         provider.fetchTendermintNodeInfo { [weak self] result in
-            self?.dispatchGroup.leave()
             switch result {
             case .failure(let error):
                 log.error(error)
+                callback(.failure(error))
             case .success(let info):
                 self?.walletData.nodeInfo = info
+                callback(.success(info.toDTO()))
             }
         }
     }
-
-    func fetchAuthorization(for address: String) {
-        dispatchGroup.enter()
-
+    
+    public func fetchAuthorization(
+        for address: String,
+        callback: @escaping (Error?) -> Void
+    ) {
         provider.fetchAuthorization(for: address) { [weak self] result in
-            self?.dispatchGroup.leave()
             switch result {
             case .failure(let error):
                 log.error(error)
+                callback(error)
             case .success(let account):
                 self?.walletData.accountGRPC = account
+                callback(nil)
             }
         }
     }
-
-    func fetchBondedValidators(with offset: Int) {
-        dispatchGroup.enter()
-
+    
+    public func fetchBondedValidators(
+        with offset: Int,
+        callback: @escaping (Result<[WalletValidatorDTO], Error>) -> Void
+    ) {
         provider.fetchValidators(offset: offset, type: .bonded) { [weak self] result in
-            self?.dispatchGroup.leave()
             switch result {
             case .failure(let error):
                 log.error(error)
+                callback(.failure(error))
             case .success(let validators):
-                self?.walletData.bondedValidators.append(contentsOf: validators)
+                self?.walletData.bondedValidators = validators
+                callback(.success(validators.map { $0.toDTO() }))
             }
         }
     }
-
-    func fetchUnbondedValidators(with offset: Int) {
-        dispatchGroup.enter()
-
+    
+    public func fetchUnbondedValidators(
+        with offset: Int,
+        callback: @escaping (Result<[WalletValidatorDTO], Error>) -> Void
+    ) {
         provider.fetchValidators(offset: offset, type: .unbonded) { [weak self] result in
-            self?.dispatchGroup.leave()
             switch result {
             case .failure(let error):
                 log.error(error)
+                callback(.failure(error))
             case .success(let validators):
-                self?.walletData.unbondedValidators.append(contentsOf: validators)
+                self?.walletData.unbondedValidators = validators
+                callback(.success(validators.map { $0.toDTO() }))
             }
         }
     }
-
-    func fetchUnbondingValidators(with offset: Int) {
-        dispatchGroup.enter()
-
+    
+    public func fetchUnbondingValidators(
+        with offset: Int,
+        callback: @escaping (Result<[WalletValidatorDTO], Error>) -> Void
+    ) {
         provider.fetchValidators(offset: offset, type: .undonding) { [weak self] result in
-            self?.dispatchGroup.leave()
             switch result {
             case .failure(let error):
                 log.error(error)
+                callback(.failure(error))
             case .success(let validators):
-                self?.walletData.unbondedValidators.append(contentsOf: validators)
+                self?.walletData.unbondingValidators = validators
+                callback(.success(validators.map { $0.toDTO() }))
             }
         }
     }
-
-    func fetchBalance(for address: String) {
-        dispatchGroup.enter()
-
+    
+    public func fetchBalance(
+        for address: String,
+        callback: @escaping (Result<[CoinToken], Error>) -> Void
+    ) {
         provider.fetchBalance(for: address) { [weak self] result in
-            self?.dispatchGroup.leave()
             switch result {
             case .failure(let error):
                 log.error(error)
+                callback(.failure(error))
             case .success(let balance):
-                guard !balance.isEmpty else {
-                    self?.walletData.myBalances = [CoinToken(denom: GlobalConstants.mainDenom, amount: "0")]
-                    return
+                if balance.isEmpty {
+                    self?.walletData.myBalances = [
+                        CoinToken(denom: GlobalConstants.mainDenom, amount: "0")
+                    ]
+                } else {
+                    self?.walletData.myBalances = balance
                 }
-                self?.walletData.myBalances = balance
+                callback(.success(balance))
             }
         }
     }
-
-    func fetchDelegations(for address: String, offset: Int) {
-        dispatchGroup.enter()
-
+    
+    public func fetchDelegations(
+        for address: String,
+        offset: Int,
+        callback: @escaping (Result<[WalletDelegationDTO], Error>) -> Void
+    ) {
         provider.fetchDelegations(for: address, offset: offset) { [weak self] result in
-            self?.dispatchGroup.leave()
             switch result {
             case .failure(let error):
                 log.error(error)
+                callback(.failure(error))
             case .success(let delegations):
-                self?.walletData.myDelegations.append(contentsOf: delegations)
+                self?.walletData.myDelegations = delegations
+                callback(.success(delegations.map { $0.toDTO() }))
             }
         }
     }
-
-    func fetchUnboundingDelegations(for address: String, offset: Int) {
-        dispatchGroup.enter()
-
+    
+    public func fetchUnboundingDelegations(
+        for address: String,
+        offset: Int,
+        callback: @escaping (Result<[WalletUnbondingDelegationDTO], Error>) -> Void
+    ) {
         provider.fetchUnboundingDelegations(for: address, offset: offset) { [weak self] result in
-            self?.dispatchGroup.leave()
             switch result {
             case .failure(let error):
                 log.error(error)
+                callback(.failure(error))
             case .success(let delegations):
-                self?.walletData.unbondingsDelegations.append(contentsOf: delegations)
+                self?.walletData.unbondingsDelegations = delegations
+                callback(.success(delegations.map { $0.toDTO() }))
             }
         }
     }
-
-    func fetchRewards(for address: String, offset: Int) {
-        dispatchGroup.enter()
-
+    
+    public func fetchRewards(
+        for address: String,
+        offset: Int,
+        callback: @escaping ((Result<[WalletDelegatorRewardDTO], Error>) -> Void
+    ) {
         provider.fetchRewards(for: address) { [weak self] result in
-            self?.dispatchGroup.leave()
             switch result {
             case .failure(let error):
                 log.error(error)
+                callback(.failure(error))
             case .success(let reward):
                 self?.walletData.myReward = reward
-            }
-        }
-    }
-
-    func dataLoaded() {
-        walletData.validators.append(contentsOf: walletData.bondedValidators)
-        walletData.validators.append(contentsOf: walletData.unbondedValidators)
-
-        let myValidators = walletData.validators
-            .filter { validator in
-                walletData.myDelegations.contains { $0.delegation.validatorAddress == validator.operatorAddress }
-                    || walletData.unbondingsDelegations.contains { $0.validatorAddress == validator.operatorAddress }
-            }
-
-        walletData.myValidators.append(contentsOf: myValidators)
-
-        log.debug("all validators: \(walletData.validators.count)")
-        log.debug("bonded Validators: \(walletData.bondedValidators.count)")
-        log.debug("unbondedValidators: \(walletData.unbondedValidators.count)")
-        log.debug("my validators: \(walletData.myValidators.count)")
-        log.debug("balances count: \(walletData.myBalances.count)")
-
-        walletData.myBalances
-            .filter { $0.denom == GlobalConstants.denom }
-            .forEach { log.debug("DVPN Balance fetched: \($0.amount)") }
-
-        fetchPriceInfo(for: GlobalConstants.marketPrice)
-
-        guard walletData.nodeInfo != nil else {
-            log.error("error_network")
-            return
-        }
-    }
-
-    func fetchPriceInfo(for denoms: String) {
-        provider.getPrices(for: denoms) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                log.error(error)
-            case .success(let result):
-                self?.walletData.exchangeRates = result
+                callback(.success(reward.map { $0.toDTO() }))
             }
         }
     }
