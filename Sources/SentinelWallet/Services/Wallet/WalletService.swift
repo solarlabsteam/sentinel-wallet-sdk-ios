@@ -322,7 +322,7 @@ final public class WalletService {
     public func fetchRewards(
         for address: String,
         offset: Int,
-        callback: @escaping ((Result<[WalletDelegatorRewardDTO], Error>) -> Void
+        callback: @escaping (Result<[WalletDelegatorRewardDTO], Error>) -> Void
     ) {
         provider.fetchRewards(for: address) { [weak self] result in
             switch result {
