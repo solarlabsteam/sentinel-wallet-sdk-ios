@@ -60,14 +60,19 @@ protocol WalletDataProviderType {
 
 final class WalletDataProvider: WalletDataProviderType {
     private let connectionProvider: ClientConnectionProviderType
+    private let transactionProvider: TransactionProviderType
     private var callOptions: CallOptions {
         var callOptions = CallOptions()
         callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(8000))
         return callOptions
     }
-
-    init(connectionProvider: ClientConnectionProviderType = ClientConnectionProvider()) {
+    
+    init(
+        connectionProvider: ClientConnectionProviderType = ClientConnectionProvider(),
+        transactionProvider: TransactionProviderType = TransactionProvider()
+    ) {
         self.connectionProvider = connectionProvider
+        self.transactionProvider = transactionProvider
     }
 
     func getPrices(for denoms: String, completion: @escaping (Result<[ExchangeRates], Error>) -> Void) {
@@ -259,16 +264,6 @@ final class WalletDataProvider: WalletDataProviderType {
         signedRequest: Cosmos_Tx_V1beta1_BroadcastTxRequest,
         completion: @escaping (Result<Cosmos_Tx_V1beta1_BroadcastTxResponse, Error>) -> Void
     ) {
-        connectionProvider.openConnection(for: { channel in
-            do {
-                let response = try Cosmos_Tx_V1beta1_ServiceClient(channel: channel)
-                    .broadcastTx(signedRequest)
-                    .response
-                    .wait()
-                completion(.success(response))
-            } catch {
-                completion(.failure(error))
-            }
-        })
+        transactionProvider.broadcastGrpcTx(signedRequest: signedRequest, completion: completion)
     }
 }

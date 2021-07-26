@@ -25,6 +25,7 @@ protocol SentinelProviderType {
 
     func fetchSubscriptions(
         for account: String,
+        with status: Sentinel_Types_V1_Status,
         completion: @escaping (Result<[Sentinel_Subscription_V1_Subscription], Error>) -> Void
     )
 
@@ -77,12 +78,14 @@ final class SentinelProvider: SentinelProviderType {
 
     func fetchSubscriptions(
         for account: String,
+        with status: Sentinel_Types_V1_Status = .unspecified,
         completion: @escaping (Result<[Sentinel_Subscription_V1_Subscription], Error>) -> Void
     ) {
         connectionProvider.openConnection(for: { channel in
             do {
                 let request = Sentinel_Subscription_V1_QuerySubscriptionsForAddressRequest.with {
                     $0.address = account
+                    $0.status = status
                 }
                 let response = try Sentinel_Subscription_V1_QueryServiceClient(channel: channel)
                     .querySubscriptionsForAddress(request)

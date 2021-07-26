@@ -15,4 +15,13 @@ public struct CoinToken: Codable {
         case denom
         case amount
     }
+
+    public init(denom: String, amount: String) {
+        self.denom = denom
+        self.amount = amount
+    }
+
+    init(from coin: Cosmos_Base_V1beta1_Coin) {
+        self.init(denom: coin.denom, amount: coin.amount)
+    }
 }
