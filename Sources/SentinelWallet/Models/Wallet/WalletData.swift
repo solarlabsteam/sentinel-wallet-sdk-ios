@@ -7,7 +7,7 @@
 
 import Foundation
 
-final public class WalletData {
+final class WalletData {
     var exchangeRates = [ExchangeRates]()
 
     let accountAddress: String
