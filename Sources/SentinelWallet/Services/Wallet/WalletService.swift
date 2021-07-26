@@ -26,7 +26,7 @@ enum WalletServiceError: LocalizedError {
 
 final public class WalletService {
     private let provider: WalletDataProviderType
-    private let securityService: SecurityService
+    private let securityService: SecurityServiceType
     private let walletData: WalletData
     
     var accountAddress: String {
@@ -35,7 +35,7 @@ final public class WalletService {
     
     public init(
         for accountAddress: String,
-        securityService: SecurityService = SecurityService()
+        securityService: SecurityServiceType
     ) {
         self.walletData = .init(accountAddress: accountAddress)
         self.provider = WalletDataProvider()

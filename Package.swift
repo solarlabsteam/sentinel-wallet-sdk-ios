@@ -20,14 +20,13 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.0.0"),
         .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.4.0")),
         .package(url: "https://github.com/SwiftyBeaver/SwiftyBeaver.git", .upToNextMajor(from: "1.9.0")),
-        .package(url: "https://github.com/jrendel/SwiftKeychainWrapper", .upToNextMajor(from: "4.0.1")),
         .package(url: "https://github.com/lika-vorobeva/HDWallet", .branch("spm"))
     ],
     targets: [
         .target(
             name: "SentinelWallet",
             dependencies: [
-                "SwiftProtobuf", "SwiftKeychainWrapper", "HDWallet", "Alamofire", "SwiftyBeaver",
+                "SwiftProtobuf", "HDWallet", "Alamofire", "SwiftyBeaver",
                 .product(name: "GRPC", package: "grpc-swift"),
                 .product(name: "NIO", package: "swift-nio"),
                 .product(name: "NIOHTTP1", package: "swift-nio"),

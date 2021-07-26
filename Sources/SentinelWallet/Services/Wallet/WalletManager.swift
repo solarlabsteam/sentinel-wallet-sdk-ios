@@ -8,8 +8,8 @@
 import Foundation
 
 public class WalletManager {
-    private let securityService: SecurityService
-    public init(securityService: SecurityService = .init()) {
+    private let securityService: SecurityServiceType
+    public init(securityService: SecurityServiceType) {
         self.securityService = securityService
     }
 
