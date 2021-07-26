@@ -15,14 +15,6 @@ final class WalletData {
     // For ProtoBuf and gRPC
     var nodeInfo: Tendermint_P2p_DefaultNodeInfo?
     var accountGRPC: Google_Protobuf2_Any?
-    
-    var validators = [Cosmos_Staking_V1beta1_Validator]()
-    var bondedValidators = [Cosmos_Staking_V1beta1_Validator]()
-    var unbondedValidators = [Cosmos_Staking_V1beta1_Validator]()
-    var myValidators = [Cosmos_Staking_V1beta1_Validator]()
-
-    var myDelegations = [Cosmos_Staking_V1beta1_DelegationResponse]()
-    var unbondingsDelegations = [Cosmos_Staking_V1beta1_UnbondingDelegation]()
 
     var myBalances = [CoinToken]()
     var myVestings = [CoinToken]()
@@ -36,5 +28,4 @@ final class WalletData {
     func getChainId() -> String {
         nodeInfo?.network ?? ""
     }
-
 }

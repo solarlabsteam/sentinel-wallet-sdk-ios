@@ -28,6 +28,7 @@ protocol WalletDataProviderType {
     func fetchAuthorization(for address: String, completion: @escaping (Result<Google_Protobuf2_Any, Error>) -> Void)
     func fetchValidators(
         offset: Int,
+        limit: Int,
         type: ValidatorType,
         completion: @escaping (Result<[Cosmos_Staking_V1beta1_Validator], Error>) -> Void
     )
@@ -38,11 +39,13 @@ protocol WalletDataProviderType {
     func fetchDelegations(
         for address: String,
         offset: Int,
+        limit: Int,
         completion: @escaping (Result<[Cosmos_Staking_V1beta1_DelegationResponse], Error>) -> Void
     )
     func fetchUnboundingDelegations(
         for address: String,
         offset: Int,
+        limit: Int,
         completion: @escaping (Result<[Cosmos_Staking_V1beta1_UnbondingDelegation], Error>) -> Void
     )
     func fetchRewards(
@@ -119,6 +122,7 @@ final class WalletDataProvider: WalletDataProviderType {
 
     func fetchValidators(
         offset: Int,
+        limit: Int,
         type: ValidatorType,
         completion: @escaping (Result<[Cosmos_Staking_V1beta1_Validator], Error>) -> Void
     ) {
@@ -126,7 +130,7 @@ final class WalletDataProvider: WalletDataProviderType {
             guard let self = self else { return }
 
             let page = Cosmos_Base_Query_V1beta1_PageRequest.with {
-                $0.limit = 125
+                $0.limit = UInt64(limit)
                 $0.offset = UInt64(offset)
             }
 
@@ -174,12 +178,13 @@ final class WalletDataProvider: WalletDataProviderType {
     func fetchDelegations(
         for address: String,
         offset: Int,
+        limit: Int,
         completion: @escaping (Result<[Cosmos_Staking_V1beta1_DelegationResponse], Error>) -> Void
     ) {
         connectionProvider.openConnection(for: { [weak self] channel in
             guard let self = self else { return }
             let page = Cosmos_Base_Query_V1beta1_PageRequest.with {
-                $0.limit = 100
+                $0.limit = UInt64(limit)
                 $0.offset = UInt64(offset)
             }
 
@@ -203,12 +208,13 @@ final class WalletDataProvider: WalletDataProviderType {
     func fetchUnboundingDelegations(
         for address: String,
         offset: Int,
+        limit: Int,
         completion: @escaping (Result<[Cosmos_Staking_V1beta1_UnbondingDelegation], Error>) -> Void
     ) {
         connectionProvider.openConnection(for: { [weak self] channel in
             guard let self = self else { return }
             let page = Cosmos_Base_Query_V1beta1_PageRequest.with {
-                $0.limit = 100
+                $0.limit = UInt64(limit)
                 $0.offset = UInt64(offset)
             }
 
