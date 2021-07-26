@@ -161,12 +161,12 @@ final public class WalletService {
             to: account,
             tokens: tokens,
             fee: constants.defaultFee,
-            memo: "",
+            memo: memo ?? "",
             privateKey: self.securityService.getKey(for: mnemonics),
             chainId: self.walletData.getChainId()
         )
         
-        self.provider.onBroadcastGrpcTx(signedRequest: request, completion: { result in
+        provider.onBroadcastGrpcTx(signedRequest: request, completion: { result in
             switch result {
             case .failure(let error):
                 log.error(error)
@@ -217,48 +217,48 @@ final public class WalletService {
     }
     
     public func fetchBondedValidators(
-        with offset: Int,
+        offset: Int,
+        limit: Int,
         callback: @escaping (Result<[WalletValidatorDTO], Error>) -> Void
     ) {
-        provider.fetchValidators(offset: offset, type: .bonded) { [weak self] result in
+        provider.fetchValidators(offset: offset, limit: limit, type: .bonded) { result in
             switch result {
             case .failure(let error):
                 log.error(error)
                 callback(.failure(error))
             case .success(let validators):
-                self?.walletData.bondedValidators = validators
                 callback(.success(validators.map { $0.toDTO() }))
             }
         }
     }
     
     public func fetchUnbondedValidators(
-        with offset: Int,
+        offset: Int,
+        limit: Int,
         callback: @escaping (Result<[WalletValidatorDTO], Error>) -> Void
     ) {
-        provider.fetchValidators(offset: offset, type: .unbonded) { [weak self] result in
+        provider.fetchValidators(offset: offset, limit: limit, type: .unbonded) { result in
             switch result {
             case .failure(let error):
                 log.error(error)
                 callback(.failure(error))
             case .success(let validators):
-                self?.walletData.unbondedValidators = validators
                 callback(.success(validators.map { $0.toDTO() }))
             }
         }
     }
     
     public func fetchUnbondingValidators(
-        with offset: Int,
+        offset: Int,
+        limit: Int,
         callback: @escaping (Result<[WalletValidatorDTO], Error>) -> Void
     ) {
-        provider.fetchValidators(offset: offset, type: .undonding) { [weak self] result in
+        provider.fetchValidators(offset: offset, limit: limit, type: .undonding) { result in
             switch result {
             case .failure(let error):
                 log.error(error)
                 callback(.failure(error))
             case .success(let validators):
-                self?.walletData.unbondingValidators = validators
                 callback(.success(validators.map { $0.toDTO() }))
             }
         }
@@ -289,15 +289,15 @@ final public class WalletService {
     public func fetchDelegations(
         for address: String,
         offset: Int,
+        limit: Int,
         callback: @escaping (Result<[WalletDelegationDTO], Error>) -> Void
     ) {
-        provider.fetchDelegations(for: address, offset: offset) { [weak self] result in
+        provider.fetchDelegations(for: address, offset: offset, limit: limit) { [weak self] result in
             switch result {
             case .failure(let error):
                 log.error(error)
                 callback(.failure(error))
             case .success(let delegations):
-                self?.walletData.myDelegations = delegations
                 callback(.success(delegations.map { $0.toDTO() }))
             }
         }
@@ -306,15 +306,15 @@ final public class WalletService {
     public func fetchUnboundingDelegations(
         for address: String,
         offset: Int,
+        limit: Int,
         callback: @escaping (Result<[WalletUnbondingDelegationDTO], Error>) -> Void
     ) {
-        provider.fetchUnboundingDelegations(for: address, offset: offset) { [weak self] result in
+        provider.fetchUnboundingDelegations(for: address, offset: offset, limit: limit) { [weak self] result in
             switch result {
             case .failure(let error):
                 log.error(error)
                 callback(.failure(error))
             case .success(let delegations):
-                self?.walletData.unbondingsDelegations = delegations
                 callback(.success(delegations.map { $0.toDTO() }))
             }
         }
