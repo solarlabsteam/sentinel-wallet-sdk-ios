@@ -8,17 +8,17 @@
 import Foundation
 
 public struct Subscription {
-    let id: UInt64
-    let owner: String
-    let node: String
+    public let id: UInt64
+    public let owner: String
+    public let node: String
 
-    let price: CoinToken
-    let deposit: CoinToken
+    public let price: CoinToken
+    public let deposit: CoinToken
 
-    let plan: UInt64
-    let denom: String
+    public let plan: UInt64
+    public let denom: String
 
-    let isActive: Bool
+    public let isActive: Bool
 
     init(from sentinelSubscription: Sentinel_Subscription_V1_Subscription) {
         id = sentinelSubscription.id
