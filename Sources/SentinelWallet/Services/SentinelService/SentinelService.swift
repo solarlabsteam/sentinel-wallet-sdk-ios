@@ -38,8 +38,8 @@ final public class SentinelService {
         }
     }
 
-    public func queryNodeInfo(completion: @escaping (Result<(address: String, url: String), Error>) -> Void) {
-        provider.fetchNode() { result in
+    public func queryNodeInfo(address: String, completion: @escaping (Result<(address: String, url: String), Error>) -> Void) {
+        provider.fetchNode(address: address) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))

@@ -34,6 +34,7 @@ protocol SentinelProviderType {
     )
 
     func fetchNode(
+        address: String,
         completion: @escaping (Result<Sentinel_Node_V1_Node, Error>) -> Void
     )
 }
@@ -102,12 +103,13 @@ final class SentinelProvider: SentinelProviderType {
     }
 
     func fetchNode(
+        address: String,
         completion: @escaping (Result<Sentinel_Node_V1_Node, Error>) -> Void
     ) {
         connectionProvider.openConnection(for: { channel in
             do {
                 let request = Sentinel_Node_V1_QueryNodeRequest.with {
-                    $0.address = "sentnode1qeyrwxduwnmz8rfvxpgz88d43e4mvul2vyxpvp"
+                    $0.address = address
                 }
                 let response = try Sentinel_Node_V1_QueryServiceClient(channel: channel)
                     .queryNode(request)
