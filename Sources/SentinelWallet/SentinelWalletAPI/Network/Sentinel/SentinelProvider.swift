@@ -10,16 +10,10 @@ import GRPC
 import NIO
 import Alamofire
 
-private struct Constants {
-    #warning("Adjust limit after resolving loading flow")
-    let limit: UInt64 = 30
-}
-
-private let constants = Constants()
-
 protocol SentinelProviderType {
     func fetchAvailableNodes(
         offset: UInt64,
+        limit: UInt64,
         completion: @escaping (Result<[Sentinel_Node_V1_Node: DVPNNodeInfo], Error>) -> Void
     )
 
@@ -64,9 +58,10 @@ final class SentinelProvider: SentinelProviderType {
 
     func fetchAvailableNodes(
         offset: UInt64,
+        limit: UInt64,
         completion: @escaping (Result<[Sentinel_Node_V1_Node: DVPNNodeInfo], Error>) -> Void
     ) {
-        fetchActiveNodes(offset: offset) { [weak self] result in
+        fetchActiveNodes(offset: offset, limit: limit) { [weak self] result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
@@ -150,12 +145,13 @@ final class SentinelProvider: SentinelProviderType {
 
     func fetchActiveNodes(
         offset: UInt64,
+        limit: UInt64,
         completion: @escaping (Result<[Sentinel_Node_V1_Node], Error>) -> Void
     ) {
         connectionProvider.openConnection(for: { channel in
             do {
                 let page = Cosmos_Base_Query_V1beta1_PageRequest.with {
-                    $0.limit = constants.limit
+                    $0.limit = limit
                     $0.offset = UInt64(offset)
                 }
                 let request = Sentinel_Node_V1_QueryNodesRequest.with {
