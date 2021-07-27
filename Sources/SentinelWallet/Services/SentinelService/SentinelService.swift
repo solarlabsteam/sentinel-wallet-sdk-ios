@@ -27,6 +27,17 @@ final public class SentinelService {
         self.walletService = walletService
     }
 
+    public func queryNodes(offset: UInt64, completion: @escaping (Result<[DVPNNodeInfo], Error>) -> Void) {
+        provider.fetchAvailableNodes(offset: offset) { result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let nodes):
+                completion(.success(nodes.map { $0.value }))
+            }
+        }
+    }
+
     public func queryNodeInfo(completion: @escaping (Result<(address: String, url: String), Error>) -> Void) {
         provider.fetchNode() { result in
             switch result {

@@ -14,27 +14,27 @@ struct DVPNNodeResponse: Codable {
 }
 
 // MARK: -  DVPNNodeInfo
-struct DVPNNodeInfo: Codable {
-    let address: String
+public struct DVPNNodeInfo: Codable {
+    public let address: String
 
-    let bandwidth: Bandwidth
-    let handshake: Handshake
+    public let bandwidth: Bandwidth
+    public let handshake: Handshake
 
-    let intervalSetSessions: Int
-    let intervalUpdateSessions: Int
-    let intervalUpdateStatus: Int
+    public let intervalSetSessions: Int
+    public let intervalUpdateSessions: Int
+    public let intervalUpdateStatus: Int
 
-    let location: Location
+    public let location: Location
 
-    let moniker: String
-    let resultOperator: String
+    public let moniker: String
+    public let resultOperator: String
 
-    let peers: Int
-    let price: String
-    let provider: String
+    public let peers: Int
+    public let price: String
+    public let provider: String
 
-    let type: Int
-    let version: String
+    public let type: Int
+    public let version: String
 
     enum CodingKeys: String, CodingKey {
         case address, bandwidth, handshake
@@ -48,21 +48,21 @@ struct DVPNNodeInfo: Codable {
 }
 
 // MARK: - Bandwidth
-struct Bandwidth: Codable {
-    let download: Int
-    let upload: Int
+public struct Bandwidth: Codable {
+    public let download: Int
+    public let upload: Int
 }
 
 // MARK: - Handshake
-struct Handshake: Codable {
-    let enable: Bool
-    let peers: Int
+public struct Handshake: Codable {
+    public let enable: Bool
+    public let peers: Int
 }
 
 // MARK: - Location
-struct Location: Codable {
-    let city: String
-    let country: String
+public struct Location: Codable {
+    public let city: String
+    public let country: String
     let latitude: Double
     let longitude: Double
 }
