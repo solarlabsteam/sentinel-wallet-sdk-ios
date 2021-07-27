@@ -201,10 +201,9 @@ final public class WalletService {
     }
     
     public func fetchAuthorization(
-        for address: String,
         callback: @escaping (Error?) -> Void
     ) {
-        provider.fetchAuthorization(for: address) { [weak self] result in
+        provider.fetchAuthorization(for: walletData.accountAddress) { [weak self] result in
             switch result {
             case .failure(let error):
                 log.error(error)
@@ -265,10 +264,9 @@ final public class WalletService {
     }
     
     public func fetchBalance(
-        for address: String,
         callback: @escaping (Result<[CoinToken], Error>) -> Void
     ) {
-        provider.fetchBalance(for: address) { [weak self] result in
+        provider.fetchBalance(for: walletData.accountAddress) { [weak self] result in
             switch result {
             case .failure(let error):
                 log.error(error)
@@ -287,12 +285,11 @@ final public class WalletService {
     }
     
     public func fetchDelegations(
-        for address: String,
         offset: Int,
         limit: Int,
         callback: @escaping (Result<[WalletDelegationDTO], Error>) -> Void
     ) {
-        provider.fetchDelegations(for: address, offset: offset, limit: limit) { [weak self] result in
+        provider.fetchDelegations(for: walletData.accountAddress, offset: offset, limit: limit) { result in
             switch result {
             case .failure(let error):
                 log.error(error)
@@ -304,12 +301,11 @@ final public class WalletService {
     }
     
     public func fetchUnboundingDelegations(
-        for address: String,
         offset: Int,
         limit: Int,
         callback: @escaping (Result<[WalletUnbondingDelegationDTO], Error>) -> Void
     ) {
-        provider.fetchUnboundingDelegations(for: address, offset: offset, limit: limit) { [weak self] result in
+        provider.fetchUnboundingDelegations(for: walletData.accountAddress, offset: offset, limit: limit) { result in
             switch result {
             case .failure(let error):
                 log.error(error)
@@ -321,11 +317,10 @@ final public class WalletService {
     }
     
     public func fetchRewards(
-        for address: String,
         offset: Int,
         callback: @escaping (Result<[WalletDelegatorRewardDTO], Error>) -> Void
     ) {
-        provider.fetchRewards(for: address) { [weak self] result in
+        provider.fetchRewards(for: walletData.accountAddress) { [weak self] result in
             switch result {
             case .failure(let error):
                 log.error(error)
