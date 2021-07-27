@@ -29,7 +29,7 @@ final public class WalletService {
     private let securityService: SecurityServiceType
     private let walletData: WalletData
     
-    var accountAddress: String {
+    public var accountAddress: String {
         walletData.accountAddress
     }
     
