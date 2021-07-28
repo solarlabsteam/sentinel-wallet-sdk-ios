@@ -20,7 +20,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.0.0"),
         .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.4.0")),
         .package(url: "https://github.com/SwiftyBeaver/SwiftyBeaver.git", .upToNextMajor(from: "1.9.0")),
-        .package(url: "https://github.com/lika-vorobeva/HDWallet", .branch("spm"))
+        .package(url: "https://github.com/solarlabsteam/HDWallet", .branch("spm"))
     ],
     targets: [
         .target(

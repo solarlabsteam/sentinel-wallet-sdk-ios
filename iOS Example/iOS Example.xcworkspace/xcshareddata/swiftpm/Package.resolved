@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/krzyzanowskim/CryptoSwift.git",
         "state": {
           "branch": null,
-          "revision": "4e31051c63cc0ddf10a25cf5318856c510cf77f4",
-          "version": "1.4.0"
+          "revision": "8d4f6384e0a8cc41f2005247241dd553963a492a",
+          "version": "1.4.1"
         }
       },
       {
@@ -30,7 +30,7 @@
       },
       {
         "package": "HDWallet",
-        "repositoryURL": "https://github.com/lika-vorobeva/HDWallet",
+        "repositoryURL": "https://github.com/solarlabsteam/HDWallet",
         "state": {
           "branch": "spm",
           "revision": "2451e03144551c4650aa7ec434d1042d5bd5ff24",
