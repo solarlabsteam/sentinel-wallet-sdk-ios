@@ -108,22 +108,29 @@ final public class WalletService {
             completion(.failure(WalletServiceError.missingMnemonics))
             return
         }
-        
-        guard let accountGRPC = self.walletData.accountGRPC else {
-            completion(.failure(WalletServiceError.missingAuthorization))
-            return
+
+        fetchAuthorization { [weak self] error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+
+            guard let self = self,  let accountGRPC = self.walletData.accountGRPC else {
+                completion(.failure(WalletServiceError.missingAuthorization))
+                return
+            }
+
+            let request = Signer.generateSignedRequest(
+                with: accountGRPC,
+                to: account,
+                fee: constants.defaultFee,
+                for: messages,
+                privateKey: self.securityService.getKey(for: mnemonics),
+                chainId: self.walletData.getChainId()
+            )
+
+            completion(.success(request))
         }
-        
-        let request = Signer.generateSignedRequest(
-            with: accountGRPC,
-            to: account,
-            fee: constants.defaultFee,
-            for: messages,
-            privateKey: self.securityService.getKey(for: mnemonics),
-            chainId: self.walletData.getChainId()
-        )
-        
-        completion(.success(request))
     }
     
     public func transfer(
@@ -142,47 +149,54 @@ final public class WalletService {
             completion(.failure(WalletServiceError.missingMnemonics))
             return
         }
-        
-        guard let accountGRPC = self.walletData.accountGRPC else {
-            log.error("Authorization is missing")
-            completion(.failure(WalletServiceError.missingAuthorization))
-            return
-        }
-        
-        let total = constants.defaultFeeAmount + (Int(tokens.amount) ?? 0)
-        guard total <= self.availableAmount() else {
-            log.error("Not enough tokens on wallet")
-            completion(.failure(WalletServiceError.notEnoughTokens))
-            return
-        }
-        
-        let request = Signer.generateSignedRequest(
-            with: accountGRPC,
-            to: account,
-            tokens: tokens,
-            fee: constants.defaultFee,
-            memo: memo ?? "",
-            privateKey: self.securityService.getKey(for: mnemonics),
-            chainId: self.walletData.getChainId()
-        )
-        
-        provider.onBroadcastGrpcTx(signedRequest: request, completion: { result in
-            switch result {
-            case .failure(let error):
-                log.error(error)
+
+        fetchAuthorization { [weak self] error in
+            if let error = error {
                 completion(.failure(error))
-            case .success(let response):
-                log.debug(
-                    """
-                    Transaction code: \(response.txResponse.code)
-                    Transaction hash: \(response.txResponse.txhash)
-                    Transaction rawLog: \(response.txResponse.rawLog)
-                    Link: https://www.mintscan.io/sentinel/txs/\(response.txResponse.txhash)
-                    """
-                )
-                completion(.success(response.toDTO()))
+                return
             }
-        })
+
+            guard let self = self, let accountGRPC = self.walletData.accountGRPC else {
+                log.error("Authorization is missing")
+                completion(.failure(WalletServiceError.missingAuthorization))
+                return
+            }
+
+            let total = constants.defaultFeeAmount + (Int(tokens.amount) ?? 0)
+            guard total <= self.availableAmount() else {
+                log.error("Not enough tokens on wallet")
+                completion(.failure(WalletServiceError.notEnoughTokens))
+                return
+            }
+
+            let request = Signer.generateSignedRequest(
+                with: accountGRPC,
+                to: account,
+                tokens: tokens,
+                fee: constants.defaultFee,
+                memo: memo ?? "",
+                privateKey: self.securityService.getKey(for: mnemonics),
+                chainId: self.walletData.getChainId()
+            )
+
+            self.provider.onBroadcastGrpcTx(signedRequest: request, completion: { result in
+                switch result {
+                case .failure(let error):
+                    log.error(error)
+                    completion(.failure(error))
+                case .success(let response):
+                    log.debug(
+                        """
+                        Transaction code: \(response.txResponse.code)
+                        Transaction hash: \(response.txResponse.txhash)
+                        Transaction rawLog: \(response.txResponse.rawLog)
+                        Link: https://www.mintscan.io/sentinel/txs/\(response.txResponse.txhash)
+                        """
+                    )
+                    completion(.success(response.toDTO()))
+                }
+            })
+        }
     }
     
     public func fetchTendermintNodeInfo(
@@ -199,7 +213,8 @@ final public class WalletService {
             }
         }
     }
-    
+
+    // Do not forget to update Authorization info before doing any signed requests by calling this method.
     public func fetchAuthorization(
         callback: @escaping (Error?) -> Void
     ) {
