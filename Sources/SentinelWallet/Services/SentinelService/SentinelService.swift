@@ -33,7 +33,7 @@ final public class SentinelService {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let nodes):
-                completion(.success(nodes.map { $0.value }))
+                completion(.success(nodes))
             }
         }
     }

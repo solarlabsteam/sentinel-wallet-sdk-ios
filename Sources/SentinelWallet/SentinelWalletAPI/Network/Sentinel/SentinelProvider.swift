@@ -14,7 +14,7 @@ protocol SentinelProviderType {
     func fetchAvailableNodes(
         offset: UInt64,
         limit: UInt64,
-        completion: @escaping (Result<[Sentinel_Node_V1_Node: DVPNNodeInfo], Error>) -> Void
+        completion: @escaping (Result<[DVPNNodeInfo], Error>) -> Void
     )
 
     func fetchSubscriptions(
@@ -60,7 +60,7 @@ final class SentinelProvider: SentinelProviderType {
     func fetchAvailableNodes(
         offset: UInt64,
         limit: UInt64,
-        completion: @escaping (Result<[Sentinel_Node_V1_Node: DVPNNodeInfo], Error>) -> Void
+        completion: @escaping (Result<[DVPNNodeInfo], Error>) -> Void
     ) {
         fetchActiveNodes(offset: offset, limit: limit) { [weak self] result in
             switch result {
@@ -173,16 +173,12 @@ final class SentinelProvider: SentinelProviderType {
 }
 
 private extension SentinelProvider {
-
-    #warning("TODO: remove dictionary")
-    /// DVPNNodeInfo doesn't have all needed info probably, like status. If it's decided that keeping Sentinel_Node_V1_Node is not needed after getting the info,
-    /// even though the Price could be restored from string in DVPNNodeInfo, some validation should be at least done (account == account, etc) to ensure data's consistent
     func fetchInfo(
         for nodes: [Sentinel_Node_V1_Node],
-        completion: @escaping (Result<[Sentinel_Node_V1_Node: DVPNNodeInfo], Error>) -> Void
+        completion: @escaping (Result<[DVPNNodeInfo], Error>) -> Void
     ) {
         let group = DispatchGroup()
-        var loadedNodes = [Sentinel_Node_V1_Node: DVPNNodeInfo]()
+        var loadedNodes = [DVPNNodeInfo]()
 
         nodes.forEach { node in
             group.enter()
@@ -196,7 +192,7 @@ private extension SentinelProvider {
                         log.error("Failed to get info")
                         return
                     }
-                    loadedNodes[node] = nodeInfo
+                    loadedNodes.append(nodeInfo)
                 }
             })
         }

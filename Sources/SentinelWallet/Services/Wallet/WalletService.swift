@@ -13,6 +13,8 @@ private struct Constants {
     #warning("TODO @lika Calculate gas amount correctly")
     let defaultFeeAmount = 10000
     let defaultFee = Fee("100000", [.init(denom: GlobalConstants.denom, amount: "10000")])
+
+    let sendMessageURL = "/cosmos.bank.v1beta1.MsgSend"
 }
 
 private let constants = Constants()
@@ -125,6 +127,7 @@ final public class WalletService {
                 to: account,
                 fee: constants.defaultFee,
                 for: messages,
+                memo: "",
                 privateKey: self.securityService.getKey(for: mnemonics),
                 chainId: self.walletData.getChainId()
             )
@@ -169,12 +172,27 @@ final public class WalletService {
                 return
             }
 
+            let sendCoin = Cosmos_Base_V1beta1_Coin.with {
+                $0.denom = tokens.denom
+                $0.amount = tokens.amount
+            }
+            let sendMessage = Cosmos_Bank_V1beta1_MsgSend.with {
+                $0.fromAddress = self.accountAddress
+                $0.toAddress = account
+                $0.amount = [sendCoin]
+            }
+            let anyMessage = Google_Protobuf2_Any.with {
+                $0.typeURL = constants.sendMessageURL
+                $0.value = try! sendMessage.serializedData()
+            }
+
             let request = Signer.generateSignedRequest(
                 with: accountGRPC,
                 to: account,
-                tokens: tokens,
                 fee: constants.defaultFee,
+                for: [anyMessage],
                 memo: memo ?? "",
+                mode: .async,
                 privateKey: self.securityService.getKey(for: mnemonics),
                 chainId: self.walletData.getChainId()
             )
