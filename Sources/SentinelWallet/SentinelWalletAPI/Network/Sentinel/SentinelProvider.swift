@@ -14,6 +14,7 @@ protocol SentinelProviderType {
     func fetchAvailableNodes(
         offset: UInt64,
         limit: UInt64,
+        timeout: TimeInterval,
         completion: @escaping (Result<[DVPNNodeInfo], Error>) -> Void
     )
 
@@ -60,6 +61,7 @@ final class SentinelProvider: SentinelProviderType {
     func fetchAvailableNodes(
         offset: UInt64,
         limit: UInt64,
+        timeout: TimeInterval,
         completion: @escaping (Result<[DVPNNodeInfo], Error>) -> Void
     ) {
         fetchActiveNodes(offset: offset, limit: limit) { [weak self] result in
@@ -67,7 +69,7 @@ final class SentinelProvider: SentinelProviderType {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let nodes):
-                self?.fetchInfo(for: nodes, completion: completion)
+                self?.fetchInfo(for: nodes, timeout: timeout, completion: completion)
             }
         }
     }
@@ -175,6 +177,7 @@ final class SentinelProvider: SentinelProviderType {
 private extension SentinelProvider {
     func fetchInfo(
         for nodes: [Sentinel_Node_V1_Node],
+        timeout: TimeInterval,
         completion: @escaping (Result<[DVPNNodeInfo], Error>) -> Void
     ) {
         let group = DispatchGroup()
@@ -182,7 +185,7 @@ private extension SentinelProvider {
 
         nodes.forEach { node in
             group.enter()
-            fetchInfo(for: node.remoteURL, completion: { result in
+            fetchInfo(for: node.remoteURL, timeout: timeout, completion: { result in
                 group.leave()
                 switch result {
                 case .failure(let error):
@@ -203,7 +206,11 @@ private extension SentinelProvider {
         }
     }
 
-    func fetchInfo(for nodeURL: String, completion: @escaping (Result<DVPNNodeResponse, Error>) -> Void) {
+    func fetchInfo(
+        for nodeURL: String,
+        timeout: TimeInterval,
+        completion: @escaping (Result<DVPNNodeResponse, Error>) -> Void
+    ) {
         let requestType = SentinelAPI.details
         let url = nodeURL.appending(requestType.path)
 
@@ -214,7 +221,7 @@ private extension SentinelProvider {
 
         let sessionManager = createSession(for: host)
         sessionManagers.append(sessionManager)
-        sessionManager.request(url, method: requestType.method)
+        sessionManager.request(url, method: requestType.method) { $0.timeoutInterval = timeout }
             .validate(statusCode: 200..<300)
             .responseDecodable { (response: DataResponse<DVPNNodeResponse, AFError>) in
                 switch response.result {

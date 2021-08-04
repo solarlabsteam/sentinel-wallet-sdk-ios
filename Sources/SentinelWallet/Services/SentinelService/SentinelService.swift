@@ -26,9 +26,14 @@ final public class SentinelService {
         provider = SentinelProvider()
         self.walletService = walletService
     }
-
-    public func queryNodes(offset: UInt64, limit: UInt64, completion: @escaping (Result<[DVPNNodeInfo], Error>) -> Void) {
-        provider.fetchAvailableNodes(offset: offset, limit: limit) { result in
+    
+    public func queryNodes(
+        offset: UInt64,
+        limit: UInt64,
+        timeout: TimeInterval,
+        completion: @escaping (Result<[DVPNNodeInfo], Error>) -> Void
+    ) {
+        provider.fetchAvailableNodes(offset: offset, limit: limit, timeout: timeout) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
