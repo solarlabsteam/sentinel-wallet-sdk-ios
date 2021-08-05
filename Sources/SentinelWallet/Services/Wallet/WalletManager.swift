@@ -13,23 +13,22 @@ public class WalletManager {
         self.securityService = securityService
     }
 
-    public func generateWallet(completion: @escaping ((Result<WalletService, Error>) -> Void)) {
+    public func generateWallet() -> Result<WalletService, Error> {
         let mnemonics = securityService.generateMnemonics().components(separatedBy: " ")
-        restoreWallet(from: mnemonics, completion: completion)
+        return restoreWallet(from: mnemonics)
     }
 
-    public func restoreWallet(from mnemonics: [String], completion: @escaping ((Result<WalletService, Error>) -> Void)) {
-        securityService.restore(from: mnemonics) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .failure(let error):
-                completion(.failure(error))
-            case .success(let account):
-                log.debug("Loaded account: \(account)")
-                self.saveMnemonicsIfNeeded(for: account, mnemonics: mnemonics)
-                let walletService = WalletService(for: account, securityService: self.securityService)
-                completion(.success(walletService))
-            }
+    public func restoreWallet(from mnemonics: [String]) -> Result<WalletService, Error> {
+        switch securityService.restore(from: mnemonics) {
+        case .failure(let error):
+            return .failure(error)
+
+        case .success(let account):
+            log.debug("Loaded account: \(account)")
+            saveMnemonicsIfNeeded(for: account, mnemonics: mnemonics)
+            let walletService = WalletService(for: account, securityService: self.securityService)
+            
+            return .success(walletService)
         }
     }
 

@@ -24,6 +24,9 @@ enum WalletServiceError: LocalizedError {
     case missingMnemonics
     case missingAuthorization
     case notEnoughTokens
+
+    case mnemonicsDoNotMatch
+    case savingError
 }
 
 final public class WalletService {
@@ -51,30 +54,29 @@ final public class WalletService {
             .reduce(0, +)
     }
     
-    public func add(mnemonics: [String], completion: @escaping (Error?) -> Void) {
+    public func add(mnemonics: [String]) -> Error? {
         guard !securityService.mnemonicsExists(for: walletData.accountAddress) else {
             log.info("Mnemonics're already added")
-            completion(nil)
-            return
+            return nil
         }
-        securityService.restore(from: mnemonics, completion: { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .failure(let error):
-                completion(error)
-            case .success(let account):
-                guard account == self.walletData.accountAddress else {
-                    log.error("Mnemonics do not match")
-                    return
-                }
-                guard self.securityService.save(mnemonics: mnemonics, for: account) else {
-                    log.error("Failed to save mnemonics info")
-                    return
-                }
-                log.debug("Mnemonics are added for \(account)")
-                completion(nil)
+
+        switch securityService.restore(from: mnemonics) {
+        case .failure(let error):
+            return error
+
+        case .success(let account):
+            guard account == walletData.accountAddress else {
+                log.error("Mnemonics do not match")
+                return WalletServiceError.mnemonicsDoNotMatch
             }
-        })
+            guard securityService.save(mnemonics: mnemonics, for: account) else {
+                log.error("Failed to save mnemonics info")
+                return WalletServiceError.savingError
+            }
+
+            log.debug("Mnemonics are added for \(account)")
+            return nil
+        }
     }
     
     public func showMnemonics() -> [String]? {

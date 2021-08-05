@@ -12,7 +12,7 @@ public protocol SecurityServiceType {
     func save(mnemonics: [String], for account: String) -> Bool
     func loadMnemonics(for account: String) -> [String]?
     func mnemonicsExists(for account: String) -> Bool
-    func restore(from mnemonics: [String], completion: @escaping ((Result<String, Error>) -> Void))
+    func restore(from mnemonics: [String]) -> Result<String, Error>
 }
 
 extension SecurityServiceType {
