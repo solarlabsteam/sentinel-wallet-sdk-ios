@@ -43,6 +43,12 @@ protocol SentinelProviderType {
         address: String,
         completion: @escaping (Result<Sentinel_Node_V1_Node, Error>) -> Void
     )
+
+    func fetchInfo(
+        for nodeURL: String,
+        timeout: TimeInterval,
+        completion: @escaping (Result<DVPNNodeResponse, Error>) -> Void
+    )
 }
 
 final class SentinelProvider: SentinelProviderType {
@@ -198,6 +204,33 @@ final class SentinelProvider: SentinelProviderType {
             }
         })
     }
+
+    func fetchInfo(
+        for nodeURL: String,
+        timeout: TimeInterval,
+        completion: @escaping (Result<DVPNNodeResponse, Error>) -> Void
+    ) {
+        let requestType = SentinelAPI.details
+        let url = nodeURL.appending(requestType.path)
+
+        guard let host = URL(string: url)?.host else {
+            completion(.failure(SentinelProviderError.invalidHost(urlString: nodeURL)))
+            return
+        }
+
+        let sessionManager = createSession(for: host)
+        sessionManagers.append(sessionManager)
+        sessionManager.request(url, method: requestType.method) { $0.timeoutInterval = timeout }
+            .validate(statusCode: 200..<300)
+            .responseDecodable { (response: DataResponse<DVPNNodeResponse, AFError>) in
+                switch response.result {
+                case .failure(let error):
+                    completion(.failure(error))
+                case .success(let node):
+                    completion(.success(node))
+                }
+            }
+    }
 }
 
 private extension SentinelProvider {
@@ -230,33 +263,6 @@ private extension SentinelProvider {
             self?.sessionManagers = []
             completion(.success(loadedNodes))
         }
-    }
-
-    func fetchInfo(
-        for nodeURL: String,
-        timeout: TimeInterval,
-        completion: @escaping (Result<DVPNNodeResponse, Error>) -> Void
-    ) {
-        let requestType = SentinelAPI.details
-        let url = nodeURL.appending(requestType.path)
-
-        guard let host = URL(string: url)?.host else {
-            completion(.failure(SentinelProviderError.invalidHost(urlString: nodeURL)))
-            return
-        }
-
-        let sessionManager = createSession(for: host)
-        sessionManagers.append(sessionManager)
-        sessionManager.request(url, method: requestType.method) { $0.timeoutInterval = timeout }
-            .validate(statusCode: 200..<300)
-            .responseDecodable { (response: DataResponse<DVPNNodeResponse, AFError>) in
-                switch response.result {
-                case .failure(let error):
-                    completion(.failure(error))
-                case .success(let node):
-                    completion(.success(node))
-                }
-            }
     }
 
     #warning("That's an ugly hack to disable evaluation for all self-signed SSLs, please do better")

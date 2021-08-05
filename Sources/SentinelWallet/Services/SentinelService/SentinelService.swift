@@ -16,6 +16,7 @@ private let constants = Constants()
 
 enum SentinelServiceError: Error {
     case broadcastFailed
+    case emptyInfo
 }
 
 final public class SentinelService {
@@ -43,13 +44,35 @@ final public class SentinelService {
         }
     }
 
-    public func queryNodeInfo(address: String, completion: @escaping (Result<(address: String, url: String), Error>) -> Void) {
+    public func queryNodeInfo(
+        address: String,
+        completion: @escaping (Result<(address: String, url: String), Error>) -> Void
+    ) {
         provider.fetchNode(address: address) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let node):
                 completion(.success((node.address, node.remoteURL)))
+            }
+        }
+    }
+
+    public func queryNodeStatus(
+        url: String,
+        timeout: TimeInterval,
+        completion: @escaping (Result<DVPNNodeInfo, Error>) -> Void
+    ) {
+        provider.fetchInfo(for: url, timeout: timeout) { result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let info):
+                guard info.success, let result = info.result else {
+                    completion(.failure(SentinelServiceError.emptyInfo))
+                    return
+                }
+                completion(.success(result))
             }
         }
     }
