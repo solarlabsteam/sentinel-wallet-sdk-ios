@@ -18,6 +18,11 @@ protocol SentinelProviderType {
         completion: @escaping (Result<[DVPNNodeInfo], Error>) -> Void
     )
 
+    func fetchSubscription(
+        with id: UInt64,
+        completion: @escaping (Result<Sentinel_Subscription_V1_Subscription, Error>) -> Void
+    )
+
     func fetchSubscriptions(
         for account: String,
         with status: Sentinel_Types_V1_Status,
@@ -91,6 +96,27 @@ final class SentinelProvider: SentinelProviderType {
                     .wait()
 
                 completion(.success(response.subscriptions))
+            } catch {
+                completion(.failure(error))
+            }
+        })
+    }
+
+    func fetchSubscription(
+        with id: UInt64,
+        completion: @escaping (Result<Sentinel_Subscription_V1_Subscription, Error>) -> Void
+    ) {
+        connectionProvider.openConnection(for: { channel in
+            do {
+                let request = Sentinel_Subscription_V1_QuerySubscriptionRequest.with {
+                    $0.id = id
+                }
+                let response = try Sentinel_Subscription_V1_QueryServiceClient(channel: channel)
+                    .querySubscription(request)
+                    .response
+                    .wait()
+
+                completion(.success(response.subscription))
             } catch {
                 completion(.failure(error))
             }

@@ -107,6 +107,21 @@ final public class SentinelService {
         }
     }
 
+    public func fetchSubscription(
+        with id: UInt64,
+        completion: @escaping (Result<Subscription, Error>) -> Void
+    ) {
+        provider.fetchSubscription(with: id) { result in
+            switch result {
+            case .failure(let error):
+                log.error(error)
+                completion(.failure(error))
+            case .success(let subscription):
+                completion(.success(Subscription(from: subscription)))
+            }
+        }
+    }
+
     public func startNewSession(
         on subscription: Subscription,
         completion: @escaping (Result<UInt64, Error>) -> Void
