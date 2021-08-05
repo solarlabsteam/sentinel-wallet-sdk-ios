@@ -18,6 +18,9 @@ public struct Subscription {
     public let plan: UInt64
     public let denom: String
 
+    public let expirationDate: TimeInterval
+    public let free: String
+
     public let isActive: Bool
 
     init(from sentinelSubscription: Sentinel_Subscription_V1_Subscription) {
@@ -28,6 +31,8 @@ public struct Subscription {
         deposit = CoinToken(from: sentinelSubscription.deposit)
         plan = sentinelSubscription.plan
         denom = sentinelSubscription.denom
+        expirationDate = sentinelSubscription.expiry.timeIntervalSince1970
+        free = sentinelSubscription.free
         isActive = sentinelSubscription.status == .active
     }
 }
