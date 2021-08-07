@@ -49,6 +49,12 @@ protocol SentinelProviderType {
         timeout: TimeInterval,
         completion: @escaping (Result<DVPNNodeResponse, Error>) -> Void
     )
+
+    func fetchQuota(
+        address: String,
+        subscriptionId: UInt64,
+        completion: @escaping (Result<Sentinel_Subscription_V1_Quota, Error>) -> Void
+    )
 }
 
 final class SentinelProvider: SentinelProviderType {
@@ -156,6 +162,27 @@ final class SentinelProvider: SentinelProviderType {
         })
     }
 
+    func fetchQuota(
+        address: String,
+        subscriptionId: UInt64,
+        completion: @escaping (Result<Sentinel_Subscription_V1_Quota, Error>) -> Void
+    ) {
+        connectionProvider.openConnection(for: { channel in
+            do {
+                let request = Sentinel_Subscription_V1_QueryQuotaRequest.with {
+                    $0.address = address
+                    $0.id = subscriptionId
+                }
+                let response = try Sentinel_Subscription_V1_QueryServiceClient(channel: channel)
+                    .queryQuota(request)
+                    .response
+                    .wait()
+                completion(.success(response.quota))
+            } catch {
+                completion(.failure(error))
+            }
+        })
+    }
 
     func loadActiveSessions(
         for account: String,

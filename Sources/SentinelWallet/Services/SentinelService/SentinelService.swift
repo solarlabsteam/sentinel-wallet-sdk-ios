@@ -58,6 +58,20 @@ final public class SentinelService {
         }
     }
 
+    public func queryQuota(
+        subscriptionID: UInt64,
+        completion: @escaping (Result<Quota, Error>) -> Void
+    ) {
+        provider.fetchQuota(address: walletService.accountAddress, subscriptionId: subscriptionID) { result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let quota):
+                completion(.success(Quota.init(from: quota)))
+            }
+        }
+    }
+
     public func queryNodeStatus(
         url: String,
         timeout: TimeInterval,
