@@ -58,6 +58,21 @@ final public class SentinelService {
         }
     }
 
+    public func queryNodeDetails(
+        address: String,
+        timeout: TimeInterval,
+        completion: @escaping (Result<DVPNNodeInfo?, Error>) -> Void
+    ) {
+        provider.fetchInfo(for: address, timeout: timeout) { result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let node):
+                completion(.success(node.result))
+            }
+        }
+    }
+
     public func queryQuota(
         subscriptionID: UInt64,
         completion: @escaping (Result<Quota, Error>) -> Void
