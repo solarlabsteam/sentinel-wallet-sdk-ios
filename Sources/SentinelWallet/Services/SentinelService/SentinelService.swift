@@ -125,7 +125,7 @@ final public class SentinelService {
     public func subscribe(
         to node: String,
         deposit: CoinToken,
-        completion: @escaping (Result<Bool, Error>) -> Void
+        completion: @escaping (Result<TransactionResult, Error>) -> Void
     ) {
         let sendCoin = Cosmos_Base_V1beta1_Coin.with {
             $0.denom = deposit.denom
@@ -221,8 +221,8 @@ private extension SentinelService {
                 switch result {
                 case .failure(let error):
                     completion(.failure(error))
-                case .success(let isSuccess):
-                    guard isSuccess else {
+                case .success(let response):
+                    guard response.isSuccess else {
                         log.error("Failed to start a session")
                         completion(.failure(SentinelServiceError.broadcastFailed))
                         return
@@ -237,7 +237,7 @@ private extension SentinelService {
     func generateAndBroadcast(
         to node: String,
         messages: [Google_Protobuf2_Any],
-        completion: @escaping (Result<Bool, Error>) -> Void
+        completion: @escaping (Result<TransactionResult, Error>) -> Void
     ) {
         walletService.generateSignedRequest(to: node, messages: messages) { [weak self] result in
             switch result {
@@ -251,7 +251,7 @@ private extension SentinelService {
         }
     }
 
-    func broadcast(request: Cosmos_Tx_V1beta1_BroadcastTxRequest, completion: @escaping (Result<Bool, Error>) -> Void) {
+    func broadcast(request: Cosmos_Tx_V1beta1_BroadcastTxRequest, completion: @escaping (Result<TransactionResult, Error>) -> Void) {
         provider.broadcastGrpcTx(signedRequest: request) { result in
             switch result {
             case .failure(let error):
@@ -259,8 +259,7 @@ private extension SentinelService {
 
             case .success(let response):
                 log.debug(response)
-                #warning("Response may contain some errors in body even if broadcast is succesfull. Consider parsing them")
-                completion(.success(true))
+                completion(.success(TransactionResult(from: response.txResponse)))
             }
         }
     }
