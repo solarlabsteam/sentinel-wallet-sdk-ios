@@ -11,7 +11,7 @@ import HDWallet
 
 private struct Constants {
     #warning("TODO @lika Calculate gas amount correctly")
-    let defaultFeeAmount = 10000
+    let defaultFeePrice = 10000
     let defaultFee = Fee("100000", [.init(denom: GlobalConstants.denom, amount: "10000")])
 
     let sendMessageURL = "/cosmos.bank.v1beta1.MsgSend"
@@ -36,6 +36,10 @@ final public class WalletService {
     
     public var accountAddress: String {
         walletData.accountAddress
+    }
+
+    public var fee: Int {
+        constants.defaultFeePrice
     }
     
     public init(
@@ -167,7 +171,7 @@ final public class WalletService {
                 return
             }
 
-            let total = constants.defaultFeeAmount + (Int(tokens.amount) ?? 0)
+            let total = constants.defaultFeePrice + (Int(tokens.amount) ?? 0)
             guard total <= self.availableAmount() else {
                 log.error("Not enough tokens on wallet")
                 completion(.failure(WalletServiceError.notEnoughTokens))
