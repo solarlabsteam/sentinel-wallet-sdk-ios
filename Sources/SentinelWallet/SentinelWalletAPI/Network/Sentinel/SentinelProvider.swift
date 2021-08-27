@@ -63,7 +63,7 @@ final class SentinelProvider: SentinelProviderType {
     private let transactionProvider: TransactionProviderType
     private var callOptions: CallOptions {
         var callOptions = CallOptions()
-        callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(5000))
+        callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(10000))
         return callOptions
     }
 
@@ -103,7 +103,7 @@ final class SentinelProvider: SentinelProviderType {
                     $0.status = status
                 }
                 let response = try Sentinel_Subscription_V1_QueryServiceClient(channel: channel)
-                    .querySubscriptionsForAddress(request)
+                    .querySubscriptionsForAddress(request, callOptions: self.callOptions)
                     .response
                     .wait()
 
@@ -124,7 +124,7 @@ final class SentinelProvider: SentinelProviderType {
                     $0.id = id
                 }
                 let response = try Sentinel_Subscription_V1_QueryServiceClient(channel: channel)
-                    .querySubscription(request)
+                    .querySubscription(request, callOptions: self.callOptions)
                     .response
                     .wait()
 
@@ -152,7 +152,7 @@ final class SentinelProvider: SentinelProviderType {
                     $0.address = address
                 }
                 let response = try Sentinel_Node_V1_QueryServiceClient(channel: channel)
-                    .queryNode(request)
+                    .queryNode(request, callOptions: self.callOptions)
                     .response
                     .wait()
                 completion(.success(response.node))
@@ -174,7 +174,7 @@ final class SentinelProvider: SentinelProviderType {
                     $0.id = subscriptionId
                 }
                 let response = try Sentinel_Subscription_V1_QueryServiceClient(channel: channel)
-                    .queryQuota(request)
+                    .queryQuota(request, callOptions: self.callOptions)
                     .response
                     .wait()
                 completion(.success(response.quota))
@@ -195,7 +195,7 @@ final class SentinelProvider: SentinelProviderType {
                     $0.status = .active
                 }
                 let response = try Sentinel_Session_V1_QueryServiceClient(channel: channel)
-                    .querySessionsForAddress(request)
+                    .querySessionsForAddress(request, callOptions: self.callOptions)
                     .response
                     .wait()
 
@@ -222,7 +222,7 @@ final class SentinelProvider: SentinelProviderType {
                     $0.pagination = page
                 }
                 let response = try Sentinel_Node_V1_QueryServiceClient(channel: channel)
-                    .queryNodes(request)
+                    .queryNodes(request, callOptions: self.callOptions)
                     .response
                     .wait()
                 completion(.success(response.nodes))
