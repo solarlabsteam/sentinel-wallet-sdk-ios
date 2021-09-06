@@ -14,7 +14,7 @@ private struct Constants {
 }
 private let constants = Constants()
 
-public enum SentinelServiceError: LocalizedError {
+public enum SentinelServiceError: Error {
     case broadcastFailed
     case emptyInfo
     case sessionStartFailed

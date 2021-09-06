@@ -19,7 +19,7 @@ private struct Constants {
 
 private let constants = Constants()
 
-public enum WalletServiceError: LocalizedError {
+public enum WalletServiceError: Error {
     case accountMatchesDestination
     case missingMnemonics
     case missingAuthorization
