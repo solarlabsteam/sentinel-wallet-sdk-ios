@@ -17,6 +17,7 @@ private let constants = Constants()
 enum SentinelServiceError: Error {
     case broadcastFailed
     case emptyInfo
+    case sessionStartFailed
 }
 
 final public class SentinelService {
@@ -168,11 +169,14 @@ final public class SentinelService {
             switch result {
             case .failure(let error):
                 log.error(error)
+                completion(.failure(error))
             case .success(let subscriptions):
                 if let activeSubscription = subscriptions.first(
                     where: { $0.id == subscription.id && $0.node == subscription.node }
                 ) {
                     self?.connect(to: activeSubscription, completion: completion)
+                } else {
+                    completion(.failure(SentinelServiceError.sessionStartFailed))
                 }
             }
         }
