@@ -14,7 +14,7 @@ private struct Constants {
 }
 private let constants = Constants()
 
-enum SentinelServiceError: Error {
+public enum SentinelServiceError: LocalizedError {
     case broadcastFailed
     case emptyInfo
     case sessionStartFailed
@@ -100,7 +100,7 @@ final public class SentinelService {
             case .success(let sessions):
                 guard let sessionID = sessions.last?.id else {
                     log.error("Failed to start a session: no id or empty array")
-                    completion(.failure(SentinelServiceError.broadcastFailed))
+                    completion(.failure(SentinelServiceError.sessionStartFailed))
                     return
                 }
                 completion(.success(sessionID))

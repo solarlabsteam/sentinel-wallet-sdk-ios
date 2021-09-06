@@ -7,10 +7,10 @@
 
 import Foundation
 
-enum SentinelProviderError: LocalizedError {
+public enum SentinelProviderError: LocalizedError {
     case invalidHost(urlString: String)
 
-    var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
         case .invalidHost(let url):
             return "Failed to get host for \(url)"
