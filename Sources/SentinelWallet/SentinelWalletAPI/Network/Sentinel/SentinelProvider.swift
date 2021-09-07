@@ -58,7 +58,6 @@ protocol SentinelProviderType {
 }
 
 final class SentinelProvider: SentinelProviderType {
-    private var sessionManagers = [Session]()
     private let connectionProvider: ClientConnectionProviderType
     private let transactionProvider: TransactionProviderType
     private var callOptions: CallOptions {
@@ -240,14 +239,19 @@ final class SentinelProvider: SentinelProviderType {
         let requestType = SentinelAPI.details
         let url = nodeURL.appending(requestType.path)
 
-        guard let host = URL(string: url)?.host else {
+        guard var comps = URLComponents(string: url) else {
             completion(.failure(SentinelProviderError.invalidHost(urlString: nodeURL)))
             return
         }
 
-        let sessionManager = createSession(for: host)
-        sessionManagers.append(sessionManager)
-        sessionManager.request(url, method: requestType.method) { $0.timeoutInterval = timeout }
+        comps.scheme = "http"
+
+        guard let urlString = comps.string else {
+            completion(.failure(SentinelProviderError.invalidHost(urlString: nodeURL)))
+            return
+        }
+
+        AF.request(urlString, method: requestType.method) { $0.timeoutInterval = timeout }
             .validate(statusCode: 200..<300)
             .responseDecodable { (response: DataResponse<DVPNNodeResponse, AFError>) in
                 switch response.result {
@@ -286,17 +290,8 @@ private extension SentinelProvider {
             })
         }
 
-        group.notify(queue: .main) { [weak self] in
-            self?.sessionManagers = []
+        group.notify(queue: .main) {
             completion(.success(loadedNodes))
         }
-    }
-
-    #warning("That's an ugly hack to disable evaluation for all self-signed SSLs, please do better")
-    func createSession(for domain: String) -> Session {
-        let evaluators: [String: ServerTrustEvaluating] = [domain: DisabledTrustEvaluator()]
-        let serverTrustManager = ServerTrustManager(allHostsMustBeEvaluated: false, evaluators: evaluators)
-
-        return Alamofire.Session(serverTrustManager: serverTrustManager)
     }
 }
