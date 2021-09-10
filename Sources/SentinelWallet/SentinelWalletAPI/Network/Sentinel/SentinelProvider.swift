@@ -62,7 +62,7 @@ final class SentinelProvider: SentinelProviderType {
     private let transactionProvider: TransactionProviderType
     private var callOptions: CallOptions {
         var callOptions = CallOptions()
-        callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(10000))
+        callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(20000))
         return callOptions
     }
 

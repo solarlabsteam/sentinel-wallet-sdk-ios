@@ -63,7 +63,7 @@ final class WalletDataProvider: WalletDataProviderType {
     private let transactionProvider: TransactionProviderType
     private var callOptions: CallOptions {
         var callOptions = CallOptions()
-        callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(8000))
+        callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(15000))
         return callOptions
     }
     
