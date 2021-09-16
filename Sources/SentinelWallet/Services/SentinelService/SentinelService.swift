@@ -45,20 +45,6 @@ final public class SentinelService {
         }
     }
 
-    public func queryNodeInfo(
-        address: String,
-        completion: @escaping (Result<(address: String, url: String), Error>) -> Void
-    ) {
-        provider.fetchNode(address: address) { result in
-            switch result {
-            case .failure(let error):
-                completion(.failure(error))
-            case .success(let node):
-                completion(.success((node.address, node.remoteURL)))
-            }
-        }
-    }
-
     public func queryQuota(
         subscriptionID: UInt64,
         completion: @escaping (Result<Quota, Error>) -> Void
@@ -74,20 +60,31 @@ final public class SentinelService {
     }
 
     public func queryNodeStatus(
-        url: String,
+        address: String,
         timeout: TimeInterval,
-        completion: @escaping (Result<DVPNNodeInfo, Error>) -> Void
+        completion: @escaping (Result<(info: DVPNNodeInfo, url: String), Error>) -> Void
     ) {
-        provider.fetchInfo(for: url, timeout: timeout) { result in
+        provider.fetchNode(address: address) { [weak self] result in
+            guard let self = self else {
+                completion(.failure(SentinelServiceError.emptyInfo))
+                return
+            }
             switch result {
             case .failure(let error):
                 completion(.failure(error))
-            case .success(let info):
-                guard info.success, let result = info.result else {
-                    completion(.failure(SentinelServiceError.emptyInfo))
-                    return
+            case .success(let node):
+                self.provider.fetchInfo(for: node.remoteURL, timeout: timeout) { result in
+                    switch result {
+                    case .failure(let error):
+                        completion(.failure(error))
+                    case .success(let info):
+                        guard info.success, let result = info.result else {
+                            completion(.failure(SentinelServiceError.emptyInfo))
+                            return
+                        }
+                        completion(.success((result, node.remoteURL)))
+                    }
                 }
-                completion(.success(result))
             }
         }
     }
