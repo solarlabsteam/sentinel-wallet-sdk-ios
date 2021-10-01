@@ -18,6 +18,7 @@
 
 /* Begin PBXFileReference section */
 		755970DF268A10D40046BB6A /* WalletExampleApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletExampleApp.swift; sourceTree = "<group>"; };
+		755F5347270711FA000EDAA4 /* sentinel-wallet-sdk-ios */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "sentinel-wallet-sdk-ios"; path = ..; sourceTree = "<group>"; };
 		758A1E6626AEFCC4002D4D89 /* SecurityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityService.swift; sourceTree = "<group>"; };
 		D97F1F0125951C1A004C7A4E /* iOS Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D97F1F0625951C1A004C7A4E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -39,6 +40,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		755F5346270711FA000EDAA4 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				755F5347270711FA000EDAA4 /* sentinel-wallet-sdk-ios */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
 		D9612A4D2595212E0061CCE1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -49,6 +58,7 @@
 		D97F1EF825951C1A004C7A4E = {
 			isa = PBXGroup;
 			children = (
+				755F5346270711FA000EDAA4 /* Packages */,
 				D97F1F0325951C1A004C7A4E /* Sources */,
 				D97F1F0225951C1A004C7A4E /* Products */,
 				D9612A4D2595212E0061CCE1 /* Frameworks */,
@@ -98,6 +108,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				75C5EBE62707192500AA0802 /* PBXTargetDependency */,
 			);
 			name = "iOS Example";
 			packageProductDependencies = (
@@ -167,6 +178,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		75C5EBE62707192500AA0802 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 75C5EBE52707192500AA0802 /* SentinelWallet */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		D97F1F0E25951C1A004C7A4E /* Debug */ = {
@@ -368,6 +386,10 @@
 			productName = SwiftKeychainWrapper;
 		};
 		75B9E59A2694231E00C6E2D1 /* SentinelWallet */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SentinelWallet;
+		};
+		75C5EBE52707192500AA0802 /* SentinelWallet */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SentinelWallet;
 		};
