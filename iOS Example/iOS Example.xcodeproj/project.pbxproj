@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		755970E0268A10D40046BB6A /* WalletExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755970DF268A10D40046BB6A /* WalletExampleApp.swift */; };
+		758A1E6726AEFCC4002D4D89 /* SecurityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758A1E6626AEFCC4002D4D89 /* SecurityService.swift */; };
+		758A1E6A26AF02C0002D4D89 /* SwiftKeychainWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 758A1E6926AF02C0002D4D89 /* SwiftKeychainWrapper */; };
 		75B9E59B2694231E00C6E2D1 /* SentinelWallet in Frameworks */ = {isa = PBXBuildFile; productRef = 75B9E59A2694231E00C6E2D1 /* SentinelWallet */; };
 		D97F1F0725951C1A004C7A4E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D97F1F0625951C1A004C7A4E /* ContentView.swift */; };
 		D97F1F0925951C1A004C7A4E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D97F1F0825951C1A004C7A4E /* Assets.xcassets */; };
@@ -16,6 +18,7 @@
 
 /* Begin PBXFileReference section */
 		755970DF268A10D40046BB6A /* WalletExampleApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletExampleApp.swift; sourceTree = "<group>"; };
+		758A1E6626AEFCC4002D4D89 /* SecurityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityService.swift; sourceTree = "<group>"; };
 		D97F1F0125951C1A004C7A4E /* iOS Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D97F1F0625951C1A004C7A4E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		D97F1F0825951C1A004C7A4E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -28,6 +31,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				758A1E6A26AF02C0002D4D89 /* SwiftKeychainWrapper in Frameworks */,
 				75B9E59B2694231E00C6E2D1 /* SentinelWallet in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -67,6 +71,7 @@
 				D97F1F0825951C1A004C7A4E /* Assets.xcassets */,
 				D97F1F0D25951C1A004C7A4E /* Info.plist */,
 				D97F1F0A25951C1A004C7A4E /* Preview Content */,
+				758A1E6626AEFCC4002D4D89 /* SecurityService.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -97,6 +102,7 @@
 			name = "iOS Example";
 			packageProductDependencies = (
 				75B9E59A2694231E00C6E2D1 /* SentinelWallet */,
+				758A1E6926AF02C0002D4D89 /* SwiftKeychainWrapper */,
 			);
 			productName = "iOS Example";
 			productReference = D97F1F0125951C1A004C7A4E /* iOS Example.app */;
@@ -125,6 +131,9 @@
 				Base,
 			);
 			mainGroup = D97F1EF825951C1A004C7A4E;
+			packageReferences = (
+				758A1E6826AF02C0002D4D89 /* XCRemoteSwiftPackageReference "SwiftKeychainWrapper" */,
+			);
 			productRefGroup = D97F1F0225951C1A004C7A4E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -151,6 +160,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				758A1E6726AEFCC4002D4D89 /* SecurityService.swift in Sources */,
 				755970E0268A10D40046BB6A /* WalletExampleApp.swift in Sources */,
 				D97F1F0725951C1A004C7A4E /* ContentView.swift in Sources */,
 			);
@@ -340,7 +350,23 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		758A1E6826AF02C0002D4D89 /* XCRemoteSwiftPackageReference "SwiftKeychainWrapper" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jrendel/SwiftKeychainWrapper";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
+		758A1E6926AF02C0002D4D89 /* SwiftKeychainWrapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 758A1E6826AF02C0002D4D89 /* XCRemoteSwiftPackageReference "SwiftKeychainWrapper" */;
+			productName = SwiftKeychainWrapper;
+		};
 		75B9E59A2694231E00C6E2D1 /* SentinelWallet */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SentinelWallet;
