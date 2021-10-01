@@ -9,7 +9,8 @@ import SwiftUI
 import SentinelWallet
 
 struct ContentView: View {
-    private let wallet = WalletManager().wallet(for: "sent1e7fka52pfqdushfezeg3w6swduklfskzx6vmfu")
+    private let wallet = WalletManager(securityService: SecurityService())
+        .wallet(for: "sent1e7fka52pfqdushfezeg3w6swduklfskzx6vmfu")
     init() {
         Config.setup()
         let mnemonicsToAdd = [
@@ -18,12 +19,7 @@ struct ContentView: View {
             "fun", "beach", "recycle", "scrap", "icon", "involve"
         ]
 
-        wallet.add(mnemonics: mnemonicsToAdd)
-        wallet.fetch()
-//        wallet.transfer(
-//            tokens: .init(denom: GlobalConstants.denom, amount: "10000"),
-//            to: "sent1gphdcu06s6m8a8quwkdttxny83zpgx70aur9jv"
-//        )
+        log.debug(wallet.add(mnemonics: mnemonicsToAdd))
     }
 
     var body: some View {
