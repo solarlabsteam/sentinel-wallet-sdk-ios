@@ -38,6 +38,8 @@ public struct DVPNNodeInfo: Codable {
     public let price: String
     public let provider: String
 
+    public let qos: QOS?
+
     public let type: Int
     public let version: String
 
@@ -48,7 +50,7 @@ public struct DVPNNodeInfo: Codable {
         case intervalUpdateStatus = "interval_update_status"
         case location, moniker
         case resultOperator = "operator"
-        case peers, price, provider, type, version
+        case peers, price, provider, type, version, qos
     }
 }
 
@@ -70,4 +72,13 @@ public struct Location: Codable {
     public let country: String
     let latitude: Double
     let longitude: Double
+}
+
+// MARK: - QOS
+public struct QOS: Codable {
+    public let maxPeers: Int
+
+    enum CodingKeys: String, CodingKey {
+        case maxPeers = "max_peers"
+    }
 }
