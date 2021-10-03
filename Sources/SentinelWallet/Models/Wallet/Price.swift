@@ -25,7 +25,7 @@ public struct Prices: Codable {
     var dailyPriceChangePercentage: Double
 
     enum CodingKeys: String, CodingKey  {
-        case currency = "currency"
+        case currency
         case currentPrice = "current_price"
         case dailyPriceChangePercentage = "daily_price_change_in_percentage"
     }

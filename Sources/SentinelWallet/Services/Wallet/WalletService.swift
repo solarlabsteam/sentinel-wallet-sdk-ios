@@ -370,4 +370,19 @@ final public class WalletService {
             }
         }
     }
+    
+    public func getPrices(
+        for denoms: String,
+        callback: @escaping (Result<[ExchangeRates], Error>) -> Void
+    ) {
+        provider.getPrices(for: denoms) { result in
+            switch result {
+            case .failure(let error):
+                log.error(error)
+                callback(.failure(error))
+            case .success(let rates):
+                callback(.success(rates))
+            }
+        }
+    }
 }
