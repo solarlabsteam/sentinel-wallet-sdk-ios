@@ -15,7 +15,7 @@ protocol SentinelProviderType {
         offset: UInt64,
         limit: UInt64,
         timeout: TimeInterval,
-        completion: @escaping (Result<[DVPNNodeInfo], Error>) -> Void
+        completion: @escaping (Result<[Node], Error>) -> Void
     )
 
     func fetchSubscription(
@@ -47,7 +47,7 @@ protocol SentinelProviderType {
     func fetchInfo(
         for nodeURL: String,
         timeout: TimeInterval,
-        completion: @escaping (Result<DVPNNodeResponse, Error>) -> Void
+        completion: @escaping (Result<(DVPNNodeResponse, TimeInterval), Error>) -> Void
     )
 
     func fetchQuota(
@@ -78,7 +78,7 @@ final class SentinelProvider: SentinelProviderType {
         offset: UInt64,
         limit: UInt64,
         timeout: TimeInterval,
-        completion: @escaping (Result<[DVPNNodeInfo], Error>) -> Void
+        completion: @escaping (Result<[Node], Error>) -> Void
     ) {
         fetchActiveNodes(offset: offset, limit: limit) { [weak self] result in
             switch result {
@@ -234,7 +234,7 @@ final class SentinelProvider: SentinelProviderType {
     func fetchInfo(
         for nodeURL: String,
         timeout: TimeInterval,
-        completion: @escaping (Result<DVPNNodeResponse, Error>) -> Void
+        completion: @escaping (Result<(DVPNNodeResponse, TimeInterval), Error>) -> Void
     ) {
         let requestType = SentinelAPI.details
         let url = nodeURL.appending(requestType.path)
@@ -258,7 +258,8 @@ final class SentinelProvider: SentinelProviderType {
                 case .failure(let error):
                     completion(.failure(error))
                 case .success(let node):
-                    completion(.success(node))
+                    let duration = response.metrics?.taskInterval.duration ?? 0
+                    completion(.success((node, duration)))
                 }
             }
     }
@@ -268,10 +269,10 @@ private extension SentinelProvider {
     func fetchInfo(
         for nodes: [Sentinel_Node_V1_Node],
         timeout: TimeInterval,
-        completion: @escaping (Result<[DVPNNodeInfo], Error>) -> Void
+        completion: @escaping (Result<[Node], Error>) -> Void
     ) {
         let group = DispatchGroup()
-        var loadedNodes = [DVPNNodeInfo]()
+        var loadedNodes = [Node]()
 
         nodes.forEach { node in
             group.enter()
@@ -281,11 +282,11 @@ private extension SentinelProvider {
                 case .failure(let error):
                     log.error(error)
                 case .success(let nodeResult):
-                    guard nodeResult.success, let nodeInfo = nodeResult.result else {
+                    guard nodeResult.0.success, let nodeInfo = nodeResult.0.result else {
                         log.error("Failed to get info")
                         return
                     }
-                    loadedNodes.append(nodeInfo)
+                    loadedNodes.append(.init(info: nodeInfo, latency: nodeResult.1))
                 }
             })
         }

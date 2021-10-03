@@ -13,6 +13,11 @@ struct DVPNNodeResponse: Codable {
     let result: DVPNNodeInfo?
 }
 
+public struct Node {
+    public let info: DVPNNodeInfo
+    public let latency: TimeInterval
+}
+
 // MARK: -  DVPNNodeInfo
 public struct DVPNNodeInfo: Codable {
     public let address: String

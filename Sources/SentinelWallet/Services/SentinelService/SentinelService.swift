@@ -33,7 +33,7 @@ final public class SentinelService {
         offset: UInt64,
         limit: UInt64,
         timeout: TimeInterval,
-        completion: @escaping (Result<[DVPNNodeInfo], Error>) -> Void
+        completion: @escaping (Result<[Node], Error>) -> Void
     ) {
         provider.fetchAvailableNodes(offset: offset, limit: limit, timeout: timeout) { result in
             switch result {
@@ -62,7 +62,7 @@ final public class SentinelService {
     public func queryNodeStatus(
         address: String,
         timeout: TimeInterval,
-        completion: @escaping (Result<(info: DVPNNodeInfo, url: String), Error>) -> Void
+        completion: @escaping (Result<(info: Node, url: String), Error>) -> Void
     ) {
         provider.fetchNode(address: address) { [weak self] result in
             guard let self = self else {
@@ -78,11 +78,11 @@ final public class SentinelService {
                     case .failure(let error):
                         completion(.failure(error))
                     case .success(let info):
-                        guard info.success, let result = info.result else {
+                        guard info.0.success, let result = info.0.result else {
                             completion(.failure(SentinelServiceError.emptyInfo))
                             return
                         }
-                        completion(.success((result, node.remoteURL)))
+                        completion(.success((.init(info: result, latency: info.1), node.remoteURL)))
                     }
                 }
             }
