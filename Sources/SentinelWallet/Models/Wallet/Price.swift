@@ -8,9 +8,9 @@
 import Foundation
 
 public struct ExchangeRates: Codable {
-    let denom: String
-    let lastUpdated: String
-    let prices: [Prices]
+    public let denom: String
+    public let lastUpdated: String
+    public let prices: [Prices]
 
     enum CodingKeys: String, CodingKey {
         case denom
@@ -20,9 +20,9 @@ public struct ExchangeRates: Codable {
 }
 
 public struct Prices: Codable {
-    var currency: String
-    var currentPrice: Double
-    var dailyPriceChangePercentage: Double
+    public var currency: String
+    public var currentPrice: Double
+    public var dailyPriceChangePercentage: Double
 
     enum CodingKeys: String, CodingKey  {
         case currency
