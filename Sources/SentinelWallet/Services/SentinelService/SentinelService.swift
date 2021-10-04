@@ -89,18 +89,18 @@ final public class SentinelService {
         }
     }
 
-    public func loadActiveSession(completion: @escaping (Result<UInt64, Error>) -> Void) {
+    public func loadActiveSession(completion: @escaping (Result<Session, Error>) -> Void) {
         provider.loadActiveSessions(for: walletService.accountAddress) {  result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let sessions):
-                guard let sessionID = sessions.last?.id else {
+                guard let session = sessions.last else {
                     log.error("Failed to start a session: no id or empty array")
                     completion(.failure(SentinelServiceError.sessionStartFailed))
                     return
                 }
-                completion(.success(sessionID))
+                completion(.success(Session(from: session)))
             }
         }
     }
@@ -214,7 +214,14 @@ private extension SentinelService {
                         return
                     }
 
-                    self.loadActiveSession(completion: completion)
+                    self.loadActiveSession { result in
+                        switch result {
+                        case let .failure(error):
+                            completion(.failure(error))
+                        case let .success(session):
+                            completion(.success(session.id))
+                        }
+                    }
                 }
             }
         }
