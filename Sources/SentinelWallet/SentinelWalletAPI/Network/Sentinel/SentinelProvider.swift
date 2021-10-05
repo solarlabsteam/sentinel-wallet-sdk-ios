@@ -286,7 +286,7 @@ private extension SentinelProvider {
                         log.error("Failed to get info")
                         return
                     }
-                    loadedNodes.append(.init(info: nodeInfo, latency: nodeResult.1))
+                    loadedNodes.append(.init(info: nodeInfo, latency: nodeResult.1, remoteURL: node.remoteURL))
                 }
             })
         }

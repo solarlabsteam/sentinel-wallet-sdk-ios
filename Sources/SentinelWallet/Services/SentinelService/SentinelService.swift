@@ -62,7 +62,7 @@ final public class SentinelService {
     public func queryNodeStatus(
         address: String,
         timeout: TimeInterval,
-        completion: @escaping (Result<(node: Node, url: String), Error>) -> Void
+        completion: @escaping (Result<Node, Error>) -> Void
     ) {
         provider.fetchNode(address: address) { [weak self] result in
             guard let self = self else {
@@ -82,7 +82,7 @@ final public class SentinelService {
                             completion(.failure(SentinelServiceError.emptyInfo))
                             return
                         }
-                        completion(.success((.init(info: result, latency: info.1), node.remoteURL)))
+                        completion(.success((.init(info: result, latency: info.1, remoteURL: node.remoteURL))))
                     }
                 }
             }

@@ -16,6 +16,7 @@ struct DVPNNodeResponse: Codable {
 public struct Node {
     public let info: DVPNNodeInfo
     public let latency: TimeInterval
+    public let remoteURL: String
 }
 
 // MARK: -  DVPNNodeInfo
