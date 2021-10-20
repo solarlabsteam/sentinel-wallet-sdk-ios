@@ -30,8 +30,8 @@ final public class SentinelService {
     }
     
     public func queryNodes(
-        offset: UInt64,
-        limit: UInt64,
+        offset: UInt64 = 0,
+        limit: UInt64 = 0,
         timeout: TimeInterval,
         completion: @escaping (Result<[SentinelNode], Error>) -> Void
     ) {
