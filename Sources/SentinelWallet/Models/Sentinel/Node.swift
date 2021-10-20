@@ -14,9 +14,27 @@ struct DVPNNodeResponse: Codable {
 }
 
 public struct Node {
+    public let sentinelNode: SentinelNode
     public let info: DVPNNodeInfo
     public let latency: TimeInterval
+}
+
+public struct SentinelNode {
+    public let address: String
+    public let provider: String
+    public let price: [CoinToken]
     public let remoteURL: String
+}
+    
+extension SentinelNode {
+    init(from node: Sentinel_Node_V1_Node) {
+        self.init(
+            address: node.address,
+            provider: node.provider,
+            price: node.price.map { .init(from: $0) },
+            remoteURL: node.remoteURL
+        )
+    }
 }
 
 // MARK: -  DVPNNodeInfo

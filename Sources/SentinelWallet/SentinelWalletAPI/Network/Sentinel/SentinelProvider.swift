@@ -15,7 +15,7 @@ protocol SentinelProviderType {
         offset: UInt64,
         limit: UInt64,
         timeout: TimeInterval,
-        completion: @escaping (Result<[Node], Error>) -> Void
+        completion: @escaping (Result<[SentinelNode], Error>) -> Void
     )
 
     func fetchSubscription(
@@ -73,19 +73,20 @@ final class SentinelProvider: SentinelProviderType {
         self.connectionProvider = connectionProvider
         self.transactionProvider = transactionProvider
     }
-
+    
     func fetchAvailableNodes(
         offset: UInt64,
         limit: UInt64,
         timeout: TimeInterval,
-        completion: @escaping (Result<[Node], Error>) -> Void
+        completion: @escaping (Result<[SentinelNode], Error>) -> Void
     ) {
-        fetchActiveNodes(offset: offset, limit: limit) { [weak self] result in
+        fetchActiveNodes(offset: offset, limit: limit) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let nodes):
-                self?.fetchInfo(for: nodes, timeout: timeout, completion: completion)
+                let sentinelNodes = nodes.map { SentinelNode(from: $0) }
+                completion(.success(sentinelNodes))
             }
         }
     }
@@ -230,7 +231,7 @@ final class SentinelProvider: SentinelProviderType {
             }
         })
     }
-
+    
     func fetchInfo(
         for nodeURL: String,
         timeout: TimeInterval,
@@ -262,37 +263,5 @@ final class SentinelProvider: SentinelProviderType {
                     completion(.success((node, duration)))
                 }
             }
-    }
-}
-
-private extension SentinelProvider {
-    func fetchInfo(
-        for nodes: [Sentinel_Node_V1_Node],
-        timeout: TimeInterval,
-        completion: @escaping (Result<[Node], Error>) -> Void
-    ) {
-        let group = DispatchGroup()
-        var loadedNodes = [Node]()
-
-        nodes.forEach { node in
-            group.enter()
-            fetchInfo(for: node.remoteURL, timeout: timeout, completion: { result in
-                group.leave()
-                switch result {
-                case .failure(let error):
-                    log.error(error)
-                case .success(let nodeResult):
-                    guard nodeResult.0.success, let nodeInfo = nodeResult.0.result else {
-                        log.error("Failed to get info")
-                        return
-                    }
-                    loadedNodes.append(.init(info: nodeInfo, latency: nodeResult.1, remoteURL: node.remoteURL))
-                }
-            })
-        }
-
-        group.notify(queue: .main) {
-            completion(.success(loadedNodes))
-        }
     }
 }

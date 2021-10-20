@@ -33,7 +33,7 @@ final public class SentinelService {
         offset: UInt64,
         limit: UInt64,
         timeout: TimeInterval,
-        completion: @escaping (Result<[Node], Error>) -> Void
+        completion: @escaping (Result<[SentinelNode], Error>) -> Void
     ) {
         provider.fetchAvailableNodes(offset: offset, limit: limit, timeout: timeout) { result in
             switch result {
@@ -41,6 +41,27 @@ final public class SentinelService {
                 completion(.failure(error))
             case .success(let nodes):
                 completion(.success(nodes))
+            }
+        }
+    }
+    
+    public func fetchInfo(
+        for sentinelNode: SentinelNode,
+        timeout: TimeInterval,
+        completion: @escaping (Result<Node, Error>) -> Void
+    ) {
+        self.provider.fetchInfo(for: sentinelNode.remoteURL, timeout: timeout) { result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let nodeResult):
+                guard nodeResult.0.success, let nodeInfo = nodeResult.0.result else {
+                    log.error("Failed to get info")
+                    return
+                }
+                
+                let node = Node(sentinelNode: sentinelNode, info: nodeInfo, latency: nodeResult.1)
+                completion(.success(node))
             }
         }
     }
@@ -82,7 +103,7 @@ final public class SentinelService {
                             completion(.failure(SentinelServiceError.emptyInfo))
                             return
                         }
-                        completion(.success((.init(info: result, latency: info.1, remoteURL: node.remoteURL))))
+                        completion(.success((.init(sentinelNode: .init(from: node), info: result, latency: info.1))))
                     }
                 }
             }
