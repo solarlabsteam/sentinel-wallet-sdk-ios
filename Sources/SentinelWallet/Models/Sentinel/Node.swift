@@ -17,6 +17,12 @@ public struct Node {
     public let sentinelNode: SentinelNode
     public let info: DVPNNodeInfo
     public let latency: TimeInterval
+    
+    public init(sentinelNode: SentinelNode, info: DVPNNodeInfo, latency: TimeInterval) {
+        self.sentinelNode = sentinelNode
+        self.info = info
+        self.latency = latency
+    }
 }
 
 public struct SentinelNode {
@@ -24,6 +30,13 @@ public struct SentinelNode {
     public let provider: String
     public let price: [CoinToken]
     public let remoteURL: String
+    
+    public init(address: String, provider: String, price: [CoinToken], remoteURL: String) {
+        self.address = address
+        self.provider = provider
+        self.price = price
+        self.remoteURL = remoteURL
+    }
 }
     
 extension SentinelNode {
