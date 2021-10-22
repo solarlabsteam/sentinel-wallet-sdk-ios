@@ -14,12 +14,10 @@ struct DVPNNodeResponse: Codable {
 }
 
 public struct Node {
-    public let sentinelNode: SentinelNode
     public let info: DVPNNodeInfo
     public let latency: TimeInterval
     
-    public init(sentinelNode: SentinelNode, info: DVPNNodeInfo, latency: TimeInterval) {
-        self.sentinelNode = sentinelNode
+    public init(info: DVPNNodeInfo, latency: TimeInterval) {
         self.info = info
         self.latency = latency
     }
@@ -30,22 +28,25 @@ public struct SentinelNode {
     public let provider: String
     public let price: [CoinToken]
     public let remoteURL: String
+    public let node: Node?
     
-    public init(address: String, provider: String, price: [CoinToken], remoteURL: String) {
+    public init(address: String, provider: String, price: [CoinToken], remoteURL: String, node: Node?) {
         self.address = address
         self.provider = provider
         self.price = price
         self.remoteURL = remoteURL
+        self.node = node
     }
 }
     
 extension SentinelNode {
-    init(from node: Sentinel_Node_V1_Node) {
+    init(from sentinelNodeV1Node: Sentinel_Node_V1_Node, node: Node? = nil) {
         self.init(
-            address: node.address,
-            provider: node.provider,
-            price: node.price.map { .init(from: $0) },
-            remoteURL: node.remoteURL
+            address: sentinelNodeV1Node.address,
+            provider: sentinelNodeV1Node.provider,
+            price: sentinelNodeV1Node.price.map { .init(from: $0) },
+            remoteURL: sentinelNodeV1Node.remoteURL,
+            node: node
         )
     }
 }

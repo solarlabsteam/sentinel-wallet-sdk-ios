@@ -60,7 +60,7 @@ final public class SentinelService {
                     return
                 }
                 
-                let node = Node(sentinelNode: sentinelNode, info: nodeInfo, latency: nodeResult.1)
+                let node = Node(info: nodeInfo, latency: nodeResult.1)
                 completion(.success(node))
             }
         }
@@ -83,7 +83,7 @@ final public class SentinelService {
     public func queryNodeStatus(
         address: String,
         timeout: TimeInterval,
-        completion: @escaping (Result<Node, Error>) -> Void
+        completion: @escaping (Result<SentinelNode, Error>) -> Void
     ) {
         provider.fetchNode(address: address) { [weak self] result in
             guard let self = self else {
@@ -93,8 +93,8 @@ final public class SentinelService {
             switch result {
             case .failure(let error):
                 completion(.failure(error))
-            case .success(let node):
-                self.provider.fetchInfo(for: node.remoteURL, timeout: timeout) { result in
+            case .success(let sentinelNodeV1Node):
+                self.provider.fetchInfo(for: sentinelNodeV1Node.remoteURL, timeout: timeout) { result in
                     switch result {
                     case .failure(let error):
                         completion(.failure(error))
@@ -103,7 +103,9 @@ final public class SentinelService {
                             completion(.failure(SentinelServiceError.emptyInfo))
                             return
                         }
-                        completion(.success((.init(sentinelNode: .init(from: node), info: result, latency: info.1))))
+                        
+                        let node = Node(info: result, latency: info.1)
+                        completion(.success(.init(from: sentinelNodeV1Node, node: node)))
                     }
                 }
             }
