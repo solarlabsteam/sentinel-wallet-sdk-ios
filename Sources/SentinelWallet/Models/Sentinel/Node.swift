@@ -74,6 +74,40 @@ public struct DVPNNodeInfo: Codable {
 
     public let type: Int
     public let version: String
+    
+    public init(
+        address: String,
+        bandwidth: Bandwidth,
+        handshake: Handshake,
+        intervalSetSessions: Int,
+        intervalUpdateSessions: Int,
+        intervalUpdateStatus: Int,
+        location: Location,
+        moniker: String,
+        resultOperator: String,
+        peers: Int,
+        price: String,
+        provider: String,
+        qos: QOS?,
+        type: Int,
+        version: String
+    ) {
+        self.address = address
+        self.bandwidth = bandwidth
+        self.handshake = handshake
+        self.intervalSetSessions = intervalSetSessions
+        self.intervalUpdateSessions = intervalUpdateSessions
+        self.intervalUpdateStatus = intervalUpdateStatus
+        self.location = location
+        self.moniker = moniker
+        self.resultOperator = resultOperator
+        self.peers = peers
+        self.price = price
+        self.provider = provider
+        self.qos = qos
+        self.type = type
+        self.version = version
+    }
 
     enum CodingKeys: String, CodingKey {
         case address, bandwidth, handshake
@@ -90,20 +124,37 @@ public struct DVPNNodeInfo: Codable {
 public struct Bandwidth: Codable {
     public let download: Int
     public let upload: Int
+    
+    public init(download: Int, upload: Int) {
+        self.download = download
+        self.upload = upload
+    }
 }
 
 // MARK: - Handshake
 public struct Handshake: Codable {
     public let enable: Bool
     public let peers: Int
+    
+    public init(enable: Bool, peers: Int) {
+        self.enable = enable
+        self.peers = peers
+    }
 }
 
 // MARK: - Location
 public struct Location: Codable {
     public let city: String
     public let country: String
-    let latitude: Double
-    let longitude: Double
+    public let latitude: Double
+    public let longitude: Double
+    
+    public init(city: String, country: String, latitude: Double, longitude: Double) {
+        self.city = city
+        self.country = country
+        self.latitude = latitude
+        self.longitude = longitude
+    }
 }
 
 // MARK: - QOS
@@ -112,5 +163,9 @@ public struct QOS: Codable {
 
     enum CodingKeys: String, CodingKey {
         case maxPeers = "max_peers"
+    }
+    
+    public init(maxPeers: Int) {
+        self.maxPeers = maxPeers
     }
 }
