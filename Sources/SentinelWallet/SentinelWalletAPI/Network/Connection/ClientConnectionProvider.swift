@@ -20,7 +20,7 @@ protocol ClientConnectionProviderType {
 
 final class ClientConnectionProvider: ClientConnectionProviderType {
     func openConnection(for work: @escaping (ClientConnection) -> Void) {
-        DispatchQueue.main.async {
+        DispatchQueue.global().async {
             let group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
             defer { try! group.syncShutdownGracefully() }
             
