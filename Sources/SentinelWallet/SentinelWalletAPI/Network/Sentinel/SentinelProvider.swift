@@ -14,7 +14,6 @@ protocol SentinelProviderType {
     func fetchAvailableNodes(
         offset: UInt64,
         limit: UInt64,
-        timeout: TimeInterval,
         completion: @escaping (Result<[SentinelNode], Error>) -> Void
     )
 
@@ -62,7 +61,7 @@ final class SentinelProvider: SentinelProviderType {
     private let transactionProvider: TransactionProviderType
     private var callOptions: CallOptions {
         var callOptions = CallOptions()
-        callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(20000))
+        callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(3000))
         return callOptions
     }
 
@@ -77,7 +76,6 @@ final class SentinelProvider: SentinelProviderType {
     func fetchAvailableNodes(
         offset: UInt64,
         limit: UInt64,
-        timeout: TimeInterval,
         completion: @escaping (Result<[SentinelNode], Error>) -> Void
     ) {
         fetchActiveNodes(offset: offset, limit: limit) { result in

@@ -32,10 +32,9 @@ final public class SentinelService {
     public func queryNodes(
         offset: UInt64 = 0,
         limit: UInt64 = 0,
-        timeout: TimeInterval,
         completion: @escaping (Result<[SentinelNode], Error>) -> Void
     ) {
-        provider.fetchAvailableNodes(offset: offset, limit: limit, timeout: timeout) { result in
+        provider.fetchAvailableNodes(offset: offset, limit: limit) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
