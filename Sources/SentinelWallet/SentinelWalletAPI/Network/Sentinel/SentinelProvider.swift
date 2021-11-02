@@ -94,6 +94,9 @@ final class SentinelProvider: SentinelProviderType {
         with status: Sentinel_Types_V1_Status = .unspecified,
         completion: @escaping (Result<[Sentinel_Subscription_V1_Subscription], Error>) -> Void
     ) {
+        var callOptions = CallOptions()
+        callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(5000))
+        
         connectionProvider.openConnection(for: { channel in
             do {
                 let request = Sentinel_Subscription_V1_QuerySubscriptionsForAddressRequest.with {
@@ -101,7 +104,7 @@ final class SentinelProvider: SentinelProviderType {
                     $0.status = status
                 }
                 let response = try Sentinel_Subscription_V1_QueryServiceClient(channel: channel)
-                    .querySubscriptionsForAddress(request, callOptions: self.callOptions)
+                    .querySubscriptionsForAddress(request, callOptions: callOptions)
                     .response
                     .wait()
 
