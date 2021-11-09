@@ -23,10 +23,10 @@ final class ClientConnectionProvider: ClientConnectionProviderType {
         DispatchQueue.global().async {
             let group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
             defer { try! group.syncShutdownGracefully() }
-
+            
             let channel = ClientConnection.insecure(group: group).connect(host: constants.hostString, port: 9090)
             defer { try! channel.close().wait() }
-
+            
             work(channel)
         }
     }

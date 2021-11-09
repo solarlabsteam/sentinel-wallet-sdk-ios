@@ -160,16 +160,17 @@ final class WalletDataProvider: WalletDataProviderType {
         for address: String,
         completion: @escaping (Result<[CoinToken], Error>) -> Void
     ) {
-        connectionProvider.openConnection(for: { [weak self] channel in
-            guard let self = self else { return }
-
+        var callOptions = CallOptions()
+        callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(3000))
+        
+        return connectionProvider.openConnection(for: { channel in
             let req = Cosmos_Bank_V1beta1_QueryAllBalancesRequest.with {
                 $0.address = address
             }
 
             do {
                 let response = try Cosmos_Bank_V1beta1_QueryClient(channel: channel)
-                    .allBalances(req, callOptions: self.callOptions)
+                    .allBalances(req, callOptions: callOptions)
                     .response
                     .wait()
 
