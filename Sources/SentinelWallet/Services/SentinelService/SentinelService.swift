@@ -149,6 +149,31 @@ final public class SentinelService {
 
         generateAndBroadcast(to: node, messages: [anyMessage], completion: completion)
     }
+    
+    /// Add quota to existing subscribtion
+    public func addQuota(
+        to node: String,
+        deposit: CoinToken,
+        completion: @escaping (Result<TransactionResult, Error>) -> Void
+    ) {
+        let sendCoin = Cosmos_Base_V1beta1_Coin.with {
+            $0.denom = deposit.denom
+            $0.amount = deposit.amount
+        }
+        
+        let startMessage = Sentinel_Subscription_V1_MsgAddQuotaRequest.with {
+            $0.from = walletService.accountAddress
+            $0.address = node
+            $0.deposit = sendCoin
+        }
+
+        let anyMessage = Google_Protobuf2_Any.with {
+            $0.typeURL = constants.subscribeToNodeURL
+            $0.value = try! startMessage.serializedData()
+        }
+
+        generateAndBroadcast(to: node, messages: [anyMessage], completion: completion)
+    }
 
     public func fetchSubscriptions(
         completion: @escaping (Result<[Subscription], Error>) -> Void
