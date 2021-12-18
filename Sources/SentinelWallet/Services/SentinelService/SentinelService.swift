@@ -11,6 +11,7 @@ private struct Constants {
     let startSessionURL = "/sentinel.session.v1.MsgService/MsgStart"
     let stopSessionURL = "/sentinel.session.v1.MsgService/MsgEnd"
     let subscribeToNodeURL = "/sentinel.subscription.v1.MsgService/MsgSubscribeToNode"
+    let addQuotaURL = "/sentinel.subscription.v1.MsgService/MsgAddQuota"
 }
 private let constants = Constants()
 
@@ -136,6 +137,7 @@ final public class SentinelService {
             $0.denom = deposit.denom
             $0.amount = deposit.amount
         }
+        
         let startMessage = Sentinel_Subscription_V1_MsgSubscribeToNodeRequest.with {
             $0.from = walletService.accountAddress
             $0.address = node
@@ -148,6 +150,26 @@ final public class SentinelService {
         }
 
         generateAndBroadcast(to: node, messages: [anyMessage], completion: completion)
+    }
+    
+    /// Add quota to existing subscribtion
+    public func addQuota(
+        to address: String,
+        bytes: String,
+        completion: @escaping (Result<TransactionResult, Error>) -> Void
+    ) {
+        let startMessage = Sentinel_Subscription_V1_MsgAddQuotaRequest.with {
+            $0.from = walletService.accountAddress
+            $0.address = address
+            $0.bytes = bytes
+        }
+
+        let anyMessage = Google_Protobuf2_Any.with {
+            $0.typeURL = constants.addQuotaURL
+            $0.value = try! startMessage.serializedData()
+        }
+
+        generateAndBroadcast(to: address, messages: [anyMessage], completion: completion)
     }
 
     public func fetchSubscriptions(
