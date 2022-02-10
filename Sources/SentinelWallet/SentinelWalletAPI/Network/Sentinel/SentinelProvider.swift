@@ -14,6 +14,7 @@ protocol SentinelProviderType {
     func fetchAvailableNodes(
         offset: UInt64,
         limit: UInt64,
+        allowedDenoms: [String],
         completion: @escaping (Result<[SentinelNode], Error>) -> Void
     )
 
@@ -76,6 +77,7 @@ final class SentinelProvider: SentinelProviderType {
     func fetchAvailableNodes(
         offset: UInt64,
         limit: UInt64,
+        allowedDenoms: [String] = [GlobalConstants.denom],
         completion: @escaping (Result<[SentinelNode], Error>) -> Void
     ) {
         fetchActiveNodes(offset: offset, limit: limit) { result in
@@ -83,7 +85,9 @@ final class SentinelProvider: SentinelProviderType {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let nodes):
-                let sentinelNodes = nodes.map { SentinelNode(from: $0) }
+                let sentinelNodes = nodes
+                    .filter { node in allowedDenoms.contains(where: node.price.map { $0.denom }.contains)  }
+                    .map { SentinelNode(from: $0) }
                 completion(.success(sentinelNodes))
             }
         }
