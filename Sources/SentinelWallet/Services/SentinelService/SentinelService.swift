@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 private struct Constants {
     let startSessionURL = "/sentinel.session.v1.MsgService/MsgStart"
@@ -46,6 +47,54 @@ final public class SentinelService {
         }
     }
     
+    public func queryProviders(
+        offset: UInt64 = 0,
+        limit: UInt64 = 0,
+        completion: @escaping (Result<[SentinelNodesProvider], Error>) -> Void
+    ) {
+        provider.fetchProviders(offset: offset, limit: limit) { result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let providers):
+                completion(.success(providers.map { SentinelNodesProvider.init(from: $0) }))
+            }
+        }
+    }
+    
+    public func queryPlans(
+        offset: UInt64 = 0,
+        limit: UInt64 = 1000,
+        completion: @escaping (Result<[SentinelPlan], Error>) -> Void
+    ) {
+        provider.fetchPlans(offset: offset, limit: limit) { result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let plans):
+                completion(.success(plans.map(SentinelPlan.init)))
+            }
+        }
+    }
+    
+    public func queryNodesForPlan(
+        with id: UInt64,
+        allowedDenoms: [String] = [GlobalConstants.denom],
+        completion: @escaping (Result<[SentinelNode], Error>) -> Void
+    ) {
+        provider.fetchNodes(for: id) { result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let nodes):
+                let sentinelNodes = nodes
+                    .filter { node in allowedDenoms.contains(where: node.price.map { $0.denom }.contains)  }
+                    .map { SentinelNode(from: $0) }
+                completion(.success(sentinelNodes))
+            }
+        }
+    }
+    
     public func fetchInfo(
         for sentinelNode: SentinelNode,
         timeout: TimeInterval,
@@ -80,7 +129,7 @@ final public class SentinelService {
             }
         }
     }
-
+    
     public func queryNodeStatus(
         address: String,
         timeout: TimeInterval,

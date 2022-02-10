@@ -17,7 +17,24 @@ protocol SentinelProviderType {
         allowedDenoms: [String],
         completion: @escaping (Result<[SentinelNode], Error>) -> Void
     )
+    
+    func fetchProviders(
+        offset: UInt64,
+        limit: UInt64,
+        completion: @escaping (Result<[Sentinel_Provider_V1_Provider], Error>) -> Void
+    )
 
+    func fetchPlans(
+        offset: UInt64,
+        limit: UInt64,
+        completion: @escaping (Result<[Sentinel_Plan_V1_Plan], Error>) -> Void
+    )
+    
+    func fetchNodes(
+        for planID: UInt64,
+        completion: @escaping (Result<[Sentinel_Node_V1_Node], Error>) -> Void
+    )
+    
     func fetchSubscription(
         with id: UInt64,
         completion: @escaping (Result<Sentinel_Subscription_V1_Subscription, Error>) -> Void
@@ -166,6 +183,100 @@ final class SentinelProvider: SentinelProviderType {
             }
         })
     }
+    
+    func fetchProviders(
+        offset: UInt64,
+        limit: UInt64,
+        completion: @escaping (Result<[Sentinel_Provider_V1_Provider], Error>) -> Void
+    ) {
+        connectionProvider.openConnection(for: { channel in
+            do {
+                let page = Cosmos_Base_Query_V1beta1_PageRequest.with {
+                    $0.limit = limit
+                    $0.offset = UInt64(offset)
+                }
+                let request = Sentinel_Provider_V1_QueryProvidersRequest.with {
+                    $0.pagination = page
+                }
+                let response = try Sentinel_Provider_V1_QueryServiceClient(channel: channel)
+                    .queryProviders(request)
+                    .response
+                    .wait()
+                completion(.success(response.providers))
+            } catch {
+                completion(.failure(error))
+            }
+        })
+    }
+    
+    func fetchPlans(
+        offset: UInt64,
+        limit: UInt64,
+        completion: @escaping (Result<[Sentinel_Plan_V1_Plan], Error>) -> Void
+    ) {
+        connectionProvider.openConnection(for: { channel in
+            do {
+                let page = Cosmos_Base_Query_V1beta1_PageRequest.with {
+                    $0.limit = limit
+                    $0.offset = UInt64(offset)
+                }
+                let request = Sentinel_Plan_V1_QueryPlansRequest.with {
+                    $0.pagination = page
+                }
+                let response = try Sentinel_Plan_V1_QueryServiceClient(channel: channel)
+                    .queryPlans(request)
+                    .response
+                    .wait()
+                completion(.success(response.plans))
+            } catch {
+                completion(.failure(error))
+            }
+        })
+    }
+    
+    func fetchNodes(
+        for planID: UInt64,
+        completion: @escaping (Result<[Sentinel_Node_V1_Node], Error>) -> Void
+    ) {
+        connectionProvider.openConnection(for: { channel in
+            do {
+                let request = Sentinel_Plan_V1_QueryNodesForPlanRequest.with {
+                    $0.id = planID
+                }
+                let response = try Sentinel_Plan_V1_QueryServiceClient(channel: channel)
+                    .queryNodesForPlan(request)
+                    .response
+                    .wait()
+                completion(.success(response.nodes))
+            } catch {
+                completion(.failure(error))
+            }
+        })
+    }
+    
+//    func fetchPlans(
+//        for provider: SentinelNodesProvider,
+//        completion: @escaping (Result<[Sentinel_Provider_V1_Provider], Error>) -> Void
+//    ) {
+//        connectionProvider.openConnection(for: { channel in
+//            do {
+//                let page = Cosmos_Base_Query_V1beta1_PageRequest.with {
+//                    $0.limit = limit
+//                    $0.offset = UInt64(offset)
+//                }
+//                let request = Sentinel_Plan_V1_QueryPlansRequest.with {
+//                    $0.pagination = page
+//                }
+//                let response = try Sentinel_Plan_V1_QueryServiceClient(channel: channel)
+//                    .queryPlans(Sentinel_Plan_V1_QueryPlansRequest)
+//                    .response
+//                    .wait()
+//                completion(.success(response.providers))
+//            } catch {
+//                completion(.failure(error))
+//            }
+//        })
+//    }
 
     func fetchQuota(
         address: String,
