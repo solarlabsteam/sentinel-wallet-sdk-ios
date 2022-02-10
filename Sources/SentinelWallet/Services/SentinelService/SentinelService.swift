@@ -33,9 +33,10 @@ final public class SentinelService {
     public func queryNodes(
         offset: UInt64 = 0,
         limit: UInt64 = 0,
+        allowedDenoms: [String] = [GlobalConstants.denom],
         completion: @escaping (Result<[SentinelNode], Error>) -> Void
     ) {
-        provider.fetchAvailableNodes(offset: offset, limit: limit, allowedDenoms: [GlobalConstants.denom]) { result in
+        provider.fetchAvailableNodes(offset: offset, limit: limit, allowedDenoms: allowedDenoms) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
