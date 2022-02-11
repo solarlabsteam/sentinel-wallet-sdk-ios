@@ -12,6 +12,7 @@ private struct Constants {
     let startSessionURL = "/sentinel.session.v1.MsgService/MsgStart"
     let stopSessionURL = "/sentinel.session.v1.MsgService/MsgEnd"
     let subscribeToNodeURL = "/sentinel.subscription.v1.MsgService/MsgSubscribeToNode"
+    let subscribeToPlanURL = "/sentinel.subscription.v1.MsgService/MsgSubscribeToPlan"
     let addQuotaURL = "/sentinel.subscription.v1.MsgService/MsgAddQuota"
 }
 private let constants = Constants()
@@ -199,6 +200,26 @@ final public class SentinelService {
         generateAndBroadcast(to: node, messages: [anyMessage], completion: completion)
     }
     
+    public func subscribe(
+        to planID: UInt64,
+        provider: String,
+        denom: String,
+        completion: @escaping (Result<TransactionResult, Error>) -> Void
+    ) {
+        let startMessage = Sentinel_Subscription_V1_MsgSubscribeToPlanRequest.with {
+            $0.from = walletService.accountAddress
+            $0.id = planID
+            $0.denom = denom
+        }
+
+        let anyMessage = Google_Protobuf2_Any.with {
+            $0.typeURL = constants.subscribeToPlanURL
+            $0.value = try! startMessage.serializedData()
+        }
+
+        generateAndBroadcast(to: provider, messages: [anyMessage], completion: completion)
+    }
+    
     /// Add quota to existing subscribtion
     public func addQuota(
         to address: String,
@@ -335,7 +356,10 @@ private extension SentinelService {
         }
     }
 
-    func broadcast(request: Cosmos_Tx_V1beta1_BroadcastTxRequest, completion: @escaping (Result<TransactionResult, Error>) -> Void) {
+    func broadcast(
+        request: Cosmos_Tx_V1beta1_BroadcastTxRequest,
+        completion: @escaping (Result<TransactionResult, Error>) -> Void
+    ) {
         provider.broadcastGrpcTx(signedRequest: request) { result in
             switch result {
             case .failure(let error):
