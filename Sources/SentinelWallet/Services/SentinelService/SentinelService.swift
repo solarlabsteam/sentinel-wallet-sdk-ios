@@ -79,7 +79,6 @@ final public class SentinelService {
     
     public func queryNodesForPlan(
         with id: UInt64,
-        allowedDenoms: [String] = [GlobalConstants.denom],
         completion: @escaping (Result<[SentinelNode], Error>) -> Void
     ) {
         provider.fetchNodes(for: id) { result in
@@ -87,9 +86,7 @@ final public class SentinelService {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let nodes):
-                let sentinelNodes = nodes
-                    .filter { node in allowedDenoms.contains(where: node.price.map { $0.denom }.contains)  }
-                    .map { SentinelNode(from: $0) }
+                let sentinelNodes = nodes.map { SentinelNode(from: $0) }
                 completion(.success(sentinelNodes))
             }
         }
