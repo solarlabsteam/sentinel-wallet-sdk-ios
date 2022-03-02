@@ -12,6 +12,7 @@ private struct Constants {
     let startSessionURL = "/sentinel.session.v1.MsgService/MsgStart"
     let stopSessionURL = "/sentinel.session.v1.MsgService/MsgEnd"
     let subscribeToNodeURL = "/sentinel.subscription.v1.MsgService/MsgSubscribeToNode"
+    let cancelSubscriptionURL = "/sentinel.subscription.v1.MsgService/MsgCancel"
     let subscribeToPlanURL = "/sentinel.subscription.v1.MsgService/MsgSubscribeToPlan"
     let addQuotaURL = "/sentinel.subscription.v1.MsgService/MsgAddQuota"
 }
@@ -198,6 +199,28 @@ final public class SentinelService {
         }
 
         generateAndBroadcast(to: node, messages: [anyMessage], completion: completion)
+    }
+    
+    public func cancel(
+        subscriptions: [UInt64],
+        node: String,
+        completion: @escaping (Result<TransactionResult, Error>) -> Void
+    ) {
+        let messages = subscriptions.map { subscriptionID -> Google_Protobuf2_Any in
+            let startMessage = Sentinel_Subscription_V1_MsgCancelRequest.with {
+                $0.id = subscriptionID
+                $0.from = walletService.accountAddress
+            }
+
+            let anyMessage = Google_Protobuf2_Any.with {
+                $0.typeURL = constants.cancelSubscriptionURL
+                $0.value = try! startMessage.serializedData()
+            }
+            
+            return anyMessage
+        }
+        
+        generateAndBroadcast(to: node, messages: messages, completion: completion)
     }
     
     public func subscribe(
