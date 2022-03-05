@@ -264,9 +264,13 @@ final public class SentinelService {
     }
 
     public func fetchSubscriptions(
+        with status: SubscriptionStatus = .unspecified,
         completion: @escaping (Result<[Subscription], Error>) -> Void
     ) {
-        provider.fetchSubscriptions(for: walletService.accountAddress, with: .unspecified) { result in
+        provider.fetchSubscriptions(
+            for: walletService.accountAddress,
+               with: .init(from: status) ?? Sentinel_Types_V1_Status.unspecified
+        ) { result in
             switch result {
             case .failure(let error):
                 log.error(error)
