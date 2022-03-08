@@ -308,7 +308,7 @@ final public class SentinelService {
                 completion(.failure(error))
             case .success(let subscriptions):
                 if let activeSubscription = subscriptions.first(
-                    where: { $0.id == subscription.id && $0.node == subscription.node }
+                    where: { $0.id == subscription.id }
                 ) {
                     self?.connect(to: activeSubscription, completion: completion)
                 } else {
