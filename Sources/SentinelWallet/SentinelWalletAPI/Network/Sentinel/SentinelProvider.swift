@@ -30,6 +30,11 @@ protocol SentinelProviderType {
         completion: @escaping (Result<[Sentinel_Plan_V1_Plan], Error>) -> Void
     )
     
+    func fetchPlans(
+        for provider: String,
+        completion: @escaping (Result<[Sentinel_Plan_V1_Plan], Error>) -> Void
+    )
+
     func fetchNodes(
         for planID: UInt64,
         completion: @escaping (Result<[Sentinel_Node_V1_Node], Error>) -> Void
@@ -254,29 +259,25 @@ final class SentinelProvider: SentinelProviderType {
         })
     }
     
-//    func fetchPlans(
-//        for provider: SentinelNodesProvider,
-//        completion: @escaping (Result<[Sentinel_Provider_V1_Provider], Error>) -> Void
-//    ) {
-//        connectionProvider.openConnection(for: { channel in
-//            do {
-//                let page = Cosmos_Base_Query_V1beta1_PageRequest.with {
-//                    $0.limit = limit
-//                    $0.offset = UInt64(offset)
-//                }
-//                let request = Sentinel_Plan_V1_QueryPlansRequest.with {
-//                    $0.pagination = page
-//                }
-//                let response = try Sentinel_Plan_V1_QueryServiceClient(channel: channel)
-//                    .queryPlans(Sentinel_Plan_V1_QueryPlansRequest)
-//                    .response
-//                    .wait()
-//                completion(.success(response.providers))
-//            } catch {
-//                completion(.failure(error))
-//            }
-//        })
-//    }
+    func fetchPlans(
+        for provider: String,
+        completion: @escaping (Result<[Sentinel_Plan_V1_Plan], Error>) -> Void
+    ) {
+        connectionProvider.openConnection(for: { channel in
+            do {
+                let request = Sentinel_Plan_V1_QueryPlansForProviderRequest.with {
+                    $0.address = provider
+                }
+                let response = try Sentinel_Plan_V1_QueryServiceClient(channel: channel)
+                    .queryPlansForProvider(request)
+                    .response
+                    .wait()
+                completion(.success(response.plans))
+            } catch {
+                completion(.failure(error))
+            }
+        })
+    }
 
     func fetchQuota(
         address: String,
