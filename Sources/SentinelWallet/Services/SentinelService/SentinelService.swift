@@ -297,10 +297,10 @@ final public class SentinelService {
     }
 
     public func startNewSession(
-        on subscription: Subscription, nodeAddress: String,
+        on subscriptionId: UInt64, nodeAddress: String,
         completion: @escaping (Result<UInt64, Error>) -> Void
     ) {
-        connect(to: subscription.id, nodeAddress: nodeAddress, completion: completion)
+        connect(to: subscriptionId, nodeAddress: nodeAddress, completion: completion)
     }
 }
 
