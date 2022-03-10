@@ -300,28 +300,13 @@ final public class SentinelService {
         on subscription: Subscription, nodeAddress: String,
         completion: @escaping (Result<UInt64, Error>) -> Void
     ) {
-        // fetch account subscriptions
-        provider.fetchSubscriptions(for: walletService.accountAddress, with: .active) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                log.error(error)
-                completion(.failure(error))
-            case .success(let subscriptions):
-                if let activeSubscription = subscriptions.first(
-                    where: { $0.id == subscription.id }
-                ) {
-                    self?.connect(to: activeSubscription, nodeAddress: nodeAddress, completion: completion)
-                } else {
-                    completion(.failure(SentinelServiceError.sessionStartFailed))
-                }
-            }
-        }
+        connect(to: subscription.id, nodeAddress: nodeAddress, completion: completion)
     }
 }
 
 private extension SentinelService {
     func connect(
-        to subscription: Sentinel_Subscription_V1_Subscription, nodeAddress: String,
+        to subscriptionID: UInt64, nodeAddress: String,
         completion: @escaping (Result<UInt64, Error>) -> Void
     ) {
         stopActiveSessionsMessages { [weak self] messages in
@@ -330,7 +315,7 @@ private extension SentinelService {
                 return
             }
             let startMessage = Sentinel_Session_V1_MsgStartRequest.with {
-                $0.id = subscription.id
+                $0.id = subscriptionID
                 $0.from = self.walletService.accountAddress
                 $0.node = nodeAddress
             }
