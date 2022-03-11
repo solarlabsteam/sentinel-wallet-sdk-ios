@@ -234,7 +234,7 @@ final public class SentinelService {
             return anyMessage
         }
         
-        generateAndBroadcast(to: node, messages: messages, completion: completion)
+        generateAndBroadcast(to: node, messages: messages, gasFactor: subscriptions.count, completion: completion)
     }
     
     public func subscribe(
@@ -383,9 +383,10 @@ private extension SentinelService {
     func generateAndBroadcast(
         to node: String,
         messages: [Google_Protobuf2_Any],
+        gasFactor: Int = 0,
         completion: @escaping (Result<TransactionResult, Error>) -> Void
     ) {
-        walletService.generateSignedRequest(to: node, messages: messages) { [weak self] result in
+        walletService.generateSignedRequest(to: node, messages: messages, gasFactor: gasFactor) { [weak self] result in
             switch result {
             case .failure(let error):
                 log.error(error)

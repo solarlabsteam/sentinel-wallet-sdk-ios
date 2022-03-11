@@ -12,6 +12,7 @@ import HDWallet
 private struct Constants {
     #warning("TODO @lika Calculate gas amount correctly")
     let defaultFeePrice = 10000
+    let defaultGas = 100000
     let defaultFee = Fee("100000", [.init(denom: GlobalConstants.denom, amount: "10000")])
 
     let sendMessageURL = "/cosmos.bank.v1beta1.MsgSend"
@@ -105,6 +106,7 @@ final public class WalletService {
     func generateSignedRequest(
         to account: String,
         messages: [Google_Protobuf2_Any],
+        gasFactor: Int = 0,
         completion: @escaping ((Result<Cosmos_Tx_V1beta1_BroadcastTxRequest, Error>) -> Void)
     ) {
         guard account != walletData.accountAddress else {
@@ -127,11 +129,16 @@ final public class WalletService {
                 completion(.failure(WalletServiceError.missingAuthorization))
                 return
             }
-
+            
+            let gas = constants.defaultGas + (constants.defaultGas / 10 * gasFactor)
+            let feePrice = constants.defaultFeePrice + (constants.defaultFeePrice / 10 * gasFactor)
+            
+            let fee = Fee("\(gas)", [.init(denom: GlobalConstants.denom, amount: "\(feePrice)")])
+            
             let request = Signer.generateSignedRequest(
                 with: accountGRPC,
                 to: account,
-                fee: constants.defaultFee,
+                fee: fee,
                 for: messages,
                 memo: "",
                 privateKey: self.securityService.getKey(for: mnemonics),
