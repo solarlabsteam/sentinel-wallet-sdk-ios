@@ -78,6 +78,20 @@ final public class SentinelService {
             }
         }
     }
+
+    public func queryPlans(
+        for providerAddress: String,
+        completion: @escaping (Result<[SentinelPlan], Error>) -> Void
+    ) {
+        provider.fetchPlans(for: providerAddress) { result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let plans):
+                completion(.success(plans.map(SentinelPlan.init)))
+            }
+        }
+    }
     
     public func queryNodesForPlan(
         with id: UInt64,
