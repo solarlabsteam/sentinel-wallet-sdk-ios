@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import UIKit
 
 private struct Constants {
     let startSessionURL = "/sentinel.session.v1.MsgService/MsgStart"
