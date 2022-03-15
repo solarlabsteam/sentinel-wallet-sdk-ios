@@ -311,31 +311,16 @@ final public class SentinelService {
     }
 
     public func startNewSession(
-        on subscription: Subscription,
+        on subscriptionId: UInt64, nodeAddress: String,
         completion: @escaping (Result<UInt64, Error>) -> Void
     ) {
-        // fetch account subscriptions
-        provider.fetchSubscriptions(for: walletService.accountAddress, with: .active) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                log.error(error)
-                completion(.failure(error))
-            case .success(let subscriptions):
-                if let activeSubscription = subscriptions.first(
-                    where: { $0.id == subscription.id && $0.node == subscription.node }
-                ) {
-                    self?.connect(to: activeSubscription, completion: completion)
-                } else {
-                    completion(.failure(SentinelServiceError.sessionStartFailed))
-                }
-            }
-        }
+        connect(to: subscriptionId, nodeAddress: nodeAddress, completion: completion)
     }
 }
 
 private extension SentinelService {
     func connect(
-        to subscription: Sentinel_Subscription_V1_Subscription,
+        to subscriptionID: UInt64, nodeAddress: String,
         completion: @escaping (Result<UInt64, Error>) -> Void
     ) {
         stopActiveSessionsMessages { [weak self] messages in
@@ -344,9 +329,9 @@ private extension SentinelService {
                 return
             }
             let startMessage = Sentinel_Session_V1_MsgStartRequest.with {
-                $0.id = subscription.id
+                $0.id = subscriptionID
                 $0.from = self.walletService.accountAddress
-                $0.node = subscription.node
+                $0.node = nodeAddress
             }
 
             let anyMessage = Google_Protobuf2_Any.with {
@@ -356,7 +341,7 @@ private extension SentinelService {
 
             let messages = messages + [anyMessage]
 
-            self.generateAndBroadcast(to: subscription.node, messages: messages) { result in
+            self.generateAndBroadcast(to: nodeAddress, messages: messages) { result in
                 switch result {
                 case .failure(let error):
                     completion(.failure(error))
