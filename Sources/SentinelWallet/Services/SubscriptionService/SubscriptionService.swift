@@ -175,10 +175,10 @@ extension SubscriptionService {
     }
     
     public func startNewSession(
-        on subscriptionId: UInt64, nodeAddress: String,
+        on subscriptionID: UInt64, nodeAddress: String,
         completion: @escaping (Result<UInt64, Error>) -> Void
     ) {
-        connect(to: subscriptionId, nodeAddress: nodeAddress, completion: completion)
+        connect(to: subscriptionID, nodeAddress: nodeAddress, completion: completion)
     }
     
     public func loadActiveSession(completion: @escaping (Result<Session, Error>) -> Void) {

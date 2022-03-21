@@ -32,7 +32,7 @@ final public class SentinelNodeService {
     
     public func queryInfo(
         for sentinelNode: SentinelNode,
-        timeout: TimeInterval,
+        timeout: TimeInterval = 5,
         completion: @escaping (Result<Node, Error>) -> Void
     ) {
         self.provider.fetchInfo(for: sentinelNode.remoteURL, timeout: timeout) { result in
@@ -53,7 +53,7 @@ final public class SentinelNodeService {
     
     public func queryNodeStatus(
         address: String,
-        timeout: TimeInterval,
+        timeout: TimeInterval = 15,
         completion: @escaping (Result<SentinelNode, Error>) -> Void
     ) {
         provider.fetchNode(address: address) { [weak self] result in
