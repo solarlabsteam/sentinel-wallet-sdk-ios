@@ -21,6 +21,7 @@ public enum SentinelServiceError: Error {
     case broadcastFailed
     case emptyInfo
     case sessionStartFailed
+    case sessionsStopFailed
 }
 
 final public class SentinelService {
@@ -314,6 +315,53 @@ final public class SentinelService {
         completion: @escaping (Result<UInt64, Error>) -> Void
     ) {
         connect(to: subscriptionId, nodeAddress: nodeAddress, completion: completion)
+    }
+    
+    public func stopActiveSessions(completion: @escaping (Result<Void, Error>) -> Void) {
+        provider.loadActiveSessions(for: walletService.accountAddress) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+
+            case .success(let sessions):
+                guard !sessions.isEmpty else {
+                    completion(.success(()))
+                    return
+                }
+                
+                let group = DispatchGroup()
+                var errorAppeared = false
+                sessions.forEach { session in
+                    group.enter()
+                    let stopMessage = Sentinel_Session_V1_MsgEndRequest.with {
+                        $0.id = session.id
+                        $0.from = self.walletService.accountAddress
+                    }
+                    
+                    let anyMessage = Google_Protobuf2_Any.with {
+                        $0.typeURL = constants.stopSessionURL
+                        $0.value = try! stopMessage.serializedData()
+                    }
+                    
+                    self.generateAndBroadcast(to: session.address, messages: [anyMessage]) { result in
+                        group.leave()
+                        if case let .failure(error) = result {
+                            log.error(error)
+                            errorAppeared = true
+                        }
+                    }
+                }
+                
+                group.notify(queue: .main) {
+                    guard !errorAppeared else {
+                        completion(.failure(SentinelServiceError.sessionsStopFailed))
+                        return
+                    }
+                    completion(.success(()))
+                }
+            }
+        }
     }
 }
 
