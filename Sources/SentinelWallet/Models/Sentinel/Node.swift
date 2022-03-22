@@ -14,7 +14,7 @@ struct DVPNNodeResponse: Codable {
 }
 
 public struct Node {
-    public let info: DVPNNodeInfo
+    public var info: DVPNNodeInfo
     public let latency: TimeInterval
     
     public init(info: DVPNNodeInfo, latency: TimeInterval) {
@@ -28,7 +28,7 @@ public struct SentinelNode {
     public let provider: String
     public let price: [CoinToken]
     public let remoteURL: String
-    public let node: Node?
+    public var node: Node?
     
     public init(address: String, provider: String, price: [CoinToken], remoteURL: String, node: Node?) {
         self.address = address
@@ -62,7 +62,7 @@ public struct DVPNNodeInfo: Codable {
     public let intervalUpdateSessions: Int
     public let intervalUpdateStatus: Int
 
-    public let location: Location
+    public var location: Location
 
     public let moniker: String
     public let resultOperator: String
@@ -147,14 +147,25 @@ public struct Handshake: Codable {
 public struct Location: Codable {
     public let city: String
     public let country: String
+    public var continent: String
     public let latitude: Double
     public let longitude: Double
     
-    public init(city: String, country: String, latitude: Double, longitude: Double) {
+    public init(city: String, country: String, continent: String = "", latitude: Double, longitude: Double) {
         self.city = city
         self.country = country
+        self.continent = continent
         self.latitude = latitude
         self.longitude = longitude
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.city = try container.decode(String.self, forKey: .city)
+        self.country = try container.decode(String.self, forKey: .country)
+        self.continent = ""
+        self.latitude = try container.decode(Double.self, forKey: .latitude)
+        self.longitude = try container.decode(Double.self, forKey: .longitude)
     }
 }
 
