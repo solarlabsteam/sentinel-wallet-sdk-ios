@@ -344,7 +344,7 @@ final public class SentinelService {
                         $0.value = try! stopMessage.serializedData()
                     }
                     
-                    self.generateAndBroadcast(to: session.address, messages: [anyMessage]) { result in
+                    self.generateAndBroadcast(to: session.node, messages: [anyMessage]) { result in
                         group.leave()
                         if case let .failure(error) = result {
                             log.error(error)
