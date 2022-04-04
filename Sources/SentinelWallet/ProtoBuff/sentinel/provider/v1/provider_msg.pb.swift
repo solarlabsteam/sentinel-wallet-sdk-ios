@@ -84,6 +84,13 @@ struct Sentinel_Provider_V1_MsgUpdateResponse {
   init() {}
 }
 
+#if swift(>=5.5) && canImport(_Concurrency)
+extension Sentinel_Provider_V1_MsgRegisterRequest: @unchecked Sendable {}
+extension Sentinel_Provider_V1_MsgUpdateRequest: @unchecked Sendable {}
+extension Sentinel_Provider_V1_MsgRegisterResponse: @unchecked Sendable {}
+extension Sentinel_Provider_V1_MsgUpdateResponse: @unchecked Sendable {}
+#endif  // swift(>=5.5) && canImport(_Concurrency)
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "sentinel.provider.v1"

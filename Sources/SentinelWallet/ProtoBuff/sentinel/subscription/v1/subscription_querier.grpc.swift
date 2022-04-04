@@ -35,16 +35,6 @@ internal protocol Sentinel_Subscription_V1_QueryServiceClientProtocol: GRPCClien
     callOptions: CallOptions?
   ) -> UnaryCall<Sentinel_Subscription_V1_QuerySubscriptionsRequest, Sentinel_Subscription_V1_QuerySubscriptionsResponse>
 
-  func querySubscriptionsForNode(
-    _ request: Sentinel_Subscription_V1_QuerySubscriptionsForNodeRequest,
-    callOptions: CallOptions?
-  ) -> UnaryCall<Sentinel_Subscription_V1_QuerySubscriptionsForNodeRequest, Sentinel_Subscription_V1_QuerySubscriptionsForNodeResponse>
-
-  func querySubscriptionsForPlan(
-    _ request: Sentinel_Subscription_V1_QuerySubscriptionsForPlanRequest,
-    callOptions: CallOptions?
-  ) -> UnaryCall<Sentinel_Subscription_V1_QuerySubscriptionsForPlanRequest, Sentinel_Subscription_V1_QuerySubscriptionsForPlanResponse>
-
   func querySubscriptionsForAddress(
     _ request: Sentinel_Subscription_V1_QuerySubscriptionsForAddressRequest,
     callOptions: CallOptions?
@@ -91,42 +81,6 @@ extension Sentinel_Subscription_V1_QueryServiceClientProtocol {
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeQuerySubscriptionsInterceptors() ?? []
-    )
-  }
-
-  /// Unary call to QuerySubscriptionsForNode
-  ///
-  /// - Parameters:
-  ///   - request: Request to send to QuerySubscriptionsForNode.
-  ///   - callOptions: Call options.
-  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
-  internal func querySubscriptionsForNode(
-    _ request: Sentinel_Subscription_V1_QuerySubscriptionsForNodeRequest,
-    callOptions: CallOptions? = nil
-  ) -> UnaryCall<Sentinel_Subscription_V1_QuerySubscriptionsForNodeRequest, Sentinel_Subscription_V1_QuerySubscriptionsForNodeResponse> {
-    return self.makeUnaryCall(
-      path: "/sentinel.subscription.v1.QueryService/QuerySubscriptionsForNode",
-      request: request,
-      callOptions: callOptions ?? self.defaultCallOptions,
-      interceptors: self.interceptors?.makeQuerySubscriptionsForNodeInterceptors() ?? []
-    )
-  }
-
-  /// Unary call to QuerySubscriptionsForPlan
-  ///
-  /// - Parameters:
-  ///   - request: Request to send to QuerySubscriptionsForPlan.
-  ///   - callOptions: Call options.
-  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
-  internal func querySubscriptionsForPlan(
-    _ request: Sentinel_Subscription_V1_QuerySubscriptionsForPlanRequest,
-    callOptions: CallOptions? = nil
-  ) -> UnaryCall<Sentinel_Subscription_V1_QuerySubscriptionsForPlanRequest, Sentinel_Subscription_V1_QuerySubscriptionsForPlanResponse> {
-    return self.makeUnaryCall(
-      path: "/sentinel.subscription.v1.QueryService/QuerySubscriptionsForPlan",
-      request: request,
-      callOptions: callOptions ?? self.defaultCallOptions,
-      interceptors: self.interceptors?.makeQuerySubscriptionsForPlanInterceptors() ?? []
     )
   }
 
@@ -226,12 +180,6 @@ internal protocol Sentinel_Subscription_V1_QueryServiceClientInterceptorFactoryP
   /// - Returns: Interceptors to use when invoking 'querySubscriptions'.
   func makeQuerySubscriptionsInterceptors() -> [ClientInterceptor<Sentinel_Subscription_V1_QuerySubscriptionsRequest, Sentinel_Subscription_V1_QuerySubscriptionsResponse>]
 
-  /// - Returns: Interceptors to use when invoking 'querySubscriptionsForNode'.
-  func makeQuerySubscriptionsForNodeInterceptors() -> [ClientInterceptor<Sentinel_Subscription_V1_QuerySubscriptionsForNodeRequest, Sentinel_Subscription_V1_QuerySubscriptionsForNodeResponse>]
-
-  /// - Returns: Interceptors to use when invoking 'querySubscriptionsForPlan'.
-  func makeQuerySubscriptionsForPlanInterceptors() -> [ClientInterceptor<Sentinel_Subscription_V1_QuerySubscriptionsForPlanRequest, Sentinel_Subscription_V1_QuerySubscriptionsForPlanResponse>]
-
   /// - Returns: Interceptors to use when invoking 'querySubscriptionsForAddress'.
   func makeQuerySubscriptionsForAddressInterceptors() -> [ClientInterceptor<Sentinel_Subscription_V1_QuerySubscriptionsForAddressRequest, Sentinel_Subscription_V1_QuerySubscriptionsForAddressResponse>]
 
@@ -276,10 +224,6 @@ internal protocol Sentinel_Subscription_V1_QueryServiceProvider: CallHandlerProv
 
   func querySubscriptions(request: Sentinel_Subscription_V1_QuerySubscriptionsRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Sentinel_Subscription_V1_QuerySubscriptionsResponse>
 
-  func querySubscriptionsForNode(request: Sentinel_Subscription_V1_QuerySubscriptionsForNodeRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Sentinel_Subscription_V1_QuerySubscriptionsForNodeResponse>
-
-  func querySubscriptionsForPlan(request: Sentinel_Subscription_V1_QuerySubscriptionsForPlanRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Sentinel_Subscription_V1_QuerySubscriptionsForPlanResponse>
-
   func querySubscriptionsForAddress(request: Sentinel_Subscription_V1_QuerySubscriptionsForAddressRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Sentinel_Subscription_V1_QuerySubscriptionsForAddressResponse>
 
   func querySubscription(request: Sentinel_Subscription_V1_QuerySubscriptionRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Sentinel_Subscription_V1_QuerySubscriptionResponse>
@@ -308,24 +252,6 @@ extension Sentinel_Subscription_V1_QueryServiceProvider {
         responseSerializer: ProtobufSerializer<Sentinel_Subscription_V1_QuerySubscriptionsResponse>(),
         interceptors: self.interceptors?.makeQuerySubscriptionsInterceptors() ?? [],
         userFunction: self.querySubscriptions(request:context:)
-      )
-
-    case "QuerySubscriptionsForNode":
-      return UnaryServerHandler(
-        context: context,
-        requestDeserializer: ProtobufDeserializer<Sentinel_Subscription_V1_QuerySubscriptionsForNodeRequest>(),
-        responseSerializer: ProtobufSerializer<Sentinel_Subscription_V1_QuerySubscriptionsForNodeResponse>(),
-        interceptors: self.interceptors?.makeQuerySubscriptionsForNodeInterceptors() ?? [],
-        userFunction: self.querySubscriptionsForNode(request:context:)
-      )
-
-    case "QuerySubscriptionsForPlan":
-      return UnaryServerHandler(
-        context: context,
-        requestDeserializer: ProtobufDeserializer<Sentinel_Subscription_V1_QuerySubscriptionsForPlanRequest>(),
-        responseSerializer: ProtobufSerializer<Sentinel_Subscription_V1_QuerySubscriptionsForPlanResponse>(),
-        interceptors: self.interceptors?.makeQuerySubscriptionsForPlanInterceptors() ?? [],
-        userFunction: self.querySubscriptionsForPlan(request:context:)
       )
 
     case "QuerySubscriptionsForAddress":
@@ -384,14 +310,6 @@ internal protocol Sentinel_Subscription_V1_QueryServiceServerInterceptorFactoryP
   /// - Returns: Interceptors to use when handling 'querySubscriptions'.
   ///   Defaults to calling `self.makeInterceptors()`.
   func makeQuerySubscriptionsInterceptors() -> [ServerInterceptor<Sentinel_Subscription_V1_QuerySubscriptionsRequest, Sentinel_Subscription_V1_QuerySubscriptionsResponse>]
-
-  /// - Returns: Interceptors to use when handling 'querySubscriptionsForNode'.
-  ///   Defaults to calling `self.makeInterceptors()`.
-  func makeQuerySubscriptionsForNodeInterceptors() -> [ServerInterceptor<Sentinel_Subscription_V1_QuerySubscriptionsForNodeRequest, Sentinel_Subscription_V1_QuerySubscriptionsForNodeResponse>]
-
-  /// - Returns: Interceptors to use when handling 'querySubscriptionsForPlan'.
-  ///   Defaults to calling `self.makeInterceptors()`.
-  func makeQuerySubscriptionsForPlanInterceptors() -> [ServerInterceptor<Sentinel_Subscription_V1_QuerySubscriptionsForPlanRequest, Sentinel_Subscription_V1_QuerySubscriptionsForPlanResponse>]
 
   /// - Returns: Interceptors to use when handling 'querySubscriptionsForAddress'.
   ///   Defaults to calling `self.makeInterceptors()`.

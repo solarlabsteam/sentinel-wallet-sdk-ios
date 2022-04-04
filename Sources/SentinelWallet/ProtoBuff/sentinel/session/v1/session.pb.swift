@@ -71,6 +71,10 @@ struct Sentinel_Session_V1_Session {
   fileprivate var _statusAt: SwiftProtobuf.Google_Protobuf_Timestamp? = nil
 }
 
+#if swift(>=5.5) && canImport(_Concurrency)
+extension Sentinel_Session_V1_Session: @unchecked Sendable {}
+#endif  // swift(>=5.5) && canImport(_Concurrency)
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "sentinel.session.v1"
@@ -108,6 +112,10 @@ extension Sentinel_Session_V1_Session: SwiftProtobuf.Message, SwiftProtobuf._Mes
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
     if self.id != 0 {
       try visitor.visitSingularUInt64Field(value: self.id, fieldNumber: 1)
     }
@@ -120,18 +128,18 @@ extension Sentinel_Session_V1_Session: SwiftProtobuf.Message, SwiftProtobuf._Mes
     if !self.address.isEmpty {
       try visitor.visitSingularStringField(value: self.address, fieldNumber: 4)
     }
-    if let v = self._duration {
+    try { if let v = self._duration {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 5)
-    }
-    if let v = self._bandwidth {
+    } }()
+    try { if let v = self._bandwidth {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 6)
-    }
+    } }()
     if self.status != .unspecified {
       try visitor.visitSingularEnumField(value: self.status, fieldNumber: 7)
     }
-    if let v = self._statusAt {
+    try { if let v = self._statusAt {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 8)
-    }
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 

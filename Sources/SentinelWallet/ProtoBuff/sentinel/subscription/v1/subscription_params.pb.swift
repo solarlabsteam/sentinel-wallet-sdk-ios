@@ -41,6 +41,10 @@ struct Sentinel_Subscription_V1_Params {
   fileprivate var _inactiveDuration: SwiftProtobuf.Google_Protobuf_Duration? = nil
 }
 
+#if swift(>=5.5) && canImport(_Concurrency)
+extension Sentinel_Subscription_V1_Params: @unchecked Sendable {}
+#endif  // swift(>=5.5) && canImport(_Concurrency)
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "sentinel.subscription.v1"
@@ -64,9 +68,13 @@ extension Sentinel_Subscription_V1_Params: SwiftProtobuf.Message, SwiftProtobuf.
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if let v = self._inactiveDuration {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._inactiveDuration {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
-    }
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 

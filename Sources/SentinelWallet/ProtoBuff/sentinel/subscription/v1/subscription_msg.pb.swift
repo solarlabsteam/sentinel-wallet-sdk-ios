@@ -174,6 +174,19 @@ struct Sentinel_Subscription_V1_MsgUpdateQuotaResponse {
   init() {}
 }
 
+#if swift(>=5.5) && canImport(_Concurrency)
+extension Sentinel_Subscription_V1_MsgSubscribeToNodeRequest: @unchecked Sendable {}
+extension Sentinel_Subscription_V1_MsgSubscribeToPlanRequest: @unchecked Sendable {}
+extension Sentinel_Subscription_V1_MsgCancelRequest: @unchecked Sendable {}
+extension Sentinel_Subscription_V1_MsgAddQuotaRequest: @unchecked Sendable {}
+extension Sentinel_Subscription_V1_MsgUpdateQuotaRequest: @unchecked Sendable {}
+extension Sentinel_Subscription_V1_MsgSubscribeToNodeResponse: @unchecked Sendable {}
+extension Sentinel_Subscription_V1_MsgSubscribeToPlanResponse: @unchecked Sendable {}
+extension Sentinel_Subscription_V1_MsgCancelResponse: @unchecked Sendable {}
+extension Sentinel_Subscription_V1_MsgAddQuotaResponse: @unchecked Sendable {}
+extension Sentinel_Subscription_V1_MsgUpdateQuotaResponse: @unchecked Sendable {}
+#endif  // swift(>=5.5) && canImport(_Concurrency)
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "sentinel.subscription.v1"
@@ -201,15 +214,19 @@ extension Sentinel_Subscription_V1_MsgSubscribeToNodeRequest: SwiftProtobuf.Mess
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
     if !self.from.isEmpty {
       try visitor.visitSingularStringField(value: self.from, fieldNumber: 1)
     }
     if !self.address.isEmpty {
       try visitor.visitSingularStringField(value: self.address, fieldNumber: 2)
     }
-    if let v = self._deposit {
+    try { if let v = self._deposit {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
-    }
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 

@@ -144,6 +144,17 @@ struct Sentinel_Plan_V1_MsgRemoveNodeResponse {
   init() {}
 }
 
+#if swift(>=5.5) && canImport(_Concurrency)
+extension Sentinel_Plan_V1_MsgAddRequest: @unchecked Sendable {}
+extension Sentinel_Plan_V1_MsgSetStatusRequest: @unchecked Sendable {}
+extension Sentinel_Plan_V1_MsgAddNodeRequest: @unchecked Sendable {}
+extension Sentinel_Plan_V1_MsgRemoveNodeRequest: @unchecked Sendable {}
+extension Sentinel_Plan_V1_MsgAddResponse: @unchecked Sendable {}
+extension Sentinel_Plan_V1_MsgSetStatusResponse: @unchecked Sendable {}
+extension Sentinel_Plan_V1_MsgAddNodeResponse: @unchecked Sendable {}
+extension Sentinel_Plan_V1_MsgRemoveNodeResponse: @unchecked Sendable {}
+#endif  // swift(>=5.5) && canImport(_Concurrency)
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "sentinel.plan.v1"
@@ -173,15 +184,19 @@ extension Sentinel_Plan_V1_MsgAddRequest: SwiftProtobuf.Message, SwiftProtobuf._
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
     if !self.from.isEmpty {
       try visitor.visitSingularStringField(value: self.from, fieldNumber: 1)
     }
     if !self.price.isEmpty {
       try visitor.visitRepeatedMessageField(value: self.price, fieldNumber: 2)
     }
-    if let v = self._validity {
+    try { if let v = self._validity {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
-    }
+    } }()
     if !self.bytes.isEmpty {
       try visitor.visitSingularStringField(value: self.bytes, fieldNumber: 4)
     }
