@@ -10,7 +10,7 @@ import Foundation
 private struct Constants {
     let startSessionURL = "/sentinel.session.v1.MsgService/MsgStart"
     let stopSessionURL = "/sentinel.session.v1.MsgService/MsgEnd"
-    let subscribeToNodeURL = "/sentinel.subscription.v1.MsgService/MsgSubscribeToNode"
+    let subscribeToNodeURL = "/sentinel.subscription.v1.MsgSubscribeToNodeRequest"
     let cancelSubscriptionURL = "/sentinel.subscription.v1.MsgService/MsgCancel"
     let subscribeToPlanURL = "/sentinel.subscription.v1.MsgService/MsgSubscribeToPlan"
     let addQuotaURL = "/sentinel.subscription.v1.MsgService/MsgAddQuota"
