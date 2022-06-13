@@ -45,10 +45,11 @@ final public class WalletService {
     
     public init(
         for accountAddress: String,
+        provider: WalletDataProvider = WalletDataProvider(),
         securityService: SecurityServiceType
     ) {
         self.walletData = .init(accountAddress: accountAddress)
-        self.provider = WalletDataProvider()
+        self.provider = provider
         self.securityService = securityService
     }
     

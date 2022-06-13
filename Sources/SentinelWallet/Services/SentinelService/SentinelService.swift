@@ -28,8 +28,11 @@ final public class SentinelService {
     private let provider: SentinelProviderType
     private let walletService: WalletService
 
-    public init(walletService: WalletService) {
-        provider = SentinelProvider()
+    public init(
+        provider: SentinelProvider,
+        walletService: WalletService
+    ) {
+        self.provider = provider
         self.walletService = walletService
     }
     
