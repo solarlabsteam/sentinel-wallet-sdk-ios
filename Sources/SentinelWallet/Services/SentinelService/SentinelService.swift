@@ -28,7 +28,7 @@ final public class SentinelService {
     private let provider: SentinelProviderType
     private let walletService: WalletService
 
-    init(
+    public init(
         host: String = GlobalConstants.defaultLCDHostString,
         port: Int = GlobalConstants.defaultLCDPort,
         walletService: WalletService
