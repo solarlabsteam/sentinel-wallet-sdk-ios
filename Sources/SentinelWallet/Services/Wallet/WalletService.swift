@@ -45,11 +45,12 @@ final public class WalletService {
     
     public init(
         for accountAddress: String,
-        provider: WalletDataProvider = WalletDataProvider(),
+        host: String = GlobalConstants.defaultLCDHostString,
+        port: Int = GlobalConstants.defaultLCDPort,
         securityService: SecurityServiceType
     ) {
         self.walletData = .init(accountAddress: accountAddress)
-        self.provider = provider
+        self.provider = WalletDataProvider(host: host, port: port)
         self.securityService = securityService
     }
     

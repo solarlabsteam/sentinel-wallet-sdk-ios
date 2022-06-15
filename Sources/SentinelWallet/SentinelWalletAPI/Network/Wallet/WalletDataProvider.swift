@@ -68,11 +68,11 @@ final class WalletDataProvider: WalletDataProviderType {
     }
     
     init(
-        connectionProvider: ClientConnectionProviderType = ClientConnectionProvider(),
-        transactionProvider: TransactionProviderType = TransactionProvider()
+        host: String,
+        port: Int
     ) {
-        self.connectionProvider = connectionProvider
-        self.transactionProvider = transactionProvider
+        self.connectionProvider = ClientConnectionProvider(host: host, port: port)
+        self.transactionProvider = TransactionProvider(host: host, port: port)
     }
 
     func getPrices(for denoms: String, completion: @escaping (Result<[ExchangeRates], Error>) -> Void) {

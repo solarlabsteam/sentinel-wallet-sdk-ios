@@ -28,11 +28,12 @@ final public class SentinelService {
     private let provider: SentinelProviderType
     private let walletService: WalletService
 
-    public init(
-        provider: SentinelProvider,
+    init(
+        host: String = GlobalConstants.defaultLCDHostString,
+        port: Int = GlobalConstants.defaultLCDPort,
         walletService: WalletService
     ) {
-        self.provider = provider
+        self.provider = SentinelProvider(host: host, port: port)
         self.walletService = walletService
     }
     

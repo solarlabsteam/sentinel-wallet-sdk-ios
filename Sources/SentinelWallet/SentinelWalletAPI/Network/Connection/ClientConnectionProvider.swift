@@ -9,12 +9,6 @@ import Foundation
 import GRPC
 import NIO
 
-private struct Constants {
-    let hostString = "lcd-sentinel.dvpn.solar"
-    let port = 993
-}
-private let constants = Constants()
-
 protocol ClientConnectionProviderType {
     func openConnection(for work: @escaping (ClientConnection) -> Void)
 }
@@ -23,7 +17,7 @@ final class ClientConnectionProvider: ClientConnectionProviderType {
     private let hostString: String
     private let port: Int
     
-    init(host: String = constants.hostString, port: Int = constants.port) {
+    init(host: String, port: Int) {
         self.hostString = host
         self.port = port
     }

@@ -89,11 +89,11 @@ final class SentinelProvider: SentinelProviderType {
     }
 
     init(
-        connectionProvider: ClientConnectionProviderType = ClientConnectionProvider(),
-        transactionProvider: TransactionProviderType = TransactionProvider()
+        host: String,
+        port: Int
     ) {
-        self.connectionProvider = connectionProvider
-        self.transactionProvider = transactionProvider
+        self.connectionProvider = ClientConnectionProvider(host: host, port: port)
+        self.transactionProvider = TransactionProvider(host: host, port: port)
     }
     
     func fetchAvailableNodes(

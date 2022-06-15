@@ -19,8 +19,11 @@ protocol TransactionProviderType {
 final class TransactionProvider: TransactionProviderType {
     private let connectionProvider: ClientConnectionProviderType
 
-    init(connectionProvider: ClientConnectionProviderType = ClientConnectionProvider()) {
-        self.connectionProvider = connectionProvider
+    init(
+        host: String,
+        port: Int
+    ) {
+        self.connectionProvider = ClientConnectionProvider(host: host, port: port)
     }
 
     func broadcastGrpcTx(
