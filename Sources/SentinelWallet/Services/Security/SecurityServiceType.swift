@@ -16,7 +16,7 @@ public protocol SecurityServiceType {
 }
 
 extension SecurityServiceType {
-    func generateMnemonics() -> String {
+    public func generateMnemonics() -> String {
         Mnemonic.create(strength: .hight, language: .english)
     }
 
