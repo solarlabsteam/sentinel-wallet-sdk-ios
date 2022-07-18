@@ -10,12 +10,12 @@ import Foundation
 // MARK: - Constants
 
 private struct Constants {
-    let startSessionURL = "/sentinel.session.v1.MsgService/MsgStart"
-    let stopSessionURL = "/sentinel.session.v1.MsgService/MsgEnd"
-    let subscribeToNodeURL = "/sentinel.subscription.v1.MsgService/MsgSubscribeToNode"
-    let cancelSubscriptionURL = "/sentinel.subscription.v1.MsgService/MsgCancel"
-    let subscribeToPlanURL = "/sentinel.subscription.v1.MsgService/MsgSubscribeToPlan"
-    let addQuotaURL = "/sentinel.subscription.v1.MsgService/MsgAddQuota"
+    let startSessionURL = "/sentinel.session.v1.MsgStartRequest"
+    let stopSessionURL = "/sentinel.session.v1.MsgEndRequest"
+    let subscribeToNodeURL = "/sentinel.subscription.v1.MsgSubscribeToNodeRequest"
+    let cancelSubscriptionURL = "/sentinel.subscription.v1.MsgCancelRequest"
+    let subscribeToPlanURL = "/sentinel.subscription.v1.MsgSubscribeToPlanRequest"
+    let addQuotaURL = "/sentinel.subscription.v1.MsgAddQuotaRequest"
 }
 private let constants = Constants()
 
@@ -25,6 +25,7 @@ public enum SentinelServiceError: Error {
     case broadcastFailed
     case emptyInfo
     case sessionStartFailed
+    case sessionsStopFailed
 }
 
 // MARK: - SubscriptionService
@@ -33,8 +34,12 @@ final public class SubscriptionService {
     private let provider: SentinelProviderType
     private let walletService: WalletService
 
-    public init(walletService: WalletService) {
-        provider = SentinelProvider()
+    public init(
+        host: String = GlobalConstants.defaultLCDHostString,
+        port: Int = GlobalConstants.defaultLCDPort,
+        walletService: WalletService
+    ) {
+        provider = SentinelProvider(host: host, port: port)
         self.walletService = walletService
     }
 }
@@ -193,6 +198,53 @@ extension SubscriptionService {
                     return
                 }
                 completion(.success(Session(from: session)))
+            }
+        }
+    }
+    
+    public func stopActiveSessions(completion: @escaping (Result<Void, Error>) -> Void) {
+        provider.loadActiveSessions(for: walletService.accountAddress) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+
+            case .success(let sessions):
+                guard !sessions.isEmpty else {
+                    completion(.success(()))
+                    return
+                }
+                
+                let group = DispatchGroup()
+                var errorAppeared = false
+                sessions.forEach { session in
+                    group.enter()
+                    let stopMessage = Sentinel_Session_V1_MsgEndRequest.with {
+                        $0.id = session.id
+                        $0.from = self.walletService.accountAddress
+                    }
+                    
+                    let anyMessage = Google_Protobuf2_Any.with {
+                        $0.typeURL = constants.stopSessionURL
+                        $0.value = try! stopMessage.serializedData()
+                    }
+                    
+                    self.generateAndBroadcast(to: session.node, messages: [anyMessage]) { result in
+                        group.leave()
+                        if case let .failure(error) = result {
+                            log.error(error)
+                            errorAppeared = true
+                        }
+                    }
+                }
+                
+                group.notify(queue: .main) {
+                    guard !errorAppeared else {
+                        completion(.failure(SentinelServiceError.sessionsStopFailed))
+                        return
+                    }
+                    completion(.success(()))
+                }
             }
         }
     }

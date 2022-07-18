@@ -10,8 +10,8 @@ import Foundation
 final public class PlanService {
     private let provider: SentinelProviderType
 
-    public init() {
-        provider = SentinelProvider()
+    public init(host: String, port: Int) {
+        provider = SentinelProvider(host: host, port: port)
     }
 }
 
