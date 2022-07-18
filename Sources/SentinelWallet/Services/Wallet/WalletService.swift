@@ -33,9 +33,10 @@ public enum WalletServiceError: Error {
 final public class WalletService {
     private let provider: WalletDataProviderType
     private let securityService: SecurityServiceType
-    private let walletData: WalletData
     
-    public var accountAddress: String {
+    private var walletData: WalletData
+    
+    public var currentWalletAddress: String {
         walletData.accountAddress
     }
 
@@ -53,45 +54,182 @@ final public class WalletService {
         self.provider = WalletDataProvider(host: host, port: port)
         self.securityService = securityService
     }
-    
-    private func availableAmount() -> Int {
-        walletData.myBalances
-            .filter { $0.denom == GlobalConstants.denom }
-            .map { Int($0.amount) ?? 0 }
-            .reduce(0, +)
+}
+
+// MARK: - Public methods: Wallet data
+
+extension WalletService {
+    public func manage(address: String) {
+        walletData = .init(accountAddress: currentWalletAddress)
+        
+        fetchAuthorization { _ in }
+        fetchTendermintNodeInfo { _ in }
     }
     
-    public func add(mnemonics: [String]) -> Error? {
-        guard !securityService.mnemonicsExists(for: walletData.accountAddress) else {
-            log.info("Mnemonics're already added")
-            return nil
-        }
-
-        switch securityService.restore(from: mnemonics) {
-        case .failure(let error):
-            return error
-
-        case .success(let account):
-            guard account == walletData.accountAddress else {
-                log.error("Mnemonics do not match")
-                return WalletServiceError.mnemonicsDoNotMatch
+    public func fetchTendermintNodeInfo(
+        callback: @escaping (Result<WalletNodeDTO, Error>) -> Void
+    ) {
+        provider.fetchTendermintNodeInfo { [weak self] result in
+            switch result {
+            case .failure(let error):
+                log.error(error)
+                callback(.failure(error))
+            case .success(let info):
+                self?.walletData.nodeInfo = info
+                callback(.success(info.toDTO()))
             }
-            guard securityService.save(mnemonics: mnemonics, for: account) else {
-                log.error("Failed to save mnemonics info")
-                return WalletServiceError.savingError
-            }
-
-            log.debug("Mnemonics are added for \(account)")
-            return nil
         }
     }
-    
-    public func showMnemonics() -> [String]? {
-        securityService.loadMnemonics(for: walletData.accountAddress)
+
+    // Do not forget to update Authorization info before doing any signed requests by calling this method.
+    public func fetchAuthorization(
+        callback: @escaping (Error?) -> Void
+    ) {
+        provider.fetchAuthorization(for: walletData.accountAddress) { [weak self] result in
+            switch result {
+            case .failure(let error):
+                log.error(error)
+                callback(error)
+            case .success(let account):
+                self?.walletData.accountGRPC = account
+                callback(nil)
+            }
+        }
     }
     
+    public func fetchBalance(
+        callback: @escaping (Result<[CoinToken], Error>) -> Void
+    ) {
+        provider.fetchBalance(for: walletData.accountAddress) { [weak self] result in
+            switch result {
+            case .failure(let error):
+                log.error(error)
+                callback(.failure(error))
+            case .success(let balance):
+                if balance.isEmpty {
+                    self?.walletData.myBalances = [
+                        CoinToken(denom: GlobalConstants.mainDenom, amount: "0")
+                    ]
+                } else {
+                    self?.walletData.myBalances = balance
+                }
+                callback(.success(balance))
+            }
+        }
+    }
+    
+    public func fetchRewards(
+        offset: Int,
+        callback: @escaping (Result<[WalletDelegatorRewardDTO], Error>) -> Void
+    ) {
+        provider.fetchRewards(for: walletData.accountAddress) { [weak self] result in
+            switch result {
+            case .failure(let error):
+                log.error(error)
+                callback(.failure(error))
+            case .success(let reward):
+                self?.walletData.myReward = reward
+                callback(.success(reward.map { $0.toDTO() }))
+            }
+        }
+    }
+}
+
+#warning("TODO: Move to separate service")
+// MARK: - Public methods: Validators
+
+extension WalletService {
+    public func fetchUnbondedValidators(
+        offset: Int,
+        limit: Int,
+        callback: @escaping (Result<[WalletValidatorDTO], Error>) -> Void
+    ) {
+        provider.fetchValidators(offset: offset, limit: limit, type: .unbonded) { result in
+            switch result {
+            case .failure(let error):
+                log.error(error)
+                callback(.failure(error))
+            case .success(let validators):
+                callback(.success(validators.map { $0.toDTO() }))
+            }
+        }
+    }
+    
+    public func fetchUnbondingValidators(
+        offset: Int,
+        limit: Int,
+        callback: @escaping (Result<[WalletValidatorDTO], Error>) -> Void
+    ) {
+        provider.fetchValidators(offset: offset, limit: limit, type: .undonding) { result in
+            switch result {
+            case .failure(let error):
+                log.error(error)
+                callback(.failure(error))
+            case .success(let validators):
+                callback(.success(validators.map { $0.toDTO() }))
+            }
+        }
+    }
+    
+    public func fetchBondedValidators(
+        offset: Int,
+        limit: Int,
+        callback: @escaping (Result<[WalletValidatorDTO], Error>) -> Void
+    ) {
+        provider.fetchValidators(offset: offset, limit: limit, type: .bonded) { result in
+            switch result {
+            case .failure(let error):
+                log.error(error)
+                callback(.failure(error))
+            case .success(let validators):
+                callback(.success(validators.map { $0.toDTO() }))
+            }
+        }
+    }
+}
+
+#warning("TODO: Move to separate service")
+// MARK: - Public methods: Delegations
+
+extension WalletService {
+    public func fetchDelegations(
+        offset: Int,
+        limit: Int,
+        callback: @escaping (Result<[WalletDelegationDTO], Error>) -> Void
+    ) {
+        provider.fetchDelegations(for: walletData.accountAddress, offset: offset, limit: limit) { result in
+            switch result {
+            case .failure(let error):
+                log.error(error)
+                callback(.failure(error))
+            case .success(let delegations):
+                callback(.success(delegations.map { $0.toDTO() }))
+            }
+        }
+    }
+    
+    public func fetchUnboundingDelegations(
+        offset: Int,
+        limit: Int,
+        callback: @escaping (Result<[WalletUnbondingDelegationDTO], Error>) -> Void
+    ) {
+        provider.fetchUnboundingDelegations(for: walletData.accountAddress, offset: offset, limit: limit) { result in
+            switch result {
+            case .failure(let error):
+                log.error(error)
+                callback(.failure(error))
+            case .success(let delegations):
+                callback(.success(delegations.map { $0.toDTO() }))
+            }
+        }
+    }
+}
+
+// MARK: - Public methods: Transfer
+
+extension WalletService {
     public func generateSignature(for data: Data) -> String? {
-        guard let mnemonics = showMnemonics() else {
+        guard let mnemonics = securityService.loadMnemonics(for: walletData.accountAddress) else {
             log.error(WalletServiceError.missingMnemonics)
             return nil
         }
@@ -116,7 +254,7 @@ final public class WalletService {
             return
         }
         
-        guard let mnemonics = showMnemonics() else {
+        guard let mnemonics = securityService.loadMnemonics(for: walletData.accountAddress) else {
             completion(.failure(WalletServiceError.missingMnemonics))
             return
         }
@@ -192,7 +330,7 @@ final public class WalletService {
                 $0.amount = tokens.amount
             }
             let sendMessage = Cosmos_Bank_V1beta1_MsgSend.with {
-                $0.fromAddress = self.accountAddress
+                $0.fromAddress = self.currentWalletAddress
                 $0.toAddress = account
                 $0.amount = [sendCoin]
             }
@@ -232,154 +370,6 @@ final public class WalletService {
         }
     }
     
-    public func fetchTendermintNodeInfo(
-        callback: @escaping (Result<WalletNodeDTO, Error>) -> Void
-    ) {
-        provider.fetchTendermintNodeInfo { [weak self] result in
-            switch result {
-            case .failure(let error):
-                log.error(error)
-                callback(.failure(error))
-            case .success(let info):
-                self?.walletData.nodeInfo = info
-                callback(.success(info.toDTO()))
-            }
-        }
-    }
-
-    // Do not forget to update Authorization info before doing any signed requests by calling this method.
-    public func fetchAuthorization(
-        callback: @escaping (Error?) -> Void
-    ) {
-        provider.fetchAuthorization(for: walletData.accountAddress) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                log.error(error)
-                callback(error)
-            case .success(let account):
-                self?.walletData.accountGRPC = account
-                callback(nil)
-            }
-        }
-    }
-    
-    public func fetchBondedValidators(
-        offset: Int,
-        limit: Int,
-        callback: @escaping (Result<[WalletValidatorDTO], Error>) -> Void
-    ) {
-        provider.fetchValidators(offset: offset, limit: limit, type: .bonded) { result in
-            switch result {
-            case .failure(let error):
-                log.error(error)
-                callback(.failure(error))
-            case .success(let validators):
-                callback(.success(validators.map { $0.toDTO() }))
-            }
-        }
-    }
-    
-    public func fetchUnbondedValidators(
-        offset: Int,
-        limit: Int,
-        callback: @escaping (Result<[WalletValidatorDTO], Error>) -> Void
-    ) {
-        provider.fetchValidators(offset: offset, limit: limit, type: .unbonded) { result in
-            switch result {
-            case .failure(let error):
-                log.error(error)
-                callback(.failure(error))
-            case .success(let validators):
-                callback(.success(validators.map { $0.toDTO() }))
-            }
-        }
-    }
-    
-    public func fetchUnbondingValidators(
-        offset: Int,
-        limit: Int,
-        callback: @escaping (Result<[WalletValidatorDTO], Error>) -> Void
-    ) {
-        provider.fetchValidators(offset: offset, limit: limit, type: .undonding) { result in
-            switch result {
-            case .failure(let error):
-                log.error(error)
-                callback(.failure(error))
-            case .success(let validators):
-                callback(.success(validators.map { $0.toDTO() }))
-            }
-        }
-    }
-    
-    public func fetchBalance(
-        callback: @escaping (Result<[CoinToken], Error>) -> Void
-    ) {
-        provider.fetchBalance(for: walletData.accountAddress) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                log.error(error)
-                callback(.failure(error))
-            case .success(let balance):
-                if balance.isEmpty {
-                    self?.walletData.myBalances = [
-                        CoinToken(denom: GlobalConstants.mainDenom, amount: "0")
-                    ]
-                } else {
-                    self?.walletData.myBalances = balance
-                }
-                callback(.success(balance))
-            }
-        }
-    }
-    
-    public func fetchDelegations(
-        offset: Int,
-        limit: Int,
-        callback: @escaping (Result<[WalletDelegationDTO], Error>) -> Void
-    ) {
-        provider.fetchDelegations(for: walletData.accountAddress, offset: offset, limit: limit) { result in
-            switch result {
-            case .failure(let error):
-                log.error(error)
-                callback(.failure(error))
-            case .success(let delegations):
-                callback(.success(delegations.map { $0.toDTO() }))
-            }
-        }
-    }
-    
-    public func fetchUnboundingDelegations(
-        offset: Int,
-        limit: Int,
-        callback: @escaping (Result<[WalletUnbondingDelegationDTO], Error>) -> Void
-    ) {
-        provider.fetchUnboundingDelegations(for: walletData.accountAddress, offset: offset, limit: limit) { result in
-            switch result {
-            case .failure(let error):
-                log.error(error)
-                callback(.failure(error))
-            case .success(let delegations):
-                callback(.success(delegations.map { $0.toDTO() }))
-            }
-        }
-    }
-    
-    public func fetchRewards(
-        offset: Int,
-        callback: @escaping (Result<[WalletDelegatorRewardDTO], Error>) -> Void
-    ) {
-        provider.fetchRewards(for: walletData.accountAddress) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                log.error(error)
-                callback(.failure(error))
-            case .success(let reward):
-                self?.walletData.myReward = reward
-                callback(.success(reward.map { $0.toDTO() }))
-            }
-        }
-    }
-    
     public func getPrices(
         for denoms: String,
         callback: @escaping (Result<[ExchangeRates], Error>) -> Void
@@ -393,5 +383,16 @@ final public class WalletService {
                 callback(.success(rates))
             }
         }
+    }
+}
+
+// MARK: - Private methods
+
+extension WalletService {
+    private func availableAmount() -> Int {
+        walletData.myBalances
+            .filter { $0.denom == GlobalConstants.denom }
+            .map { Int($0.amount) ?? 0 }
+            .reduce(0, +)
     }
 }

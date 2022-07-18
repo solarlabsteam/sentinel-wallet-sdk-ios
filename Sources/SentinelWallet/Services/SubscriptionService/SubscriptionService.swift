@@ -49,7 +49,7 @@ extension SubscriptionService {
         subscriptionID: UInt64,
         completion: @escaping (Result<Quota, Error>) -> Void
     ) {
-        provider.fetchQuota(address: walletService.accountAddress, subscriptionId: subscriptionID) { result in
+        provider.fetchQuota(address: walletService.currentWalletAddress, subscriptionId: subscriptionID) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
@@ -70,7 +70,7 @@ extension SubscriptionService {
         }
         
         let startMessage = Sentinel_Subscription_V1_MsgSubscribeToNodeRequest.with {
-            $0.from = walletService.accountAddress
+            $0.from = walletService.currentWalletAddress
             $0.address = node
             $0.deposit = sendCoin
         }
@@ -90,7 +90,7 @@ extension SubscriptionService {
         completion: @escaping (Result<TransactionResult, Error>) -> Void
     ) {
         let startMessage = Sentinel_Subscription_V1_MsgSubscribeToPlanRequest.with {
-            $0.from = walletService.accountAddress
+            $0.from = walletService.currentWalletAddress
             $0.id = planID
             $0.denom = denom
         }
@@ -112,7 +112,7 @@ extension SubscriptionService {
         let messages = subscriptions.map { subscriptionID -> Google_Protobuf2_Any in
             let startMessage = Sentinel_Subscription_V1_MsgCancelRequest.with {
                 $0.id = subscriptionID
-                $0.from = walletService.accountAddress
+                $0.from = walletService.currentWalletAddress
             }
 
             let anyMessage = Google_Protobuf2_Any.with {
@@ -133,7 +133,7 @@ extension SubscriptionService {
         completion: @escaping (Result<TransactionResult, Error>) -> Void
     ) {
         let startMessage = Sentinel_Subscription_V1_MsgAddQuotaRequest.with {
-            $0.from = walletService.accountAddress
+            $0.from = walletService.currentWalletAddress
             $0.address = address
             $0.bytes = bytes
         }
@@ -166,7 +166,7 @@ extension SubscriptionService {
         completion: @escaping (Result<[Subscription], Error>) -> Void
     ) {
         provider.fetchSubscriptions(
-            for: walletService.accountAddress,
+            for: walletService.currentWalletAddress,
                with: .init(from: status) ?? Sentinel_Types_V1_Status.unspecified
         ) { result in
             switch result {
@@ -187,7 +187,7 @@ extension SubscriptionService {
     }
     
     public func loadActiveSession(completion: @escaping (Result<Session, Error>) -> Void) {
-        provider.loadActiveSessions(for: walletService.accountAddress) {  result in
+        provider.loadActiveSessions(for: walletService.currentWalletAddress) {  result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
@@ -203,7 +203,7 @@ extension SubscriptionService {
     }
     
     public func stopActiveSessions(completion: @escaping (Result<Void, Error>) -> Void) {
-        provider.loadActiveSessions(for: walletService.accountAddress) { [weak self] result in
+        provider.loadActiveSessions(for: walletService.currentWalletAddress) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .failure(let error):
@@ -221,7 +221,7 @@ extension SubscriptionService {
                     group.enter()
                     let stopMessage = Sentinel_Session_V1_MsgEndRequest.with {
                         $0.id = session.id
-                        $0.from = self.walletService.accountAddress
+                        $0.from = self.walletService.currentWalletAddress
                     }
                     
                     let anyMessage = Google_Protobuf2_Any.with {
@@ -264,7 +264,7 @@ extension SubscriptionService {
             }
             let startMessage = Sentinel_Session_V1_MsgStartRequest.with {
                 $0.id = subscriptionID
-                $0.from = self.walletService.accountAddress
+                $0.from = self.walletService.currentWalletAddress
                 $0.node = nodeAddress
             }
             
@@ -300,7 +300,7 @@ extension SubscriptionService {
     }
     
     private func stopActiveSessionsMessages(completion: @escaping ([Google_Protobuf2_Any]) -> Void) {
-        provider.loadActiveSessions(for: walletService.accountAddress) { [weak self] result in
+        provider.loadActiveSessions(for: walletService.currentWalletAddress) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .failure(let error):
@@ -318,7 +318,7 @@ extension SubscriptionService {
                 let messages = sessions.map { session in
                     Sentinel_Session_V1_MsgEndRequest.with {
                         $0.id = session.id
-                        $0.from = self.walletService.accountAddress
+                        $0.from = self.walletService.currentWalletAddress
                     }}.map { stopMessage in
                         Google_Protobuf2_Any.with {
                             $0.typeURL = constants.stopSessionURL
