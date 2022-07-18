@@ -16,12 +16,14 @@ final class Signer {
         for messages: [Google_Protobuf2_Any],
         memo: String,
         mode: Cosmos_Tx_V1beta1_BroadcastMode = .block,
-        privateKey: PrivateKey,
+        mnemonic: [String],
         chainId: String
     ) -> Cosmos_Tx_V1beta1_BroadcastTxRequest {
         guard let authorization = Utils.parseAuthorization(for: account) else {
             fatalError("Failed to get authorization")
         }
+        
+        let privateKey = getKey(for: mnemonic)
         let txBody = Cosmos_Tx_V1beta1_TxBody.with {
             $0.memo = memo
             $0.messages = messages
@@ -46,10 +48,26 @@ final class Signer {
             $0.txBytes = try! rawTx.serializedData()
         }
     }
+    
+    static func getKey(for mnemonics: [String]) -> PrivateKey {
+        let masterKey = PrivateKey(
+            seed: Mnemonic.createSeed(mnemonic: mnemonics.joined(separator: " ")),
+            coin: .bitcoin
+        )
+
+        return masterKey
+            .derived(at: .hardened(44))
+            .derived(at: .hardened(118))
+            .derived(at: .hardened(0))
+            .derived(at: .notHardened(0))
+            .derived(at: .notHardened(0))
+    }
 }
 
-private extension Signer {
-    static func getGrpcSignerInfo(
+// MARK: - Private methods
+
+extension Signer {
+    private static func getGrpcSignerInfo(
         account: Google_Protobuf2_Any,
         privateKey: PrivateKey,
         sequence: UInt64
@@ -69,7 +87,7 @@ private extension Signer {
         }
     }
 
-    static func getGrpcAuthInfo(
+    private static func getGrpcAuthInfo(
         from signerInfo: Cosmos_Tx_V1beta1_SignerInfo,
         with fee: Fee
     ) -> Cosmos_Tx_V1beta1_AuthInfo {
@@ -87,7 +105,7 @@ private extension Signer {
         }
     }
 
-    static func getGrpcRawTx(
+    private static func getGrpcRawTx(
         account: Google_Protobuf2_Any,
         accountNumber: UInt64,
         txBody: Cosmos_Tx_V1beta1_TxBody,

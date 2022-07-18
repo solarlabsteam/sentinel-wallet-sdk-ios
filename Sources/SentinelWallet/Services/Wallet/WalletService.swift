@@ -31,7 +31,9 @@ public enum WalletServiceError: Error {
 }
 
 final public class WalletService {
-    private let provider: WalletDataProviderType
+    private let transactionProvider: TransactionProviderType
+    private let validatorsProvider: ValidatorsProviderType
+    private let delegationsProvider: DelegationsProviderType
     private let securityService: SecurityServiceType
     
     private var walletData: WalletData
@@ -51,7 +53,9 @@ final public class WalletService {
         securityService: SecurityServiceType
     ) {
         self.walletData = .init(accountAddress: accountAddress)
-        self.provider = WalletDataProvider(host: host, port: port)
+        self.transactionProvider = TransactionProvider(host: host, port: port)
+        self.validatorsProvider = ValidatorsProvider(host: host, port: port)
+        self.delegationsProvider = DelegationsProvider(host: host, port: port)
         self.securityService = securityService
     }
 }
@@ -69,7 +73,7 @@ extension WalletService {
     public func fetchTendermintNodeInfo(
         callback: @escaping (Result<WalletNodeDTO, Error>) -> Void
     ) {
-        provider.fetchTendermintNodeInfo { [weak self] result in
+        transactionProvider.fetchTendermintNodeInfo { [weak self] result in
             switch result {
             case .failure(let error):
                 log.error(error)
@@ -85,7 +89,7 @@ extension WalletService {
     public func fetchAuthorization(
         callback: @escaping (Error?) -> Void
     ) {
-        provider.fetchAuthorization(for: walletData.accountAddress) { [weak self] result in
+        transactionProvider.fetchAuthorization(for: walletData.accountAddress) { [weak self] result in
             switch result {
             case .failure(let error):
                 log.error(error)
@@ -100,7 +104,7 @@ extension WalletService {
     public func fetchBalance(
         callback: @escaping (Result<[CoinToken], Error>) -> Void
     ) {
-        provider.fetchBalance(for: walletData.accountAddress) { [weak self] result in
+        transactionProvider.fetchBalance(for: walletData.accountAddress) { [weak self] result in
             switch result {
             case .failure(let error):
                 log.error(error)
@@ -122,7 +126,7 @@ extension WalletService {
         offset: Int,
         callback: @escaping (Result<[WalletDelegatorRewardDTO], Error>) -> Void
     ) {
-        provider.fetchRewards(for: walletData.accountAddress) { [weak self] result in
+        transactionProvider.fetchRewards(for: walletData.accountAddress) { [weak self] result in
             switch result {
             case .failure(let error):
                 log.error(error)
@@ -144,7 +148,7 @@ extension WalletService {
         limit: Int,
         callback: @escaping (Result<[WalletValidatorDTO], Error>) -> Void
     ) {
-        provider.fetchValidators(offset: offset, limit: limit, type: .unbonded) { result in
+        validatorsProvider.fetchValidators(offset: offset, limit: limit, type: .unbonded) { result in
             switch result {
             case .failure(let error):
                 log.error(error)
@@ -160,7 +164,7 @@ extension WalletService {
         limit: Int,
         callback: @escaping (Result<[WalletValidatorDTO], Error>) -> Void
     ) {
-        provider.fetchValidators(offset: offset, limit: limit, type: .undonding) { result in
+        validatorsProvider.fetchValidators(offset: offset, limit: limit, type: .undonding) { result in
             switch result {
             case .failure(let error):
                 log.error(error)
@@ -176,7 +180,7 @@ extension WalletService {
         limit: Int,
         callback: @escaping (Result<[WalletValidatorDTO], Error>) -> Void
     ) {
-        provider.fetchValidators(offset: offset, limit: limit, type: .bonded) { result in
+        validatorsProvider.fetchValidators(offset: offset, limit: limit, type: .bonded) { result in
             switch result {
             case .failure(let error):
                 log.error(error)
@@ -197,7 +201,7 @@ extension WalletService {
         limit: Int,
         callback: @escaping (Result<[WalletDelegationDTO], Error>) -> Void
     ) {
-        provider.fetchDelegations(for: walletData.accountAddress, offset: offset, limit: limit) { result in
+        delegationsProvider.fetchDelegations(for: walletData.accountAddress, offset: offset, limit: limit) { result in
             switch result {
             case .failure(let error):
                 log.error(error)
@@ -213,7 +217,7 @@ extension WalletService {
         limit: Int,
         callback: @escaping (Result<[WalletUnbondingDelegationDTO], Error>) -> Void
     ) {
-        provider.fetchUnboundingDelegations(for: walletData.accountAddress, offset: offset, limit: limit) { result in
+        delegationsProvider.fetchUnboundingDelegations(for: walletData.accountAddress, offset: offset, limit: limit) { result in
             switch result {
             case .failure(let error):
                 log.error(error)
@@ -229,64 +233,17 @@ extension WalletService {
 
 extension WalletService {
     public func generateSignature(for data: Data) -> String? {
-        guard let mnemonics = securityService.loadMnemonics(for: walletData.accountAddress) else {
+        guard let mnemonic = securityService.loadMnemonics(for: walletData.accountAddress) else {
             log.error(WalletServiceError.missingMnemonics)
             return nil
         }
         
-        let key = securityService.getKey(for: mnemonics)
-        return try? ECDSA.compactSign(data: data.sha256(), privateKey: key.raw).base64EncodedString()
+        return generateSignature(for: data, with: mnemonic)
     }
     
-    public func generateSignature(for data: Data, with mnemonics: [String]) -> String? {
-        let key = securityService.getKey(for: mnemonics)
+    public func generateSignature(for data: Data, with mnemonic: [String]) -> String? {
+        let key = Signer.getKey(for: mnemonic)
         return try? ECDSA.compactSign(data: data.sha256(), privateKey: key.raw).base64EncodedString()
-    }
-    
-    func generateSignedRequest(
-        to account: String,
-        messages: [Google_Protobuf2_Any],
-        gasFactor: Int = 0,
-        completion: @escaping ((Result<Cosmos_Tx_V1beta1_BroadcastTxRequest, Error>) -> Void)
-    ) {
-        guard account != walletData.accountAddress else {
-            completion(.failure(WalletServiceError.accountMatchesDestination))
-            return
-        }
-        
-        guard let mnemonics = securityService.loadMnemonics(for: walletData.accountAddress) else {
-            completion(.failure(WalletServiceError.missingMnemonics))
-            return
-        }
-
-        fetchAuthorization { [weak self] error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-
-            guard let self = self,  let accountGRPC = self.walletData.accountGRPC else {
-                completion(.failure(WalletServiceError.missingAuthorization))
-                return
-            }
-            
-            let gas = constants.defaultGas + (constants.defaultGas / 10 * gasFactor)
-            let feePrice = constants.defaultFeePrice + (constants.defaultFeePrice / 10 * gasFactor)
-            
-            let fee = Fee("\(gas)", [.init(denom: GlobalConstants.denom, amount: "\(feePrice)")])
-            
-            let request = Signer.generateSignedRequest(
-                with: accountGRPC,
-                to: account,
-                fee: fee,
-                for: messages,
-                memo: "",
-                privateKey: self.securityService.getKey(for: mnemonics),
-                chainId: self.walletData.getChainId()
-            )
-
-            completion(.success(request))
-        }
     }
     
     public func transfer(
@@ -300,57 +257,46 @@ extension WalletService {
             return
         }
         
-        guard let mnemonics = securityService.loadMnemonics(for: walletData.accountAddress) else {
+        guard let mnemonic = securityService.loadMnemonics(for: walletData.accountAddress) else {
             log.error("Mnemonics are missing")
             completion(.failure(WalletServiceError.missingMnemonics))
             return
         }
+        
+        let total = constants.defaultFeePrice + (Int(tokens.amount) ?? 0)
+        guard total <= self.availableAmount() else {
+            log.error("Not enough tokens on wallet")
+            completion(.failure(WalletServiceError.notEnoughTokens))
+            return
+        }
 
-        fetchAuthorization { [weak self] error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-
-            guard let self = self, let accountGRPC = self.walletData.accountGRPC else {
-                log.error("Authorization is missing")
-                completion(.failure(WalletServiceError.missingAuthorization))
-                return
-            }
-
-            let total = constants.defaultFeePrice + (Int(tokens.amount) ?? 0)
-            guard total <= self.availableAmount() else {
-                log.error("Not enough tokens on wallet")
-                completion(.failure(WalletServiceError.notEnoughTokens))
-                return
-            }
-
-            let sendCoin = Cosmos_Base_V1beta1_Coin.with {
-                $0.denom = tokens.denom
-                $0.amount = tokens.amount
-            }
-            let sendMessage = Cosmos_Bank_V1beta1_MsgSend.with {
-                $0.fromAddress = self.currentWalletAddress
-                $0.toAddress = account
-                $0.amount = [sendCoin]
-            }
-            let anyMessage = Google_Protobuf2_Any.with {
-                $0.typeURL = constants.sendMessageURL
-                $0.value = try! sendMessage.serializedData()
-            }
-
-            let request = Signer.generateSignedRequest(
-                with: accountGRPC,
-                to: account,
-                fee: constants.defaultFee,
-                for: [anyMessage],
-                memo: memo ?? "",
-                mode: .async,
-                privateKey: self.securityService.getKey(for: mnemonics),
-                chainId: self.walletData.getChainId()
-            )
-
-            self.provider.onBroadcastGrpcTx(signedRequest: request, completion: { result in
+        let sendCoin = Cosmos_Base_V1beta1_Coin.with {
+            $0.denom = tokens.denom
+            $0.amount = tokens.amount
+        }
+        let sendMessage = Cosmos_Bank_V1beta1_MsgSend.with {
+            $0.fromAddress = self.currentWalletAddress
+            $0.toAddress = account
+            $0.amount = [sendCoin]
+        }
+        let anyMessage = Google_Protobuf2_Any.with {
+            $0.typeURL = constants.sendMessageURL
+            $0.value = try! sendMessage.serializedData()
+        }
+        
+        let transactionData = TransactionData(
+            owner: walletData.accountAddress,
+            ownerMnemonic: mnemonic,
+            recipient: account,
+            chainID: walletData.getChainId()
+        )
+        
+        transactionProvider.broadcast(
+            data: transactionData,
+            messages: [anyMessage],
+            memo: memo,
+            gasFactor: 0,
+            completion: { result in
                 switch result {
                 case .failure(let error):
                     log.error(error)
@@ -366,23 +312,8 @@ extension WalletService {
                     )
                     completion(.success(response.toDTO()))
                 }
-            })
-        }
-    }
-    
-    public func getPrices(
-        for denoms: String,
-        callback: @escaping (Result<[ExchangeRates], Error>) -> Void
-    ) {
-        provider.getPrices(for: denoms) { result in
-            switch result {
-            case .failure(let error):
-                log.error(error)
-                callback(.failure(error))
-            case .success(let rates):
-                callback(.success(rates))
             }
-        }
+        )
     }
 }
 
