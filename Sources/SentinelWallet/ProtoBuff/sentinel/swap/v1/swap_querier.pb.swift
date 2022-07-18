@@ -128,6 +128,15 @@ struct Sentinel_Swap_V1_QueryParamsResponse {
   fileprivate var _params: Sentinel_Swap_V1_Params? = nil
 }
 
+#if swift(>=5.5) && canImport(_Concurrency)
+extension Sentinel_Swap_V1_QuerySwapsRequest: @unchecked Sendable {}
+extension Sentinel_Swap_V1_QuerySwapRequest: @unchecked Sendable {}
+extension Sentinel_Swap_V1_QueryParamsRequest: @unchecked Sendable {}
+extension Sentinel_Swap_V1_QuerySwapsResponse: @unchecked Sendable {}
+extension Sentinel_Swap_V1_QuerySwapResponse: @unchecked Sendable {}
+extension Sentinel_Swap_V1_QueryParamsResponse: @unchecked Sendable {}
+#endif  // swift(>=5.5) && canImport(_Concurrency)
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "sentinel.swap.v1"
@@ -151,9 +160,13 @@ extension Sentinel_Swap_V1_QuerySwapsRequest: SwiftProtobuf.Message, SwiftProtob
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if let v = self._pagination {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._pagination {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
-    }
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -236,12 +249,16 @@ extension Sentinel_Swap_V1_QuerySwapsResponse: SwiftProtobuf.Message, SwiftProto
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
     if !self.swaps.isEmpty {
       try visitor.visitRepeatedMessageField(value: self.swaps, fieldNumber: 1)
     }
-    if let v = self._pagination {
+    try { if let v = self._pagination {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
-    }
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -272,9 +289,13 @@ extension Sentinel_Swap_V1_QuerySwapResponse: SwiftProtobuf.Message, SwiftProtob
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if let v = self._swap {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._swap {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
-    }
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -304,9 +325,13 @@ extension Sentinel_Swap_V1_QueryParamsResponse: SwiftProtobuf.Message, SwiftProt
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if let v = self._params {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
+    try { if let v = self._params {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
-    }
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 

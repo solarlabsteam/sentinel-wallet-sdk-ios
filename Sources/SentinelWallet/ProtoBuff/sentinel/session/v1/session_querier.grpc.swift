@@ -35,16 +35,6 @@ internal protocol Sentinel_Session_V1_QueryServiceClientProtocol: GRPCClient {
     callOptions: CallOptions?
   ) -> UnaryCall<Sentinel_Session_V1_QuerySessionsRequest, Sentinel_Session_V1_QuerySessionsResponse>
 
-  func querySessionsForNode(
-    _ request: Sentinel_Session_V1_QuerySessionsForNodeRequest,
-    callOptions: CallOptions?
-  ) -> UnaryCall<Sentinel_Session_V1_QuerySessionsForNodeRequest, Sentinel_Session_V1_QuerySessionsForNodeResponse>
-
-  func querySessionsForSubscription(
-    _ request: Sentinel_Session_V1_QuerySessionsForSubscriptionRequest,
-    callOptions: CallOptions?
-  ) -> UnaryCall<Sentinel_Session_V1_QuerySessionsForSubscriptionRequest, Sentinel_Session_V1_QuerySessionsForSubscriptionResponse>
-
   func querySessionsForAddress(
     _ request: Sentinel_Session_V1_QuerySessionsForAddressRequest,
     callOptions: CallOptions?
@@ -81,42 +71,6 @@ extension Sentinel_Session_V1_QueryServiceClientProtocol {
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeQuerySessionsInterceptors() ?? []
-    )
-  }
-
-  /// Unary call to QuerySessionsForNode
-  ///
-  /// - Parameters:
-  ///   - request: Request to send to QuerySessionsForNode.
-  ///   - callOptions: Call options.
-  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
-  internal func querySessionsForNode(
-    _ request: Sentinel_Session_V1_QuerySessionsForNodeRequest,
-    callOptions: CallOptions? = nil
-  ) -> UnaryCall<Sentinel_Session_V1_QuerySessionsForNodeRequest, Sentinel_Session_V1_QuerySessionsForNodeResponse> {
-    return self.makeUnaryCall(
-      path: "/sentinel.session.v1.QueryService/QuerySessionsForNode",
-      request: request,
-      callOptions: callOptions ?? self.defaultCallOptions,
-      interceptors: self.interceptors?.makeQuerySessionsForNodeInterceptors() ?? []
-    )
-  }
-
-  /// Unary call to QuerySessionsForSubscription
-  ///
-  /// - Parameters:
-  ///   - request: Request to send to QuerySessionsForSubscription.
-  ///   - callOptions: Call options.
-  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
-  internal func querySessionsForSubscription(
-    _ request: Sentinel_Session_V1_QuerySessionsForSubscriptionRequest,
-    callOptions: CallOptions? = nil
-  ) -> UnaryCall<Sentinel_Session_V1_QuerySessionsForSubscriptionRequest, Sentinel_Session_V1_QuerySessionsForSubscriptionResponse> {
-    return self.makeUnaryCall(
-      path: "/sentinel.session.v1.QueryService/QuerySessionsForSubscription",
-      request: request,
-      callOptions: callOptions ?? self.defaultCallOptions,
-      interceptors: self.interceptors?.makeQuerySessionsForSubscriptionInterceptors() ?? []
     )
   }
 
@@ -180,12 +134,6 @@ internal protocol Sentinel_Session_V1_QueryServiceClientInterceptorFactoryProtoc
   /// - Returns: Interceptors to use when invoking 'querySessions'.
   func makeQuerySessionsInterceptors() -> [ClientInterceptor<Sentinel_Session_V1_QuerySessionsRequest, Sentinel_Session_V1_QuerySessionsResponse>]
 
-  /// - Returns: Interceptors to use when invoking 'querySessionsForNode'.
-  func makeQuerySessionsForNodeInterceptors() -> [ClientInterceptor<Sentinel_Session_V1_QuerySessionsForNodeRequest, Sentinel_Session_V1_QuerySessionsForNodeResponse>]
-
-  /// - Returns: Interceptors to use when invoking 'querySessionsForSubscription'.
-  func makeQuerySessionsForSubscriptionInterceptors() -> [ClientInterceptor<Sentinel_Session_V1_QuerySessionsForSubscriptionRequest, Sentinel_Session_V1_QuerySessionsForSubscriptionResponse>]
-
   /// - Returns: Interceptors to use when invoking 'querySessionsForAddress'.
   func makeQuerySessionsForAddressInterceptors() -> [ClientInterceptor<Sentinel_Session_V1_QuerySessionsForAddressRequest, Sentinel_Session_V1_QuerySessionsForAddressResponse>]
 
@@ -224,10 +172,6 @@ internal protocol Sentinel_Session_V1_QueryServiceProvider: CallHandlerProvider 
 
   func querySessions(request: Sentinel_Session_V1_QuerySessionsRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Sentinel_Session_V1_QuerySessionsResponse>
 
-  func querySessionsForNode(request: Sentinel_Session_V1_QuerySessionsForNodeRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Sentinel_Session_V1_QuerySessionsForNodeResponse>
-
-  func querySessionsForSubscription(request: Sentinel_Session_V1_QuerySessionsForSubscriptionRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Sentinel_Session_V1_QuerySessionsForSubscriptionResponse>
-
   func querySessionsForAddress(request: Sentinel_Session_V1_QuerySessionsForAddressRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Sentinel_Session_V1_QuerySessionsForAddressResponse>
 
   func querySession(request: Sentinel_Session_V1_QuerySessionRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Sentinel_Session_V1_QuerySessionResponse>
@@ -252,24 +196,6 @@ extension Sentinel_Session_V1_QueryServiceProvider {
         responseSerializer: ProtobufSerializer<Sentinel_Session_V1_QuerySessionsResponse>(),
         interceptors: self.interceptors?.makeQuerySessionsInterceptors() ?? [],
         userFunction: self.querySessions(request:context:)
-      )
-
-    case "QuerySessionsForNode":
-      return UnaryServerHandler(
-        context: context,
-        requestDeserializer: ProtobufDeserializer<Sentinel_Session_V1_QuerySessionsForNodeRequest>(),
-        responseSerializer: ProtobufSerializer<Sentinel_Session_V1_QuerySessionsForNodeResponse>(),
-        interceptors: self.interceptors?.makeQuerySessionsForNodeInterceptors() ?? [],
-        userFunction: self.querySessionsForNode(request:context:)
-      )
-
-    case "QuerySessionsForSubscription":
-      return UnaryServerHandler(
-        context: context,
-        requestDeserializer: ProtobufDeserializer<Sentinel_Session_V1_QuerySessionsForSubscriptionRequest>(),
-        responseSerializer: ProtobufSerializer<Sentinel_Session_V1_QuerySessionsForSubscriptionResponse>(),
-        interceptors: self.interceptors?.makeQuerySessionsForSubscriptionInterceptors() ?? [],
-        userFunction: self.querySessionsForSubscription(request:context:)
       )
 
     case "QuerySessionsForAddress":
@@ -310,14 +236,6 @@ internal protocol Sentinel_Session_V1_QueryServiceServerInterceptorFactoryProtoc
   /// - Returns: Interceptors to use when handling 'querySessions'.
   ///   Defaults to calling `self.makeInterceptors()`.
   func makeQuerySessionsInterceptors() -> [ServerInterceptor<Sentinel_Session_V1_QuerySessionsRequest, Sentinel_Session_V1_QuerySessionsResponse>]
-
-  /// - Returns: Interceptors to use when handling 'querySessionsForNode'.
-  ///   Defaults to calling `self.makeInterceptors()`.
-  func makeQuerySessionsForNodeInterceptors() -> [ServerInterceptor<Sentinel_Session_V1_QuerySessionsForNodeRequest, Sentinel_Session_V1_QuerySessionsForNodeResponse>]
-
-  /// - Returns: Interceptors to use when handling 'querySessionsForSubscription'.
-  ///   Defaults to calling `self.makeInterceptors()`.
-  func makeQuerySessionsForSubscriptionInterceptors() -> [ServerInterceptor<Sentinel_Session_V1_QuerySessionsForSubscriptionRequest, Sentinel_Session_V1_QuerySessionsForSubscriptionResponse>]
 
   /// - Returns: Interceptors to use when handling 'querySessionsForAddress'.
   ///   Defaults to calling `self.makeInterceptors()`.

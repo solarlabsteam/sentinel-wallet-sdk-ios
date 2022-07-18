@@ -8,8 +8,18 @@
 import Foundation
 
 public class WalletManager {
+    private let host: String
+    private let port: Int
     private let securityService: SecurityServiceType
-    public init(securityService: SecurityServiceType) {
+    
+    
+    public init(
+        host: String = GlobalConstants.defaultLCDHostString,
+        port: Int = GlobalConstants.defaultLCDPort,
+        securityService: SecurityServiceType
+    ) {
+        self.host = host
+        self.port = port
         self.securityService = securityService
     }
 
@@ -26,14 +36,20 @@ public class WalletManager {
         case .success(let account):
             log.debug("Loaded account: \(account)")
             saveMnemonicsIfNeeded(for: account, mnemonics: mnemonics)
-            let walletService = WalletService(for: account, securityService: self.securityService)
+            
+            let walletService = WalletService(
+                for: account,
+                host: host,
+                port: port,
+                securityService: securityService
+            )
             
             return .success(walletService)
         }
     }
 
     public func wallet(for account: String) -> WalletService {
-        .init(for: account, securityService: securityService)
+        .init(for: account, host: host, port: port, securityService: securityService)
     }
 }
 

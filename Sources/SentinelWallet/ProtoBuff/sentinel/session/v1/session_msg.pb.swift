@@ -113,6 +113,15 @@ struct Sentinel_Session_V1_MsgEndResponse {
   init() {}
 }
 
+#if swift(>=5.5) && canImport(_Concurrency)
+extension Sentinel_Session_V1_MsgStartRequest: @unchecked Sendable {}
+extension Sentinel_Session_V1_MsgUpdateRequest: @unchecked Sendable {}
+extension Sentinel_Session_V1_MsgEndRequest: @unchecked Sendable {}
+extension Sentinel_Session_V1_MsgStartResponse: @unchecked Sendable {}
+extension Sentinel_Session_V1_MsgUpdateResponse: @unchecked Sendable {}
+extension Sentinel_Session_V1_MsgEndResponse: @unchecked Sendable {}
+#endif  // swift(>=5.5) && canImport(_Concurrency)
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "sentinel.session.v1"
@@ -184,12 +193,16 @@ extension Sentinel_Session_V1_MsgUpdateRequest: SwiftProtobuf.Message, SwiftProt
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
     if !self.from.isEmpty {
       try visitor.visitSingularStringField(value: self.from, fieldNumber: 1)
     }
-    if let v = self._proof {
+    try { if let v = self._proof {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
-    }
+    } }()
     if !self.signature.isEmpty {
       try visitor.visitSingularBytesField(value: self.signature, fieldNumber: 3)
     }

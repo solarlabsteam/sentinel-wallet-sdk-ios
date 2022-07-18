@@ -45,6 +45,10 @@ struct Sentinel_Swap_V1_Swap {
   fileprivate var _amount: Cosmos_Base_V1beta1_Coin? = nil
 }
 
+#if swift(>=5.5) && canImport(_Concurrency)
+extension Sentinel_Swap_V1_Swap: @unchecked Sendable {}
+#endif  // swift(>=5.5) && canImport(_Concurrency)
+
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 fileprivate let _protobuf_package = "sentinel.swap.v1"
@@ -72,15 +76,19 @@ extension Sentinel_Swap_V1_Swap: SwiftProtobuf.Message, SwiftProtobuf._MessageIm
   }
 
   func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    // The use of inline closures is to circumvent an issue where the compiler
+    // allocates stack space for every if/case branch local when no optimizations
+    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+    // https://github.com/apple/swift-protobuf/issues/1182
     if !self.txHash.isEmpty {
       try visitor.visitSingularBytesField(value: self.txHash, fieldNumber: 1)
     }
     if !self.receiver.isEmpty {
       try visitor.visitSingularStringField(value: self.receiver, fieldNumber: 2)
     }
-    if let v = self._amount {
+    try { if let v = self._amount {
       try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
-    }
+    } }()
     try unknownFields.traverse(visitor: &visitor)
   }
 
