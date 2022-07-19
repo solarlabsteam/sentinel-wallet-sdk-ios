@@ -21,7 +21,7 @@ extension SecurityServiceType {
     }
 
     public func restoreAddress(for mnemonics: [String]) -> String? {
-        let key = getKey(for: mnemonics)
+        let key = Signer.getKey(for: mnemonics)
         let ripemd160 = RIPEMD160.hash(key.publicKey.data.sha256())
 
         return try? SegwitAddrCoder.shared.encode2(hrp: "sent", program: ripemd160)

@@ -49,6 +49,13 @@ protocol TransactionProviderType {
     func broadcast(
         data: TransactionData,
         messages: [Google_Protobuf2_Any],
+        gasFactor: Int,
+        completion: @escaping (Result<TransactionResult, Error>) -> Void
+    )
+    
+    func broadcast(
+        data: TransactionData,
+        messages: [Google_Protobuf2_Any],
         memo: String?,
         gasFactor: Int,
         completion: @escaping (Result<Cosmos_Tx_V1beta1_BroadcastTxResponse, Error>) -> Void
@@ -152,6 +159,23 @@ extension TransactionProvider: TransactionProviderType {
                 completion(.failure(error))
             }
         })
+    }
+    
+    func broadcast(
+        data: TransactionData,
+        messages: [Google_Protobuf2_Any],
+        gasFactor: Int,
+        completion: @escaping (Result<TransactionResult, Error>) -> Void
+    ) {
+        broadcast(data: data, messages: messages, memo: nil, gasFactor: gasFactor) { result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+                
+            case .success(let response):
+                completion(.success(TransactionResult(from: response.txResponse)))
+            }
+        }
     }
     
     func broadcast(
