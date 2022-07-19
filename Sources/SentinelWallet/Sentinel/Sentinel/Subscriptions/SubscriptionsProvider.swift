@@ -20,58 +20,6 @@ private struct Constants {
 }
 private let constants = Constants()
 
-// MARK: - SentinelServiceError
-
-public enum SubscriptionsProviderError: Error {
-    case broadcastFailed
-    case sessionStartFailed
-    case sessionsStopFailed
-}
-
-public protocol SubscriptionsProviderType {
-    func queryQuota(
-        address: String,
-        subscriptionId: UInt64,
-        completion: @escaping (Result<Quota, Error>) -> Void
-    )
-    
-    func subscribe(
-        transactionData: TransactionData,
-        deposit: CoinToken,
-        completion: @escaping (Result<TransactionResult, Error>) -> Void
-    )
-    
-    func cancel(
-        subscriptions: [UInt64],
-        transactionData: TransactionData,
-        completion: @escaping (Result<TransactionResult, Error>) -> Void
-    )
-    
-    func querySubscription(
-        with id: UInt64,
-        completion: @escaping (Result<Subscription, Error>) -> Void
-    )
-    
-    func querySubscriptions(
-        for account: String,
-        with status: SubscriptionStatus,
-        completion: @escaping (Result<[Subscription], Error>) -> Void
-    )
-    
-    func startNewSession(
-        on subscriptionID: UInt64,
-        data: TransactionData,
-        completion: @escaping (Result<UInt64, Error>) -> Void
-    )
-    
-    func loadActiveSessions(for account: String, completion: @escaping (Result<[Session], Error>) -> Void)
-    
-    func stopActiveSessions(
-        transactionData: TransactionData,
-        completion: @escaping (Result<Void, Error>) -> Void
-    )
-}
-
 final public class SubscriptionsProvider {
     private let connectionProvider: ClientConnectionProviderType
     private let transactionProvider: TransactionProviderType
@@ -263,7 +211,7 @@ extension SubscriptionsProvider {
                         return
                     }
                     
-                    self.loadActiveSessions(for: data.owner) { result in
+                    self.queryActiveSessions(for: data.owner) { result in
                         switch result {
                         case let .failure(error):
                             completion(.failure(error))
@@ -281,7 +229,7 @@ extension SubscriptionsProvider {
         }
     }
     
-    public func loadActiveSessions(for account: String, completion: @escaping (Result<[Session], Error>) -> Void) {
+    public func queryActiveSessions(for account: String, completion: @escaping (Result<[Session], Error>) -> Void) {
         connectionProvider.openConnection(for: { channel in
             do {
                 let request = Sentinel_Session_V1_QuerySessionsForAddressRequest.with {
@@ -304,7 +252,7 @@ extension SubscriptionsProvider {
         transactionData: TransactionData,
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
-        loadActiveSessions(for: transactionData.owner) { [weak self] result in
+        queryActiveSessions(for: transactionData.owner) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .failure(let error):
@@ -362,7 +310,7 @@ extension SubscriptionsProvider {
         for account: String,
         completion: @escaping ([Google_Protobuf2_Any]) -> Void
     ) {
-        loadActiveSessions(for: account) { result in
+        queryActiveSessions(for: account) { result in
             switch result {
             case .failure(let error):
                 log.error(error)

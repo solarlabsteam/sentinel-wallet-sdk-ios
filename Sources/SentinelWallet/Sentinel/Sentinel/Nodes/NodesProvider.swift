@@ -10,48 +10,6 @@ import GRPC
 import NIO
 import Alamofire
 
-public enum NodesProviderError: LocalizedError {
-    case invalidHost(urlString: String)
-    case emptyInfo
-
-    public var errorDescription: String? {
-        switch self {
-        case .invalidHost(let url):
-            return "Failed to get host for \(url)"
-        case .emptyInfo:
-            return "Empty node info"
-        }
-    }
-}
-
-public protocol NodesProviderType {
-    func fetchAvailableNodes(
-        offset: UInt64,
-        limit: UInt64,
-        allowedDenoms: [String],
-        completion: @escaping (Result<[SentinelNode], Error>) -> Void
-    )
-
-    func queryNodes(
-        offset: UInt64,
-        limit: UInt64,
-        allowedDenoms: [String],
-        completion: @escaping (Result<[SentinelNode], Error>) -> Void
-    )
-    
-    func queryInfo(
-        for sentinelNode: SentinelNode,
-        timeout: TimeInterval,
-        completion: @escaping (Result<Node, Error>) -> Void
-    )
-    
-    func queryNodeStatus(
-        address: String,
-        timeout: TimeInterval,
-        completion: @escaping (Result<SentinelNode, Error>) -> Void
-    )
-}
-
 final class NodesProvider {
     private let connectionProvider: ClientConnectionProviderType
     private let transactionProvider: TransactionProviderType

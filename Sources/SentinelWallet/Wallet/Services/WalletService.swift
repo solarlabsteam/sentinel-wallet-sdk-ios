@@ -6,13 +6,10 @@
 //
 
 import Foundation
-import Alamofire
 import HDWallet
 
 private struct Constants {
-    #warning("TODO @lika Calculate gas amount correctly")
     let defaultFeePrice = 10000
-    let defaultGas = 100000
     let defaultFee = Fee("100000", [.init(denom: GlobalConstants.denom, amount: "10000")])
 
     let sendMessageURL = "/cosmos.bank.v1beta1.MsgSend"
