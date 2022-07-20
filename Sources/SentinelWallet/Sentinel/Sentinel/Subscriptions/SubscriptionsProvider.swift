@@ -274,9 +274,14 @@ extension SubscriptionsProvider {
                         $0.typeURL = constants.stopSessionURL
                         $0.value = try! stopMessage.serializedData()
                     }
-                    
+                     
                     self.transactionProvider.broadcast(
-                        data: transactionData,
+                        data: .init(
+                            owner: transactionData.owner,
+                            ownerMnemonic: transactionData.ownerMnemonic,
+                            recipient: session.node,
+                            chainID: transactionData.chainID
+                        ),
                         messages: [anyMessage],
                         gasFactor: 0
                     ) { result in
