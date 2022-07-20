@@ -15,14 +15,16 @@ public protocol SubscriptionsProviderType {
     )
     
     func subscribe(
-        transactionData: TransactionData,
+        sender: TransactionSender,
+        node: String,
         deposit: CoinToken,
         completion: @escaping (Result<TransactionResult, Error>) -> Void
     )
     
     func cancel(
         subscriptions: [UInt64],
-        transactionData: TransactionData,
+        sender: TransactionSender,
+        node: String,
         completion: @escaping (Result<TransactionResult, Error>) -> Void
     )
     
@@ -39,14 +41,15 @@ public protocol SubscriptionsProviderType {
     
     func startNewSession(
         on subscriptionID: UInt64,
-        data: TransactionData,
+        sender: TransactionSender,
+        node: String,
         completion: @escaping (Result<UInt64, Error>) -> Void
     )
     
     func queryActiveSessions(for account: String, completion: @escaping (Result<[Session], Error>) -> Void)
     
     func stopActiveSessions(
-        transactionData: TransactionData,
+        sender: TransactionSender,
         completion: @escaping (Result<Void, Error>) -> Void
     )
 }

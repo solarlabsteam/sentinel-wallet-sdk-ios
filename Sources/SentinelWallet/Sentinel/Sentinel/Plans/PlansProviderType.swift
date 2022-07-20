@@ -11,7 +11,8 @@ public protocol PlansProviderType {
     func subscribe(
         to planID: UInt64,
         denom: String,
-        transactionData: TransactionData,
+        sender: TransactionSender,
+        moniker: String,
         completion: @escaping (Result<TransactionResult, Error>) -> Void
     )
     

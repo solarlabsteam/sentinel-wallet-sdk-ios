@@ -38,11 +38,12 @@ extension PlansProvider: PlansProviderType {
     public func subscribe(
         to planID: UInt64,
         denom: String,
-        transactionData: TransactionData,
+        sender: TransactionSender,
+        moniker: String,
         completion: @escaping (Result<TransactionResult, Error>) -> Void
     ) {
         let startMessage = Sentinel_Subscription_V1_MsgSubscribeToPlanRequest.with {
-            $0.from = transactionData.owner
+            $0.from = sender.owner
             $0.id = planID
             $0.denom = denom
         }
@@ -53,7 +54,8 @@ extension PlansProvider: PlansProviderType {
         }
         
         transactionProvider.broadcast(
-            data: transactionData,
+            sender: sender,
+            recipient: moniker,
             messages: [anyMessage],
             gasFactor: 0,
             completion: completion
@@ -150,13 +152,3 @@ extension PlansProvider: PlansProviderType {
         })
     }
 }
-
-
-//    func fetchPlans(
-//        offset: UInt64,
-//        limit: UInt64,
-//        completion: @escaping (Result<[Sentinel_Plan_V1_Plan], Error>) -> Void
-//    ) {
-//
-//    }
-//

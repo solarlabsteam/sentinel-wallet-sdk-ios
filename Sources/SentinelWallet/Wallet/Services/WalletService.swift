@@ -138,7 +138,7 @@ extension WalletService {
         }
     }
     
-    public func createTransactionData(for recipient: String) -> TransactionData? {
+    public func createTransactionSender() -> TransactionSender? {
         guard let mnemonic = securityService.loadMnemonics(for: walletData.accountAddress) else {
             return nil
         }
@@ -146,7 +146,6 @@ extension WalletService {
         return .init(
             owner: currentWalletAddress,
             ownerMnemonic: mnemonic,
-            recipient: recipient,
             chainID: walletData.chainId
         )
     }
@@ -270,7 +269,7 @@ extension WalletService {
             return
         }
         
-        guard let transactionData = createTransactionData(for: account) else {
+        guard let sender = createTransactionSender() else {
             log.error("Mnemonics are missing")
             completion(.failure(WalletServiceError.missingMnemonics))
             return
@@ -298,7 +297,8 @@ extension WalletService {
         }
         
         transactionProvider.broadcast(
-            data: transactionData,
+            sender: sender,
+            recipient: account,
             messages: [anyMessage],
             memo: memo,
             gasFactor: 0,

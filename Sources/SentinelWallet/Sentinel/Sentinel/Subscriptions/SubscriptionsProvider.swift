@@ -62,7 +62,8 @@ extension SubscriptionsProvider: SubscriptionsProviderType {
     }
     
     public func subscribe(
-        transactionData: TransactionData,
+        sender: TransactionSender,
+        node: String,
         deposit: CoinToken,
         completion: @escaping (Result<TransactionResult, Error>) -> Void
     ) {
@@ -72,8 +73,8 @@ extension SubscriptionsProvider: SubscriptionsProviderType {
         }
         
         let startMessage = Sentinel_Subscription_V1_MsgSubscribeToNodeRequest.with {
-            $0.from = transactionData.owner
-            $0.address = transactionData.recipient
+            $0.from = sender.owner
+            $0.address = node
             $0.deposit = sendCoin
         }
 
@@ -83,7 +84,8 @@ extension SubscriptionsProvider: SubscriptionsProviderType {
         }
 
         transactionProvider.broadcast(
-            data: transactionData,
+            sender: sender,
+            recipient: node,
             messages: [anyMessage],
             gasFactor: 0,
             completion: completion
@@ -93,13 +95,14 @@ extension SubscriptionsProvider: SubscriptionsProviderType {
     /// Cancel any type of subscription (to a node or to a plan)
     public func cancel(
         subscriptions: [UInt64],
-        transactionData: TransactionData,
+        sender: TransactionSender,
+        node: String,
         completion: @escaping (Result<TransactionResult, Error>) -> Void
     ) {
         let messages = subscriptions.map { subscriptionID -> Google_Protobuf2_Any in
             let startMessage = Sentinel_Subscription_V1_MsgCancelRequest.with {
                 $0.id = subscriptionID
-                $0.from = transactionData.owner
+                $0.from = sender.owner
             }
 
             let anyMessage = Google_Protobuf2_Any.with {
@@ -111,7 +114,8 @@ extension SubscriptionsProvider: SubscriptionsProviderType {
         }
         
         transactionProvider.broadcast(
-            data: transactionData,
+            sender: sender,
+            recipient: node,
             messages: messages,
             gasFactor: 0,
             completion: completion
@@ -175,18 +179,19 @@ extension SubscriptionsProvider {
 extension SubscriptionsProvider {
     public func startNewSession(
         on subscriptionID: UInt64,
-        data: TransactionData,
+        sender: TransactionSender,
+        node: String,
         completion: @escaping (Result<UInt64, Error>) -> Void
     ) {
-        stopActiveSessionsMessages(for: data.owner) { [weak self] messages in
+        stopActiveSessionsMessages(for: sender.owner) { [weak self] messages in
             guard let self = self else {
                 completion(.failure(SubscriptionsProviderError.broadcastFailed))
                 return
             }
             let startMessage = Sentinel_Session_V1_MsgStartRequest.with {
                 $0.id = subscriptionID
-                $0.from = data.owner
-                $0.node = data.recipient
+                $0.from = sender.owner
+                $0.node = node
             }
             
             let anyMessage = Google_Protobuf2_Any.with {
@@ -196,8 +201,13 @@ extension SubscriptionsProvider {
             
             let messages = messages + [anyMessage]
             
-            
-            self.transactionProvider.broadcast(data: data, messages: messages, memo: nil, gasFactor: 0) { result in
+            self.transactionProvider.broadcast(
+                sender: sender,
+                recipient: node,
+                messages: messages,
+                memo: nil,
+                gasFactor: 0)
+            { result in
                 switch result {
                 case .failure(let error):
                     completion(.failure(error))
@@ -208,7 +218,7 @@ extension SubscriptionsProvider {
                         return
                     }
                     
-                    self.queryActiveSessions(for: data.owner) { result in
+                    self.queryActiveSessions(for: sender.owner) { result in
                         switch result {
                         case let .failure(error):
                             completion(.failure(error))
@@ -246,10 +256,10 @@ extension SubscriptionsProvider {
     }
     
     public func stopActiveSessions(
-        transactionData: TransactionData,
+        sender: TransactionSender,
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
-        queryActiveSessions(for: transactionData.owner) { [weak self] result in
+        queryActiveSessions(for: sender.owner) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .failure(let error):
@@ -267,7 +277,7 @@ extension SubscriptionsProvider {
                     group.enter()
                     let stopMessage = Sentinel_Session_V1_MsgEndRequest.with {
                         $0.id = session.id
-                        $0.from = transactionData.owner
+                        $0.from = sender.owner
                     }
                     
                     let anyMessage = Google_Protobuf2_Any.with {
@@ -276,12 +286,8 @@ extension SubscriptionsProvider {
                     }
                      
                     self.transactionProvider.broadcast(
-                        data: .init(
-                            owner: transactionData.owner,
-                            ownerMnemonic: transactionData.ownerMnemonic,
-                            recipient: session.node,
-                            chainID: transactionData.chainID
-                        ),
+                        sender: sender,
+                        recipient: session.node,
                         messages: [anyMessage],
                         gasFactor: 0
                     ) { result in

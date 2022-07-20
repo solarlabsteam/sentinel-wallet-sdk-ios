@@ -27,10 +27,9 @@ enum ValidatorType: String {
     case unbonded = "BOND_STATUS_UNBONDED"
 }
 
-public struct TransactionData {
+public struct TransactionSender {
     let owner: String
     let ownerMnemonic: [String]
-    let recipient: String
     let chainID: String
 }
 
@@ -47,14 +46,16 @@ protocol TransactionProviderType {
     )
     
     func broadcast(
-        data: TransactionData,
+        sender: TransactionSender,
+        recipient: String,
         messages: [Google_Protobuf2_Any],
         gasFactor: Int,
         completion: @escaping (Result<TransactionResult, Error>) -> Void
     )
     
     func broadcast(
-        data: TransactionData,
+        sender: TransactionSender,
+        recipient: String,
         messages: [Google_Protobuf2_Any],
         memo: String?,
         gasFactor: Int,
@@ -159,12 +160,13 @@ extension TransactionProvider: TransactionProviderType {
     }
     
     func broadcast(
-        data: TransactionData,
+        sender: TransactionSender,
+        recipient: String,
         messages: [Google_Protobuf2_Any],
         gasFactor: Int,
         completion: @escaping (Result<TransactionResult, Error>) -> Void
     ) {
-        broadcast(data: data, messages: messages, memo: nil, gasFactor: gasFactor) { result in
+        broadcast(sender: sender, recipient: recipient, messages: messages, memo: nil, gasFactor: gasFactor) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
@@ -176,18 +178,19 @@ extension TransactionProvider: TransactionProviderType {
     }
     
     func broadcast(
-        data: TransactionData,
+        sender: TransactionSender,
+        recipient: String,
         messages: [Google_Protobuf2_Any],
         memo: String?,
         gasFactor: Int = 0,
         completion: @escaping (Result<Cosmos_Tx_V1beta1_BroadcastTxResponse, Error>) -> Void
     ) {
-        guard data.recipient != data.owner else {
+        guard recipient != sender.owner else {
             completion(.failure(WalletServiceError.accountMatchesDestination))
             return
         }
         
-        fetchAuthorization(for: data.owner) { [weak self] result in
+        fetchAuthorization(for: sender.owner) { [weak self] result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
@@ -202,12 +205,12 @@ extension TransactionProvider: TransactionProviderType {
                 
                 let request = Signer.generateSignedRequest(
                     with: accountGRPC,
-                    to: data.recipient,
+                    to: recipient,
                     fee: fee,
                     for: messages,
                     memo: memo ?? "",
-                    mnemonic: data.ownerMnemonic,
-                    chainId: data.chainID
+                    mnemonic: sender.ownerMnemonic,
+                    chainId: sender.chainID
                 )
                 
                 self.broadcastGrpcTx(signedRequest: request, completion: completion)
