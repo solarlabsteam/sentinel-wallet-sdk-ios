@@ -22,11 +22,8 @@ final public class ConnectionService {
         return callOptions
     }
 
-    public init(
-        host: String,
-        port: Int
-    ) {
-        self.connectionProvider = ClientConnectionProvider(host: host, port: port)
+    public init(clientConnectionConfiguration: ClientConnectionConfigurationType) {
+        self.connectionProvider = ClientConnectionProvider(configuration: clientConnectionConfiguration)
     }
     
     public func testConnection(completion: @escaping (Result<Bool, Error>) -> Void) {

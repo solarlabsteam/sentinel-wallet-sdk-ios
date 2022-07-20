@@ -26,12 +26,9 @@ final public class PlansProvider {
         return callOptions
     }
 
-    init(
-        host: String,
-        port: Int
-    ) {
-        self.connectionProvider = ClientConnectionProvider(host: host, port: port)
-        self.transactionProvider = TransactionProvider(host: host, port: port)
+    init(configuration: ClientConnectionConfigurationType) {
+        self.connectionProvider = ClientConnectionProvider(configuration: configuration)
+        self.transactionProvider = TransactionProvider(configuration: configuration)
     }
 }
 

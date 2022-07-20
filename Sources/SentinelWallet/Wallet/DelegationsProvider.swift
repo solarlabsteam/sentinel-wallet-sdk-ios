@@ -32,11 +32,8 @@ final class DelegationsProvider {
         return callOptions
     }
     
-    init(
-        host: String,
-        port: Int
-    ) {
-        self.connectionProvider = ClientConnectionProvider(host: host, port: port)
+    init(configuration: ClientConnectionConfigurationType) {
+        self.connectionProvider = ClientConnectionProvider(configuration: configuration)
     }
 }
 
