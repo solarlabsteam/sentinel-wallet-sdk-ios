@@ -19,13 +19,12 @@ final class WalletData {
     var myBalances = [CoinToken]()
     var myVestings = [CoinToken]()
     var myReward = [Cosmos_Distribution_V1beta1_DelegationDelegatorReward]()
+    
+    var chainId: String {
+        nodeInfo?.network ?? ""
+    }
 
     init(accountAddress: String) {
         self.accountAddress = accountAddress
-    }
-
-    // for gRPC func
-    func getChainId() -> String {
-        nodeInfo?.network ?? ""
     }
 }

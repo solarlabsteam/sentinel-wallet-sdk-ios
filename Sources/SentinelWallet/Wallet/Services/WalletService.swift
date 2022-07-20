@@ -38,6 +38,10 @@ final public class WalletService {
     public var currentWalletAddress: String {
         walletData.accountAddress
     }
+    
+    public var currentWalletChain: String {
+        walletData.chainId
+    }
 
     public var fee: Int {
         constants.defaultFeePrice
@@ -132,6 +136,19 @@ extension WalletService {
                 callback(.success(reward.map { $0.toDTO() }))
             }
         }
+    }
+    
+    public func createTransactionData(for recipient: String) -> TransactionData? {
+        guard let mnemonic = securityService.loadMnemonics(for: walletData.accountAddress) else {
+            return nil
+        }
+        
+        return .init(
+            owner: currentWalletAddress,
+            ownerMnemonic: mnemonic,
+            recipient: recipient,
+            chainID: walletData.chainId
+        )
     }
 }
 
@@ -253,7 +270,7 @@ extension WalletService {
             return
         }
         
-        guard let mnemonic = securityService.loadMnemonics(for: walletData.accountAddress) else {
+        guard let transactionData = createTransactionData(for: account) else {
             log.error("Mnemonics are missing")
             completion(.failure(WalletServiceError.missingMnemonics))
             return
@@ -279,13 +296,6 @@ extension WalletService {
             $0.typeURL = constants.sendMessageURL
             $0.value = try! sendMessage.serializedData()
         }
-        
-        let transactionData = TransactionData(
-            owner: walletData.accountAddress,
-            ownerMnemonic: mnemonic,
-            recipient: account,
-            chainID: walletData.getChainId()
-        )
         
         transactionProvider.broadcast(
             data: transactionData,
