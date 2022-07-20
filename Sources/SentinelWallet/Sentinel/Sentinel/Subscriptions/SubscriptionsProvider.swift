@@ -30,7 +30,7 @@ final public class SubscriptionsProvider {
         return callOptions
     }
 
-    init(configuration: ClientConnectionConfigurationType) {
+    public init(configuration: ClientConnectionConfigurationType) {
         self.connectionProvider = ClientConnectionProvider(configuration: configuration)
         self.transactionProvider = TransactionProvider(configuration: configuration)
     }
