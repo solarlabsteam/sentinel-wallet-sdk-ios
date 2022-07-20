@@ -8,13 +8,6 @@
 import Foundation
 
 public protocol NodesProviderType {
-    func fetchAvailableNodes(
-        offset: UInt64,
-        limit: UInt64,
-        allowedDenoms: [String],
-        completion: @escaping (Result<[SentinelNode], Error>) -> Void
-    )
-
     func queryNodes(
         offset: UInt64,
         limit: UInt64,

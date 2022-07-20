@@ -27,9 +27,9 @@ final class NodesProvider {
 }
 
 extension NodesProvider: NodesProviderType {
-    public func fetchAvailableNodes(
-        offset: UInt64,
-        limit: UInt64,
+    public func queryNodes(
+        offset: UInt64 = 0,
+        limit: UInt64 = 0,
         allowedDenoms: [String] = [GlobalConstants.denom],
         completion: @escaping (Result<[SentinelNode], Error>) -> Void
     ) {
@@ -58,22 +58,6 @@ extension NodesProvider: NodesProviderType {
                 completion(.failure(error))
             }
         })
-    }
-    
-    public func queryNodes(
-        offset: UInt64 = 0,
-        limit: UInt64 = 0,
-        allowedDenoms: [String] = [GlobalConstants.denom],
-        completion: @escaping (Result<[SentinelNode], Error>) -> Void
-    ) {
-        fetchAvailableNodes(offset: offset, limit: limit, allowedDenoms: allowedDenoms) { result in
-            switch result {
-            case .failure(let error):
-                completion(.failure(error))
-            case .success(let nodes):
-                completion(.success(nodes))
-            }
-        }
     }
     
     public func queryInfo(
