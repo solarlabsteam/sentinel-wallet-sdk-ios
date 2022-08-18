@@ -64,7 +64,7 @@ final public class WalletService {
 
 extension WalletService {
     public func manage(address: String) {
-        walletData = .init(accountAddress: currentWalletAddress)
+        walletData = .init(accountAddress: address)
         
         fetchAuthorization { _ in }
         fetchTendermintNodeInfo { _ in }
