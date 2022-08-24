@@ -155,11 +155,17 @@ extension SubscriptionsProvider {
         var callOptions = CallOptions()
         callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(5000))
         
+        let page = Cosmos_Base_Query_V1beta1_PageRequest.with {
+            $0.limit = 1000
+            $0.offset = 0
+        }
+        
         connectionProvider.openConnection(for: { channel in
             do {
                 let request = Sentinel_Subscription_V1_QuerySubscriptionsForAddressRequest.with {
                     $0.address = account
                     $0.status = .init(from: status) ?? Sentinel_Types_V1_Status.unspecified
+                    $0.pagination = page
                 }
                 let response = try Sentinel_Subscription_V1_QueryServiceClient(channel: channel)
                     .querySubscriptionsForAddress(request, callOptions: callOptions)
