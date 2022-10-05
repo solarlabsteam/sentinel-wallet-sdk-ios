@@ -26,7 +26,7 @@ final class ClientConnectionProvider: ClientConnectionProviderType {
             let group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
             defer { try! group.syncShutdownGracefully() }
             
-            let channel = ClientConnection.insecure(group: group).connect(
+            let channel = ClientConnection.usingTLSBackedByNIOSSL(on: group).connect(
                 host: self.configuration.grpcMirror.host,
                 port: self.configuration.grpcMirror.port
             )
