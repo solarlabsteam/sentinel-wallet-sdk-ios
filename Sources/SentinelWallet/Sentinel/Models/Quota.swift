@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Quota {
+public struct Quota: Codable {
     public let address: String
     public let allocated: String
     public let consumed: String
