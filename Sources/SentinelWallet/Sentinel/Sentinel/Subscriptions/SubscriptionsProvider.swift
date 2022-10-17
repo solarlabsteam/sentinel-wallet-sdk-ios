@@ -117,7 +117,7 @@ extension SubscriptionsProvider: SubscriptionsProviderType {
             sender: sender,
             recipient: node,
             messages: messages,
-            gasFactor: 0,
+            gasFactor: subscriptions.count,
             completion: completion
         )
     }
