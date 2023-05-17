@@ -9,12 +9,14 @@ import Foundation
 import HDWallet
 
 public protocol TransactionSignerServiceType {
-    func generateMnemonics() -> Result<(String, [String]), Error> 
+    func generateMnemonics() -> Result<(String, [String]), Error>
     func restoreAddress(for mnemonics: [String]) -> String?
     func generateSignature(for data: Data, with mnemonic: [String]) -> String?
 }
 
-public class TransactionSignerService {}
+public class TransactionSignerService {
+    public init() { }
+}
 
 extension TransactionSignerService: TransactionSignerServiceType {
     public func generateMnemonics() -> Result<(String, [String]), Error> {
