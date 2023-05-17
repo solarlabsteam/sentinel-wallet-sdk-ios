@@ -27,3 +27,4 @@ extension SecurityServiceType {
         return try? SegwitAddrCoder.shared.encode2(hrp: "sent", program: ripemd160)
     }
 }
+
