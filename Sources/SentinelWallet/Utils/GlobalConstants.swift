@@ -11,7 +11,7 @@ public struct GlobalConstants {
     public static let mainDenom = "DVPN"
     public static let denom = "udvpn"
     public static let marketPrice = "usdt,udvpn"
-    
-    public static let defaultLCDHostString = "lcd-sentinel.dvpn.solar"
-    public static let defaultLCDPort = 993
+
+    public static let defaultLCDHostString = "lcd.sentinel.co"
+    public static let defaultLCDPort = 443
 }
