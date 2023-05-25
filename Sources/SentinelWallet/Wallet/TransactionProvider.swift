@@ -31,6 +31,12 @@ public struct TransactionSender {
     let owner: String
     let ownerMnemonic: [String]
     let chainID: String
+
+    public init(owner: String, ownerMnemonic: [String], chainID: String) {
+        self.owner = owner
+        self.ownerMnemonic = ownerMnemonic
+        self.chainID = chainID
+    }
 }
 
 protocol TransactionProviderType {

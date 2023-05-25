@@ -9,8 +9,8 @@ import Foundation
 import HDWallet
 
 public protocol TransactionSignerServiceType {
-    func generateMnemonics() -> Result<(String, [String]), Error>
-    func restoreAddress(for mnemonics: [String]) -> String?
+    func generateMnemonic() -> Result<(String, [String]), Error>
+    func restoreAddress(for mnemonic: [String]) -> String?
     func generateSignature(for data: Data, with mnemonic: [String]) -> String?
 }
 
@@ -19,7 +19,7 @@ public class TransactionSignerService {
 }
 
 extension TransactionSignerService: TransactionSignerServiceType {
-    public func generateMnemonics() -> Result<(String, [String]), Error> {
+    public func generateMnemonic() -> Result<(String, [String]), Error> {
         let mnemonic = Mnemonic.create(strength: .hight, language: .english)
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .components(separatedBy: " ")
@@ -29,8 +29,8 @@ extension TransactionSignerService: TransactionSignerServiceType {
         return .success((address, mnemonic))
     }
 
-    public func restoreAddress(for mnemonics: [String]) -> String? {
-        let key = Signer.getKey(for: mnemonics)
+    public func restoreAddress(for mnemonic: [String]) -> String? {
+        let key = Signer.getKey(for: mnemonic)
         let ripemd160 = RIPEMD160.hash(key.publicKey.data.sha256())
 
         return try? SegwitAddrCoder.shared.encode2(hrp: "sent", program: ripemd160)
