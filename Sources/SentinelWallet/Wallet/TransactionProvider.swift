@@ -28,8 +28,8 @@ enum ValidatorType: String {
 }
 
 public struct TransactionSender {
-    let owner: String
-    let ownerMnemonic: [String]
+    public let owner: String
+    public let ownerMnemonic: [String]
     let chainID: String
 
     public init(owner: String, ownerMnemonic: [String], chainID: String) {
