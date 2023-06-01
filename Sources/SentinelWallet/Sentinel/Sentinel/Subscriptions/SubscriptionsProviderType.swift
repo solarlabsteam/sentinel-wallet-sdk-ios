@@ -41,15 +41,16 @@ public protocol SubscriptionsProviderType {
     
     func startNewSession(
         on subscriptionID: UInt64,
+        activeSession: UInt64?,
         sender: TransactionSender,
         node: String,
-        completion: @escaping (Result<UInt64, Error>) -> Void
+        completion: @escaping (Result<Bool, Error>) -> Void
     )
     
-    func queryActiveSessions(for account: String, completion: @escaping (Result<[Session], Error>) -> Void)
-    
-    func stopActiveSessions(
+    func stop(
+        activeSession: UInt64,
+        node: String,
         sender: TransactionSender,
-        completion: @escaping (Result<Void, Error>) -> Void
+        completion: @escaping (Result<Bool, Error>) -> Void
     )
 }

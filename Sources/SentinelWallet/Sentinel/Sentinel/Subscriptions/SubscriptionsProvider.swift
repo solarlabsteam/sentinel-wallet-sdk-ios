@@ -185,171 +185,64 @@ extension SubscriptionsProvider {
 extension SubscriptionsProvider {
     public func startNewSession(
         on subscriptionID: UInt64,
+        activeSession: UInt64?,
         sender: TransactionSender,
         node: String,
-        completion: @escaping (Result<UInt64, Error>) -> Void
+        completion: @escaping (Result<Bool, Error>) -> Void
     ) {
-        stopActiveSessionsMessages(for: sender.owner) { [weak self] messages in
-            guard let self = self else {
-                completion(.failure(SubscriptionsProviderError.broadcastFailed))
-                return
-            }
-            let startMessage = Sentinel_Session_V1_MsgStartRequest.with {
-                $0.id = subscriptionID
-                $0.from = sender.owner
-                $0.node = node
-            }
-            
-            let anyMessage = Google_Protobuf2_Any.with {
-                $0.typeURL = constants.startSessionURL
-                $0.value = try! startMessage.serializedData()
-            }
-            
-            let messages = messages + [anyMessage]
-            
-            self.transactionProvider.broadcast(
-                sender: sender,
-                recipient: node,
-                messages: messages,
-                memo: nil,
-                gasFactor: 0)
-            { result in
-                switch result {
-                case .failure(let error):
-                    completion(.failure(error))
-                case .success(let response):
-                    guard TransactionResult(from: response.txResponse).isSuccess else {
-                        log.error("Failed to start a session")
-                        completion(.failure(SubscriptionsProviderError.broadcastFailed))
-                        return
-                    }
-                    
-                    self.queryActiveSessions(for: sender.owner) { result in
-                        switch result {
-                        case let .failure(error):
-                            completion(.failure(error))
-                        case let .success(sessions):
-                            guard let session = sessions.last else {
-                                log.error("Failed to start a session: no id or empty array")
-                                completion(.failure(SubscriptionsProviderError.sessionStartFailed))
-                                return
-                            }
-                            completion(.success(session.id))
-                        }
-                    }
-                }
-            }
+        let stopMessage = formStopMessage(activeSession: activeSession, sender: sender)
+        let startMessage = Sentinel_Session_V1_MsgStartRequest.with {
+            $0.id = subscriptionID
+            $0.from = sender.owner
+            $0.node = node
+        }
+        
+        let anyMessage = Google_Protobuf2_Any.with {
+            $0.typeURL = constants.startSessionURL
+            $0.value = try! startMessage.serializedData()
+        }
+        
+        let messages = stopMessage + [anyMessage]
+        
+        transactionProvider.broadcast(
+            sender: sender,
+            recipient: node,
+            messages: messages,
+            gasFactor: 0
+        ) { result in
+            let mapped =  result.map { $0.isSuccess }
+            completion(mapped)
         }
     }
     
-    public func queryActiveSessions(for account: String, completion: @escaping (Result<[Session], Error>) -> Void) {
-        connectionProvider.openConnection(for: { channel in
-            do {
-                let request = Sentinel_Session_V1_QuerySessionsForAddressRequest.with {
-                    $0.address = account
-                    $0.status = .active
-                }
-                let response = try Sentinel_Session_V1_QueryServiceClient(channel: channel)
-                    .querySessionsForAddress(request, callOptions: self.callOptions)
-                    .response
-                    .wait()
-                
-                completion(.success(response.sessions.map(Session.init(from:))))
-            } catch {
-                completion(.failure(error))
-            }
-        })
-    }
-    
-    public func stopActiveSessions(
+    public func stop(
+        activeSession: UInt64,
+        node: String,
         sender: TransactionSender,
-        completion: @escaping (Result<Void, Error>) -> Void
+        completion: @escaping (Result<Bool, Error>) -> Void
     ) {
-        queryActiveSessions(for: sender.owner) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .failure(let error):
-                completion(.failure(error))
-
-            case .success(let sessions):
-                guard !sessions.isEmpty else {
-                    completion(.success(()))
-                    return
-                }
-                
-                let group = DispatchGroup()
-                var errorAppeared = false
-                sessions.forEach { session in
-                    group.enter()
-                    let stopMessage = Sentinel_Session_V1_MsgEndRequest.with {
-                        $0.id = session.id
-                        $0.from = sender.owner
-                    }
-                    
-                    let anyMessage = Google_Protobuf2_Any.with {
-                        $0.typeURL = constants.stopSessionURL
-                        $0.value = try! stopMessage.serializedData()
-                    }
-                     
-                    self.transactionProvider.broadcast(
-                        sender: sender,
-                        recipient: session.node,
-                        messages: [anyMessage],
-                        gasFactor: 0
-                    ) { result in
-                        group.leave()
-                        if case let .failure(error) = result {
-                            log.error(error)
-                            errorAppeared = true
-                        }
-                    }
-                }
-                
-                group.notify(queue: .main) {
-                    guard !errorAppeared else {
-                        completion(.failure(SubscriptionsProviderError.sessionsStopFailed))
-                        return
-                    }
-                    completion(.success(()))
-                }
-            }
+        let stopMessage = formStopMessage(activeSession: activeSession, sender: sender)
+        transactionProvider.broadcast(
+            sender: sender,
+            recipient: node,
+            messages: stopMessage,
+            gasFactor: 0
+        ) { result in
+            let mapped =  result.map { $0.isSuccess }
+            completion(mapped)
         }
     }
-}
-
-// MARK: - Private functions
-
-extension SubscriptionsProvider {
-    private func stopActiveSessionsMessages(
-        for account: String,
-        completion: @escaping ([Google_Protobuf2_Any]) -> Void
-    ) {
-        queryActiveSessions(for: account) { result in
-            switch result {
-            case .failure(let error):
-                log.error(error)
-                completion([])
-                
-            case .success(let sessions):
-                guard !sessions.isEmpty else {
-                    completion([])
-                    return
-                }
-                
-                let messages = sessions.map { session in
-                    Sentinel_Session_V1_MsgEndRequest.with {
-                        $0.id = session.id
-                        $0.from = account
-                    }}.map { stopMessage in
-                        Google_Protobuf2_Any.with {
-                            $0.typeURL = constants.stopSessionURL
-                            $0.value = try! stopMessage.serializedData()
-                        }
-                    }
-                
-                completion(messages)
-            }
+    
+    private func formStopMessage(activeSession: UInt64?, sender: TransactionSender) -> [Google_Protobuf2_Any] {
+        guard let activeSession = activeSession else { return [] }
+        let stopMessage = Sentinel_Session_V1_MsgEndRequest.with {
+            $0.id = activeSession
+            $0.from = sender.owner
         }
+        let anyMessage = Google_Protobuf2_Any.with {
+            $0.typeURL = constants.stopSessionURL
+            $0.value = try! stopMessage.serializedData()
+        }
+        return [anyMessage]
     }
 }
-
