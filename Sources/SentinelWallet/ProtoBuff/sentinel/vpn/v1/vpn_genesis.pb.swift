@@ -30,8 +30,8 @@ struct Sentinel_Vpn_V1_GenesisState {
     set {_uniqueStorage()._deposits = newValue}
   }
 
-  var nodes: Sentinel_Node_V1_GenesisState {
-    get {return _storage._nodes ?? Sentinel_Node_V1_GenesisState()}
+  var nodes: Sentinel_Node_V2_GenesisState {
+    get {return _storage._nodes ?? Sentinel_Node_V2_GenesisState()}
     set {_uniqueStorage()._nodes = newValue}
   }
   /// Returns true if `nodes` has been explicitly set.
@@ -39,13 +39,13 @@ struct Sentinel_Vpn_V1_GenesisState {
   /// Clears the value of `nodes`. Subsequent reads from it will return its default value.
   mutating func clearNodes() {_uniqueStorage()._nodes = nil}
 
-  var plans: [Sentinel_Plan_V1_GenesisPlan] {
+  var plans: [Sentinel_Plan_V2_GenesisPlan] {
     get {return _storage._plans}
     set {_uniqueStorage()._plans = newValue}
   }
 
-  var providers: Sentinel_Provider_V1_GenesisState {
-    get {return _storage._providers ?? Sentinel_Provider_V1_GenesisState()}
+  var providers: Sentinel_Provider_V2_GenesisState {
+    get {return _storage._providers ?? Sentinel_Provider_V2_GenesisState()}
     set {_uniqueStorage()._providers = newValue}
   }
   /// Returns true if `providers` has been explicitly set.
@@ -53,8 +53,8 @@ struct Sentinel_Vpn_V1_GenesisState {
   /// Clears the value of `providers`. Subsequent reads from it will return its default value.
   mutating func clearProviders() {_uniqueStorage()._providers = nil}
 
-  var sessions: Sentinel_Session_V1_GenesisState {
-    get {return _storage._sessions ?? Sentinel_Session_V1_GenesisState()}
+  var sessions: Sentinel_Session_V2_GenesisState {
+    get {return _storage._sessions ?? Sentinel_Session_V2_GenesisState()}
     set {_uniqueStorage()._sessions = newValue}
   }
   /// Returns true if `sessions` has been explicitly set.
@@ -62,8 +62,8 @@ struct Sentinel_Vpn_V1_GenesisState {
   /// Clears the value of `sessions`. Subsequent reads from it will return its default value.
   mutating func clearSessions() {_uniqueStorage()._sessions = nil}
 
-  var subscriptions: Sentinel_Subscription_V1_GenesisState {
-    get {return _storage._subscriptions ?? Sentinel_Subscription_V1_GenesisState()}
+  var subscriptions: Sentinel_Subscription_V2_GenesisState {
+    get {return _storage._subscriptions ?? Sentinel_Subscription_V2_GenesisState()}
     set {_uniqueStorage()._subscriptions = newValue}
   }
   /// Returns true if `subscriptions` has been explicitly set.
@@ -99,11 +99,11 @@ extension Sentinel_Vpn_V1_GenesisState: SwiftProtobuf.Message, SwiftProtobuf._Me
 
   fileprivate class _StorageClass {
     var _deposits: [Sentinel_Deposit_V1_Deposit] = []
-    var _nodes: Sentinel_Node_V1_GenesisState? = nil
-    var _plans: [Sentinel_Plan_V1_GenesisPlan] = []
-    var _providers: Sentinel_Provider_V1_GenesisState? = nil
-    var _sessions: Sentinel_Session_V1_GenesisState? = nil
-    var _subscriptions: Sentinel_Subscription_V1_GenesisState? = nil
+    var _nodes: Sentinel_Node_V2_GenesisState? = nil
+    var _plans: [Sentinel_Plan_V2_GenesisPlan] = []
+    var _providers: Sentinel_Provider_V2_GenesisState? = nil
+    var _sessions: Sentinel_Session_V2_GenesisState? = nil
+    var _subscriptions: Sentinel_Subscription_V2_GenesisState? = nil
 
     static let defaultInstance = _StorageClass()
 
