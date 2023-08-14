@@ -25,14 +25,12 @@ public struct Node {
 
 public struct SentinelNode {
     public let address: String
-    public let provider: String
     public let price: [CoinToken]
     public let remoteURL: String
     public var node: Node?
     
-    public init(address: String, provider: String, price: [CoinToken], remoteURL: String, node: Node?) {
+    public init(address: String, price: [CoinToken], remoteURL: String, node: Node?) {
         self.address = address
-        self.provider = provider
         self.price = price
         self.remoteURL = remoteURL
         self.node = node
@@ -40,11 +38,10 @@ public struct SentinelNode {
 }
     
 extension SentinelNode {
-    init(from sentinelNodeV1Node: Sentinel_Node_V1_Node, node: Node? = nil) {
+    init(from sentinelNodeV1Node: Sentinel_Node_V2_Node, node: Node? = nil) {
         self.init(
             address: sentinelNodeV1Node.address,
-            provider: sentinelNodeV1Node.provider,
-            price: sentinelNodeV1Node.price.map { .init(from: $0) },
+            price: sentinelNodeV1Node.gigabytePrices.map { .init(from: $0) },
             remoteURL: sentinelNodeV1Node.remoteURL,
             node: node
         )

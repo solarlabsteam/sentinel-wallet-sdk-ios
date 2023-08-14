@@ -14,7 +14,7 @@ public struct SentinelNodesProvider {
     public let website: String
     public let description: String
     
-    init(from provider: Sentinel_Provider_V1_Provider) {
+    init(from provider: Sentinel_Provider_V2_Provider) {
         address = provider.address
         name = provider.name
         identity = provider.identity

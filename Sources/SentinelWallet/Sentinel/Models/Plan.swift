@@ -12,17 +12,15 @@ public struct SentinelPlan {
     public let provider: String
     public let price: [CoinToken]
 
-    public let validity: TimeInterval
-    public let bytes: String
+    public let bytes: Int64
 
     public let isActive: Bool
     
-    init(from plan: Sentinel_Plan_V1_Plan) {
+    init(from plan: Sentinel_Plan_V2_Plan) {
         id = plan.id
-        provider = plan.provider
-        price = plan.price.map(CoinToken.init)
-        validity = plan.validity.timeInterval
-        bytes = plan.bytes
+        provider = plan.providerAddress
+        price = plan.prices.map(CoinToken.init)
+        bytes = plan.gigabytes
         isActive = plan.status == .active
     }
 }
