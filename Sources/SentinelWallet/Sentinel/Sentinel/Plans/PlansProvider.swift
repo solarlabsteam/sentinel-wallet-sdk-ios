@@ -1,6 +1,6 @@
 //
 //  PlansProvider.swift
-//  
+//
 //
 //  Created by Lika Vorobeva on 18.07.2022.
 //
@@ -12,14 +12,14 @@ import NIO
 // MARK: - Constants
 
 private struct Constants {
-    let subscribeToPlanURL = "/sentinel.subscription.v1.MsgSubscribeToPlanRequest"
+    let subscribeToPlanURL = "/sentinel.plan.v2.MsgService/MsgSubscribe"
 }
 private let constants = Constants()
 
 final public class PlansProvider {
     private let connectionProvider: ClientConnectionProviderType
     private let transactionProvider: TransactionProviderType
-    
+
     private var callOptions: CallOptions {
         var callOptions = CallOptions()
         callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(3000))
@@ -42,17 +42,17 @@ extension PlansProvider: PlansProviderType {
         moniker: String,
         completion: @escaping (Result<TransactionResult, Error>) -> Void
     ) {
-        let startMessage = Sentinel_Subscription_V1_MsgSubscribeToPlanRequest.with {
+        let startMessage = Sentinel_Plan_V2_MsgSubscribeRequest.with {
             $0.from = sender.owner
             $0.id = planID
             $0.denom = denom
         }
-        
+
         let anyMessage = Google_Protobuf2_Any.with {
             $0.typeURL = constants.subscribeToPlanURL
             $0.value = try! startMessage.serializedData()
         }
-        
+
         transactionProvider.broadcast(
             sender: sender,
             recipient: moniker,
@@ -61,7 +61,7 @@ extension PlansProvider: PlansProviderType {
             completion: completion
         )
     }
-    
+
     public func queryProviders(
         offset: UInt64 = 0,
         limit: UInt64 = 0,
@@ -73,10 +73,10 @@ extension PlansProvider: PlansProviderType {
                     $0.limit = limit
                     $0.offset = UInt64(offset)
                 }
-                let request = Sentinel_Provider_V1_QueryProvidersRequest.with {
+                let request = Sentinel_Provider_V2_QueryProvidersRequest.with {
                     $0.pagination = page
                 }
-                let response = try Sentinel_Provider_V1_QueryServiceClient(channel: channel)
+                let response = try Sentinel_Provider_V2_QueryServiceClient(channel: channel)
                     .queryProviders(request)
                     .response
                     .wait()
@@ -86,7 +86,7 @@ extension PlansProvider: PlansProviderType {
             }
         })
     }
-    
+
     public func queryPlans(
         offset: UInt64 = 0,
         limit: UInt64 = 1000,
@@ -98,10 +98,10 @@ extension PlansProvider: PlansProviderType {
                     $0.limit = limit
                     $0.offset = UInt64(offset)
                 }
-                let request = Sentinel_Plan_V1_QueryPlansRequest.with {
+                let request = Sentinel_Plan_V2_QueryPlansRequest.with {
                     $0.pagination = page
                 }
-                let response = try Sentinel_Plan_V1_QueryServiceClient(channel: channel)
+                let response = try Sentinel_Plan_V2_QueryServiceClient(channel: channel)
                     .queryPlans(request)
                     .response
                     .wait()
@@ -111,41 +111,21 @@ extension PlansProvider: PlansProviderType {
             }
         })
     }
-    
+
     public func queryPlans(
         for providerAddress: String,
         completion: @escaping (Result<[SentinelPlan], Error>) -> Void
     ) {
         connectionProvider.openConnection(for: { channel in
             do {
-                let request = Sentinel_Plan_V1_QueryPlansForProviderRequest.with {
+                let request = Sentinel_Plan_V2_QueryPlansForProviderRequest.with {
                     $0.address = providerAddress
                 }
-                let response = try Sentinel_Plan_V1_QueryServiceClient(channel: channel)
+                let response = try Sentinel_Plan_V2_QueryServiceClient(channel: channel)
                     .queryPlansForProvider(request)
                     .response
                     .wait()
                 completion(.success(response.plans.map(SentinelPlan.init)))
-            } catch {
-                completion(.failure(error))
-            }
-        })
-    }
-    
-    public func queryNodesForPlan(
-        with id: UInt64,
-        completion: @escaping (Result<[SentinelNode], Error>) -> Void
-    ) {
-        connectionProvider.openConnection(for: { channel in
-            do {
-                let request = Sentinel_Plan_V1_QueryNodesForPlanRequest.with {
-                    $0.id = id
-                }
-                let response = try Sentinel_Plan_V1_QueryServiceClient(channel: channel)
-                    .queryNodesForPlan(request)
-                    .response
-                    .wait()
-                completion(.success(response.nodes.map { SentinelNode(from: $0) }))
             } catch {
                 completion(.failure(error))
             }

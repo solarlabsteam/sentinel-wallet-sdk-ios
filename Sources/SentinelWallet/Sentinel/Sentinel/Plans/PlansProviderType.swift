@@ -32,9 +32,10 @@ public protocol PlansProviderType {
         for providerAddress: String,
         completion: @escaping (Result<[SentinelPlan], Error>) -> Void
     )
-    
-    func queryNodesForPlan(
-        with id: UInt64,
-        completion: @escaping (Result<[SentinelNode], Error>) -> Void
-    )
+
+    #warning("TODO: update plans")
+//    func queryNodesForPlan(
+//        with id: UInt64,
+//        completion: @escaping (Result<[SentinelNode], Error>) -> Void
+//    )
 }
