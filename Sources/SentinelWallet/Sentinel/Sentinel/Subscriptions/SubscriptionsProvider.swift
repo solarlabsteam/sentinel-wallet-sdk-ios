@@ -12,11 +12,10 @@ import NIO
 // MARK: - Constants
 
 private struct Constants {
-    let startSessionURL = "/sentinel.session.v1.MsgStartRequest"
-    let stopSessionURL = "/sentinel.session.v1.MsgEndRequest"
-    let subscribeToNodeURL = "/sentinel.subscription.v1.MsgSubscribeToNodeRequest"
-    let cancelSubscriptionURL = "/sentinel.subscription.v1.MsgCancelRequest"
-    let addQuotaURL = "/sentinel.subscription.v1.MsgAddQuotaRequest"
+    let startSessionURL = "/sentinel.session.v2.MsgService/MsgStart"
+    let stopSessionURL = "/sentinel.session.v2.MsgService/MsgEnd"
+    let subscribeToNodeURL = "/sentinel.node.v2.MsgService/MsgSubscribe"
+    let cancelSubscriptionURL = "/sentinel.subscription.v2.MsgService/MsgCancel"
 }
 private let constants = Constants()
 
@@ -39,43 +38,43 @@ final public class SubscriptionsProvider {
 // MARK: - Subscribe & cancel
 
 extension SubscriptionsProvider: SubscriptionsProviderType {
-    public func queryQuota(
+    public func queryAllocation(
         address: String,
         subscriptionId: UInt64,
-        completion: @escaping (Result<Quota, Error>) -> Void
+        completion: @escaping (Result<Allocation, Error>) -> Void
     ){
         connectionProvider.openConnection(for: { channel in
             do {
-                let request = Sentinel_Subscription_V1_QueryQuotaRequest.with {
+                let request = Sentinel_Subscription_V2_QueryAllocationRequest.with {
                     $0.address = address
                     $0.id = subscriptionId
                 }
-                let response = try Sentinel_Subscription_V1_QueryServiceClient(channel: channel)
-                    .queryQuota(request, callOptions: self.callOptions)
+                let response = try Sentinel_Subscription_V2_QueryServiceClient(channel: channel)
+                    .queryAllocation(request, callOptions: self.callOptions)
                     .response
                     .wait()
-                completion(.success(Quota(from: response.quota)))
+
+                completion(.success(Allocation(from: response.allocation)))
             } catch {
                 completion(.failure(error))
             }
         })
     }
-    
+
     public func subscribe(
         sender: TransactionSender,
         node: String,
-        deposit: CoinToken,
+        denom: String,
+        gigabytes: Int64,
+        hours: Int64,
         completion: @escaping (Result<TransactionResult, Error>) -> Void
     ) {
-        let sendCoin = Cosmos_Base_V1beta1_Coin.with {
-            $0.denom = deposit.denom
-            $0.amount = deposit.amount
-        }
-        
-        let startMessage = Sentinel_Subscription_V1_MsgSubscribeToNodeRequest.with {
+        let startMessage = Sentinel_Node_V2_MsgSubscribeRequest.with {
             $0.from = sender.owner
-            $0.address = node
-            $0.deposit = sendCoin
+            $0.nodeAddress = node
+            $0.gigabytes = gigabytes
+            $0.hours = hours
+            $0.denom = denom
         }
 
         let anyMessage = Google_Protobuf2_Any.with {
@@ -100,7 +99,7 @@ extension SubscriptionsProvider: SubscriptionsProviderType {
         completion: @escaping (Result<TransactionResult, Error>) -> Void
     ) {
         let messages = subscriptions.map { subscriptionID -> Google_Protobuf2_Any in
-            let startMessage = Sentinel_Subscription_V1_MsgCancelRequest.with {
+            let startMessage = Sentinel_Subscription_V2_MsgCancelRequest.with {
                 $0.id = subscriptionID
                 $0.from = sender.owner
             }
@@ -125,59 +124,60 @@ extension SubscriptionsProvider: SubscriptionsProviderType {
 
 // MARK: - Subscriptions info
 
-extension SubscriptionsProvider {
-    public func querySubscription(
-        with id: UInt64,
-        completion: @escaping (Result<Subscription, Error>) -> Void
-    ) {
-        connectionProvider.openConnection(for: { channel in
-            do {
-                let request = Sentinel_Subscription_V1_QuerySubscriptionRequest.with {
-                    $0.id = id
-                }
-                let response = try Sentinel_Subscription_V1_QueryServiceClient(channel: channel)
-                    .querySubscription(request, callOptions: self.callOptions)
-                    .response
-                    .wait()
-                
-                completion(.success(Subscription(from: response.subscription)))
-            } catch {
-                completion(.failure(error))
-            }
-        })
-    }
+#warning("TODO: map Google_Protobuf_Any to new Subscription types")
 
-    public func querySubscriptions(
-        for account: String,
-        with status: SubscriptionStatus = .unspecified,
-        completion: @escaping (Result<[Subscription], Error>) -> Void
-    ) {
-        var callOptions = CallOptions()
-        callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(5000))
-        
-        let page = Cosmos_Base_Query_V1beta1_PageRequest.with {
-            $0.limit = 1000
-            $0.offset = 0
-        }
-        
-        connectionProvider.openConnection(for: { channel in
-            do {
-                let request = Sentinel_Subscription_V1_QuerySubscriptionsForAddressRequest.with {
-                    $0.address = account
-                    $0.status = .init(from: status) ?? Sentinel_Types_V1_Status.unspecified
-                    $0.pagination = page
-                }
-                let response = try Sentinel_Subscription_V1_QueryServiceClient(channel: channel)
-                    .querySubscriptionsForAddress(request, callOptions: callOptions)
-                    .response
-                    .wait()
-                
-                completion(.success(response.subscriptions.map(Subscription.init(from:))))
-            } catch {
-                completion(.failure(error))
-            }
-        })
-    }
+extension SubscriptionsProvider {
+//    public func querySubscription(
+//        with id: UInt64,
+//        completion: @escaping (Result<Subscription, Error>) -> Void
+//    ) {
+//        connectionProvider.openConnection(for: { channel in
+//            do {
+//                let request = Sentinel_Subscription_V2_QuerySubscriptionRequest.with {
+//                    $0.id = id
+//                }
+//                let response = try Sentinel_Subscription_V2_QueryServiceClient(channel: channel)
+//                    .querySubscription(request, callOptions: self.callOptions)
+//                    .response
+//                    .wait()
+//                #warning("TODO: map Google_Protobuf_Any to new Subscription types")
+////                completion(.success(Subscription(from: response)))
+//            } catch {
+//                completion(.failure(error))
+//            }
+//        })
+//    }
+//
+//    public func querySubscriptions(
+//        for account: String,
+//        with status: SubscriptionStatus = .unspecified,
+//        completion: @escaping (Result<[Subscription], Error>) -> Void
+//    ) {
+//        var callOptions = CallOptions()
+//        callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(5000))
+//
+//        let page = Cosmos_Base_Query_V1beta1_PageRequest.with {
+//            $0.limit = 1000
+//            $0.offset = 0
+//        }
+//
+//        connectionProvider.openConnection(for: { channel in
+//            do {
+//                let request = Sentinel_Subscription_V2_QuerySubscriptionsForAccountRequest.with {
+//                    $0.address = account
+//                    $0.pagination = page
+//                }
+//                let response = try Sentinel_Subscription_V2_QueryServiceClient(channel: channel)
+//                    .querySubscriptionsForAccount(request, callOptions: callOptions)
+//                    .response
+//                    .wait()
+//
+////                completion(.success(response.subscriptions.map(Subscription.init(from:))))
+//            } catch {
+//                completion(.failure(error))
+//            }
+//        })
+//    }
 }
     
 // MARK: - Sessions
@@ -191,10 +191,10 @@ extension SubscriptionsProvider {
         completion: @escaping (Result<Bool, Error>) -> Void
     ) {
         let stopMessage = formStopMessage(activeSession: activeSession, sender: sender)
-        let startMessage = Sentinel_Session_V1_MsgStartRequest.with {
+        let startMessage = Sentinel_Session_V2_MsgStartRequest.with {
             $0.id = subscriptionID
             $0.from = sender.owner
-            $0.node = node
+            $0.address = node
         }
         
         let anyMessage = Google_Protobuf2_Any.with {
@@ -235,7 +235,7 @@ extension SubscriptionsProvider {
     
     private func formStopMessage(activeSession: UInt64?, sender: TransactionSender) -> [Google_Protobuf2_Any] {
         guard let activeSession = activeSession else { return [] }
-        let stopMessage = Sentinel_Session_V1_MsgEndRequest.with {
+        let stopMessage = Sentinel_Session_V2_MsgEndRequest.with {
             $0.id = activeSession
             $0.from = sender.owner
         }
