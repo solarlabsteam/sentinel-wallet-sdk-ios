@@ -39,18 +39,18 @@ extension NodesProvider: NodesProviderType {
                     $0.limit = limit
                     $0.offset = UInt64(offset)
                 }
-                let request = Sentinel_Node_V1_QueryNodesRequest.with {
+                let request = Sentinel_Node_V2_QueryNodesRequest.with {
                     $0.status = .active
                     $0.pagination = page
                 }
-                let response = try Sentinel_Node_V1_QueryServiceClient(channel: channel)
+                let response = try Sentinel_Node_V2_QueryServiceClient(channel: channel)
                     .queryNodes(request, callOptions: self.callOptions)
                     .response
                     .wait()
                 
                 let sentinelNodes = response
                     .nodes
-                    .filter { node in allowedDenoms.contains(where: node.price.map { $0.denom }.contains)  }
+                    .filter { node in allowedDenoms.contains(where: node.gigabytePrices.map { $0.denom }.contains)  }
                     .map { SentinelNode(from: $0) }
                 
                 completion(.success(sentinelNodes))
@@ -119,14 +119,14 @@ extension NodesProvider: NodesProviderType {
 extension NodesProvider {
      private func fetchNode(
         address: String,
-        completion: @escaping (Result<Sentinel_Node_V1_Node, Error>) -> Void
+        completion: @escaping (Result<Sentinel_Node_V2_Node, Error>) -> Void
     ) {
         connectionProvider.openConnection(for: { channel in
             do {
-                let request = Sentinel_Node_V1_QueryNodeRequest.with {
+                let request = Sentinel_Node_V2_QueryNodeRequest.with {
                     $0.address = address
                 }
-                let response = try Sentinel_Node_V1_QueryServiceClient(channel: channel)
+                let response = try Sentinel_Node_V2_QueryServiceClient(channel: channel)
                     .queryNode(request, callOptions: self.callOptions)
                     .response
                     .wait()
