@@ -28,21 +28,21 @@ final public class ConnectionService {
     
     public func testConnection(completion: @escaping (Result<Bool, Error>) -> Void) {
         connectionProvider.openConnection(for: { [callOptions] channel in
-                do {
-                    let request = Cosmos_Staking_V1beta1_QueryValidatorRequest.with {
-                        $0.validatorAddr = constants.validatorAddr
-                    }
-                    
-                    let response = try Cosmos_Staking_V1beta1_QueryClient(channel: channel)
-                        .validator(request, callOptions: callOptions)
-                        .response
-                        .wait()
-                        .hasValidator
-                    
-                    completion(.success(response))
-                } catch {
-                    completion(.failure(error))
+            do {
+                let request = Cosmos_Staking_V1beta1_QueryValidatorRequest.with {
+                    $0.validatorAddr = constants.validatorAddr
                 }
-            })
+
+                let response = try Cosmos_Staking_V1beta1_QueryClient(channel: channel)
+                    .validator(request, callOptions: callOptions)
+                    .response
+                    .wait()
+                    .hasValidator
+
+                completion(.success(response))
+            } catch {
+                completion(.failure(error))
+            }
+        })
     }
 }

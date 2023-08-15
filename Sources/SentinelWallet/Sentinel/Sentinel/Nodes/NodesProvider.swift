@@ -10,7 +10,7 @@ import GRPC
 import NIO
 import Alamofire
 
-final class NodesProvider {
+final public class NodesProvider {
     private let connectionProvider: ClientConnectionProviderType
     private let transactionProvider: TransactionProviderType
     

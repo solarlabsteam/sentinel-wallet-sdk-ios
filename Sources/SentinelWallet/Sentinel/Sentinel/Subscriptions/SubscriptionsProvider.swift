@@ -12,10 +12,11 @@ import NIO
 // MARK: - Constants
 
 private struct Constants {
-    let startSessionURL = "/sentinel.session.v2.MsgService/MsgStart"
-    let stopSessionURL = "/sentinel.session.v2.MsgService/MsgEnd"
-    let subscribeToNodeURL = "/sentinel.node.v2.MsgService/MsgSubscribe"
-    let cancelSubscriptionURL = "/sentinel.subscription.v2.MsgService/MsgCancel"
+    let startSessionURL = "/sentinel.session.v2.MsgStartRequest"
+    let stopSessionURL = "/sentinel.session.v2.MsgEndRequest"
+
+    let subscribeToNodeURL = "/sentinel.node.v2.MsgSubscribeRequest"
+    let cancelSubscriptionURL = "/sentinel.subscription.v2.MsgCancelRequest"
 }
 private let constants = Constants()
 

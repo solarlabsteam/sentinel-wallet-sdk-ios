@@ -12,7 +12,7 @@ import NIO
 // MARK: - Constants
 
 private struct Constants {
-    let subscribeToPlanURL = "/sentinel.plan.v2.MsgService/MsgSubscribe"
+    let subscribeToPlanURL = "/sentinel.plan.v2.MsgSubscribeRequest"
 }
 private let constants = Constants()
 
