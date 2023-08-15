@@ -9,7 +9,7 @@ import Foundation
 
 public struct GlobalConstants {
     public static let mainDenom = "DVPN"
-    public static let denom = "udvpn"
+    public static let denom = "tsent"
     public static let marketPrice = "usdt,udvpn"
 
     public static let defaultLCDHostString = "lcd-sentinel.dvpn.solar"
