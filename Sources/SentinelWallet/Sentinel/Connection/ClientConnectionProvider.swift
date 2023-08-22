@@ -30,6 +30,7 @@ final class ClientConnectionProvider: ClientConnectionProviderType {
                 host: self.configuration.grpcMirror.host,
                 port: self.configuration.grpcMirror.port
             )
+            
             defer { try! channel.close().wait() }
             
             work(channel)

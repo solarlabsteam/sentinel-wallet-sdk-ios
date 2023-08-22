@@ -125,60 +125,63 @@ extension SubscriptionsProvider: SubscriptionsProviderType {
 
 // MARK: - Subscriptions info
 
-#warning("TODO: map Google_Protobuf_Any to new Subscription types")
-
 extension SubscriptionsProvider {
-//    public func querySubscription(
-//        with id: UInt64,
-//        completion: @escaping (Result<Subscription, Error>) -> Void
-//    ) {
-//        connectionProvider.openConnection(for: { channel in
-//            do {
-//                let request = Sentinel_Subscription_V2_QuerySubscriptionRequest.with {
-//                    $0.id = id
-//                }
-//                let response = try Sentinel_Subscription_V2_QueryServiceClient(channel: channel)
-//                    .querySubscription(request, callOptions: self.callOptions)
-//                    .response
-//                    .wait()
-//                #warning("TODO: map Google_Protobuf_Any to new Subscription types")
-////                completion(.success(Subscription(from: response)))
-//            } catch {
-//                completion(.failure(error))
-//            }
-//        })
-//    }
-//
-//    public func querySubscriptions(
-//        for account: String,
-//        with status: SubscriptionStatus = .unspecified,
-//        completion: @escaping (Result<[Subscription], Error>) -> Void
-//    ) {
-//        var callOptions = CallOptions()
-//        callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(5000))
-//
-//        let page = Cosmos_Base_Query_V1beta1_PageRequest.with {
-//            $0.limit = 1000
-//            $0.offset = 0
-//        }
-//
-//        connectionProvider.openConnection(for: { channel in
-//            do {
-//                let request = Sentinel_Subscription_V2_QuerySubscriptionsForAccountRequest.with {
-//                    $0.address = account
-//                    $0.pagination = page
-//                }
-//                let response = try Sentinel_Subscription_V2_QueryServiceClient(channel: channel)
-//                    .querySubscriptionsForAccount(request, callOptions: callOptions)
-//                    .response
-//                    .wait()
-//
-////                completion(.success(response.subscriptions.map(Subscription.init(from:))))
-//            } catch {
-//                completion(.failure(error))
-//            }
-//        })
-//    }
+    public func queryNodeSubscription(
+        with id: UInt64,
+        completion: @escaping (Result<NodeSubscription, Error>) -> Void
+    ) {
+        connectionProvider.openConnection(for: { channel in
+            do {
+                let request = Sentinel_Subscription_V2_QuerySubscriptionRequest.with {
+                    $0.id = id
+                }
+                let response = try Sentinel_Subscription_V2_QueryServiceClient(channel: channel)
+                    .querySubscription(request, callOptions: self.callOptions)
+                    .response
+                    .wait()
+                    .subscription
+
+                guard let subscription = NodeSubscription(from: response) else {
+                    completion(.failure(SubscriptionsProviderError.nonNodeSubscription))
+                    return
+                }
+                completion(.success(subscription))
+            } catch {
+                completion(.failure(error))
+            }
+        })
+    }
+
+    public func queryNodeSubscriptions(
+        for account: String,
+        completion: @escaping (Result<[NodeSubscription], Error>) -> Void
+    ) {
+        var callOptions = CallOptions()
+        callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(5000))
+
+        let page = Cosmos_Base_Query_V1beta1_PageRequest.with {
+            $0.limit = 1000
+            $0.offset = 0
+        }
+
+        connectionProvider.openConnection(for: { channel in
+            do {
+                let request = Sentinel_Subscription_V2_QuerySubscriptionsForAccountRequest.with {
+                    $0.address = account
+                    $0.pagination = page
+                }
+                let response = try Sentinel_Subscription_V2_QueryServiceClient(channel: channel)
+                    .querySubscriptionsForAccount(request, callOptions: callOptions)
+                    .response
+                    .wait()
+                    .subscriptions
+
+                completion(.success(response.compactMap(NodeSubscription.init(from:))))
+            } catch {
+                completion(.failure(error))
+            }
+        })
+    }
 }
     
 // MARK: - Sessions

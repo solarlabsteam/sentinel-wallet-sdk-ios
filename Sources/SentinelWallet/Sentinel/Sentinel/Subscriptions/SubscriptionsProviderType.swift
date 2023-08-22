@@ -30,17 +30,15 @@ public protocol SubscriptionsProviderType {
         completion: @escaping (Result<TransactionResult, Error>) -> Void
     )
     
-#warning("TODO: map Google_Protobuf_Any to new Subscription types")
-//    func querySubscription(
-//        with id: UInt64,
-//        completion: @escaping (Result<Subscription, Error>) -> Void
-//    )
-//
-//    func querySubscriptions(
-//        for account: String,
-//        with status: SubscriptionStatus,
-//        completion: @escaping (Result<[Subscription], Error>) -> Void
-//    )
+    func queryNodeSubscription(
+        with id: UInt64,
+        completion: @escaping (Result<NodeSubscription, Error>) -> Void
+    )
+
+    func queryNodeSubscriptions(
+        for account: String,
+        completion: @escaping (Result<[NodeSubscription], Error>) -> Void
+    )
 
     func startNewSession(
         on subscriptionID: UInt64,
