@@ -7,6 +7,8 @@
 
 import Foundation
 import HDWallet
+import GRPC
+import NIO
 
 private struct Constants {
     let defaultFeePrice = 10000
@@ -29,6 +31,8 @@ public enum WalletServiceError: Error {
 
 final public class WalletService {
     private let transactionProvider: TransactionProviderType
+    private let connectionProvider: ClientConnectionProviderType
+
     private let validatorsProvider: ValidatorsProviderType
     private let delegationsProvider: DelegationsProviderType
     private let securityService: SecurityServiceType
@@ -46,6 +50,12 @@ final public class WalletService {
     public var fee: Int {
         constants.defaultFeePrice
     }
+
+    private var callOptions: CallOptions {
+        var callOptions = CallOptions()
+        callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(3000))
+        return callOptions
+    }
     
     public init(
         for accountAddress: String,
@@ -54,6 +64,7 @@ final public class WalletService {
     ) {
         self.walletData = .init(accountAddress: accountAddress)
         self.transactionProvider = TransactionProvider(configuration: configuration)
+        self.connectionProvider = ClientConnectionProvider(configuration: configuration)
         self.validatorsProvider = ValidatorsProvider(configuration: configuration)
         self.delegationsProvider = DelegationsProvider(configuration: configuration)
         self.securityService = securityService
@@ -73,16 +84,22 @@ extension WalletService {
     public func fetchTendermintNodeInfo(
         callback: @escaping (Result<WalletNodeDTO, Error>) -> Void
     ) {
-        transactionProvider.fetchTendermintNodeInfo { [weak self] result in
-            switch result {
-            case .failure(let error):
-                log.error(error)
+        connectionProvider.openConnection(for: { [weak self] channel in
+            guard let self = self else { return }
+            do {
+                let request = Cosmos_Base_Tendermint_V1beta1_GetNodeInfoRequest()
+                let response = try Cosmos_Base_Tendermint_V1beta1_ServiceClient(channel: channel)
+                    .getNodeInfo(request, callOptions: self.callOptions)
+                    .response
+                    .wait()
+                    .defaultNodeInfo
+
+                self.walletData.nodeInfo = response
+                callback(.success(response.toDTO()))
+            } catch {
                 callback(.failure(error))
-            case .success(let info):
-                self?.walletData.nodeInfo = info
-                callback(.success(info.toDTO()))
             }
-        }
+        })
     }
 
     // Do not forget to update Authorization info before doing any signed requests by calling this method.
@@ -104,38 +121,31 @@ extension WalletService {
     public func fetchBalance(
         callback: @escaping (Result<[CoinToken], Error>) -> Void
     ) {
-        transactionProvider.fetchBalance(for: walletData.accountAddress) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                log.error(error)
-                callback(.failure(error))
-            case .success(let balance):
-                if balance.isEmpty {
-                    self?.walletData.myBalances = [
-                        CoinToken(denom: GlobalConstants.mainDenom, amount: "0")
-                    ]
-                } else {
-                    self?.walletData.myBalances = balance
+        connectionProvider.openConnection(for: { [weak self] channel in
+            guard let self = self else { return }
+            do {
+                let req = Cosmos_Bank_V1beta1_QueryAllBalancesRequest.with {
+                    $0.address = self.walletData.accountAddress
                 }
-                callback(.success(balance))
-            }
-        }
-    }
-    
-    public func fetchRewards(
-        offset: Int,
-        callback: @escaping (Result<[WalletDelegatorRewardDTO], Error>) -> Void
-    ) {
-        transactionProvider.fetchRewards(for: walletData.accountAddress) { [weak self] result in
-            switch result {
-            case .failure(let error):
-                log.error(error)
+
+                let response = try Cosmos_Bank_V1beta1_QueryClient(channel: channel)
+                    .allBalances(req, callOptions: callOptions)
+                    .response
+                    .wait()
+                    .balances
+                    .map { CoinToken(denom: $0.denom, amount: $0.amount) }
+
+                if response.isEmpty {
+                    self.walletData.myBalances = [CoinToken(denom: GlobalConstants.mainDenom, amount: "0")]
+                } else {
+                    self.walletData.myBalances = response
+                }
+
+                callback(.success(response))
+            } catch {
                 callback(.failure(error))
-            case .success(let reward):
-                self?.walletData.myReward = reward
-                callback(.success(reward.map { $0.toDTO() }))
             }
-        }
+        })
     }
     
     public func createTransactionSender() -> TransactionSender? {

@@ -15,25 +15,35 @@ protocol ClientConnectionProviderType {
 
 final class ClientConnectionProvider: ClientConnectionProviderType {
     private let configuration: ClientConnectionConfigurationType
-    
+    private var group: MultiThreadedEventLoopGroup?
+
     public init(configuration: ClientConnectionConfigurationType) {
         self.configuration = configuration
-    }
-    
-    func openConnection(for work: @escaping (ClientConnection) -> Void) {
-        DispatchQueue.global().async { [weak self] in
-            guard let self = self else { return }
-            let group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-            defer { try! group.syncShutdownGracefully() }
-            
-            let channel = ClientConnection.insecure(group: group).connect(
-                host: self.configuration.grpcMirror.host,
-                port: self.configuration.grpcMirror.port
-            )
-            
-            defer { try! channel.close().wait() }
-            
-            work(channel)
+        DispatchQueue.global(qos: .background).async {
+            self.group = MultiThreadedEventLoopGroup(numberOfThreads: 10)
         }
+    }
+
+    deinit {
+        try? group?.syncShutdownGracefully()
+    }
+
+    func openConnection(for work: @escaping (ClientConnection) -> Void) {
+        let shouldShutdown = group == nil
+        let group = group ?? MultiThreadedEventLoopGroup(numberOfThreads: 1)
+
+        let channel = ClientConnection.insecure(group: group).connect(
+            host: self.configuration.grpcMirror.host,
+            port: self.configuration.grpcMirror.port
+        )
+
+        defer {
+            try? channel.close().wait()
+            if shouldShutdown {
+                try? group.syncShutdownGracefully()
+            }
+        }
+
+        work(channel)
     }
 }

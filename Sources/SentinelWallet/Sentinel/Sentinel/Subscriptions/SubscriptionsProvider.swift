@@ -39,6 +39,28 @@ final public class SubscriptionsProvider {
 // MARK: - Subscribe & cancel
 
 extension SubscriptionsProvider: SubscriptionsProviderType {
+    public func fetchBalance(
+        for wallet: String,
+        completion: @escaping (Result<[CoinToken], Error>) -> Void
+    ) {
+        connectionProvider.openConnection(for: { channel in
+            let req = Cosmos_Bank_V1beta1_QueryAllBalancesRequest.with {
+                $0.address = wallet
+            }
+
+            do {
+                let response = try Cosmos_Bank_V1beta1_QueryClient(channel: channel)
+                    .allBalances(req, callOptions: self.callOptions)
+                    .response
+                    .wait()
+
+                completion(.success(response.balances.map { CoinToken(denom: $0.denom, amount: $0.amount) }))
+            } catch {
+                completion(.failure(error))
+            }
+        })
+    }
+
     public func queryAllocation(
         address: String,
         subscriptionId: UInt64,
@@ -89,46 +111,31 @@ extension SubscriptionsProvider: SubscriptionsProviderType {
     public func subscribe(
         sender: TransactionSender,
         node: String,
-        deposit: CoinToken,
+        denom: String,
         gigabytes: Int64,
         hours: Int64,
         completion: @escaping (Result<TransactionResult, Error>) -> Void
     ) {
-        transactionProvider.fetchBalance(for: sender.owner) { [self] result in
-            switch result {
-            case .failure(let error):
-                log.error(error)
-                completion(.failure(error))
-            case .success(let balance):
-                guard balance.contains(
-                    where: { $0.denom == deposit.denom && Int($0.amount) ?? 0 > Int(deposit.amount) ?? 0 }
-                ) else {
-                    completion(.failure(SubscriptionsProviderError.insufficientFunds))
-                    return
-                }
-
-                let startMessage = Sentinel_Node_V2_MsgSubscribeRequest.with {
-                    $0.from = sender.owner
-                    $0.nodeAddress = node
-                    $0.gigabytes = gigabytes
-                    $0.hours = hours
-                    $0.denom = deposit.denom
-                }
-
-                let anyMessage = Google_Protobuf2_Any.with {
-                    $0.typeURL = constants.subscribeToNodeURL
-                    $0.value = try! startMessage.serializedData()
-                }
-
-                self.transactionProvider.broadcast(
-                    sender: sender,
-                    recipient: node,
-                    messages: [anyMessage],
-                    gasFactor: 0,
-                    completion: completion
-                )
-            }
+        let startMessage = Sentinel_Node_V2_MsgSubscribeRequest.with {
+            $0.from = sender.owner
+            $0.nodeAddress = node
+            $0.gigabytes = gigabytes
+            $0.hours = hours
+            $0.denom = denom
         }
+
+        let anyMessage = Google_Protobuf2_Any.with {
+            $0.typeURL = constants.subscribeToNodeURL
+            $0.value = try! startMessage.serializedData()
+        }
+
+        transactionProvider.broadcast(
+            sender: sender,
+            recipient: node,
+            messages: [anyMessage],
+            gasFactor: 0,
+            completion: completion
+        )
     }
     
     /// Cancel any type of subscription (to a node or to a plan)

@@ -40,17 +40,8 @@ public struct TransactionSender {
 }
 
 protocol TransactionProviderType {
-    func fetchTendermintNodeInfo(completion: @escaping (Result<Tendermint_P2p_DefaultNodeInfo, Error>) -> Void)
     func fetchAuthorization(for address: String, completion: @escaping (Result<Google_Protobuf2_Any, Error>) -> Void)
-    func fetchBalance(
-        for address: String,
-        completion: @escaping (Result<[CoinToken], Error>) -> Void
-    )
-    func fetchRewards(
-        for address: String,
-        completion: @escaping (Result<[Cosmos_Distribution_V1beta1_DelegationDelegatorReward], Error>) -> Void
-    )
-    
+
     func broadcast(
         sender: TransactionSender,
         recipient: String,
@@ -85,22 +76,6 @@ final class TransactionProvider {
 // MARK: - TransactionProviderType
 
 extension TransactionProvider: TransactionProviderType {
-    func fetchTendermintNodeInfo(completion: @escaping (Result<Tendermint_P2p_DefaultNodeInfo, Error>) -> Void) {
-        connectionProvider.openConnection(for: { [weak self] channel in
-            guard let self = self else { return }
-            do {
-                let request = Cosmos_Base_Tendermint_V1beta1_GetNodeInfoRequest()
-                let response = try Cosmos_Base_Tendermint_V1beta1_ServiceClient(channel: channel)
-                    .getNodeInfo(request, callOptions: self.callOptions)
-                    .response
-                    .wait()
-                completion(.success(response.defaultNodeInfo))
-            } catch {
-                completion(.failure(error))
-            }
-        })
-    }
-
     func fetchAuthorization(
         for address: String,
         completion: @escaping (Result<Google_Protobuf2_Any, Error>) -> Void
@@ -114,51 +89,6 @@ extension TransactionProvider: TransactionProviderType {
                     .response
                     .wait()
                 completion(.success(response.account))
-            } catch {
-                completion(.failure(error))
-            }
-        })
-    }
-
-    func fetchBalance(
-        for address: String,
-        completion: @escaping (Result<[CoinToken], Error>) -> Void
-    ) {
-        var callOptions = CallOptions()
-        callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(3000))
-        
-        return connectionProvider.openConnection(for: { channel in
-            let req = Cosmos_Bank_V1beta1_QueryAllBalancesRequest.with {
-                $0.address = address
-            }
-
-            do {
-                let response = try Cosmos_Bank_V1beta1_QueryClient(channel: channel)
-                    .allBalances(req, callOptions: callOptions)
-                    .response
-                    .wait()
-
-                completion(.success(response.balances.map { CoinToken(denom: $0.denom, amount: $0.amount) }))
-            } catch {
-                completion(.failure(error))
-            }
-        })
-    }
-    
-    func fetchRewards(
-        for address: String,
-        completion: @escaping (Result<[Cosmos_Distribution_V1beta1_DelegationDelegatorReward], Error>) -> Void
-    ) {
-        connectionProvider.openConnection(for: { [weak self] channel in
-            guard let self = self else { return }
-            let request = Cosmos_Distribution_V1beta1_QueryDelegationTotalRewardsRequest
-                .with { $0.delegatorAddress = address }
-            do {
-                let response = try Cosmos_Distribution_V1beta1_QueryClient(channel: channel)
-                    .delegationTotalRewards(request, callOptions: self.callOptions)
-                    .response
-                    .wait()
-                completion(.success(response.rewards))
             } catch {
                 completion(.failure(error))
             }

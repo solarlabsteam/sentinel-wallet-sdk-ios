@@ -8,6 +8,11 @@
 import Foundation
 
 public protocol SubscriptionsProviderType {
+    func fetchBalance(
+        for wallet: String,
+        completion: @escaping (Result<[CoinToken], Error>) -> Void
+    )
+
     func queryAllocation(
         address: String,
         subscriptionId: UInt64,
@@ -17,7 +22,7 @@ public protocol SubscriptionsProviderType {
     func subscribe(
         sender: TransactionSender,
         node: String,
-        deposit: CoinToken,
+        denom: String,
         gigabytes: Int64,
         hours: Int64,
         completion: @escaping (Result<TransactionResult, Error>) -> Void
