@@ -17,7 +17,7 @@ public protocol SubscriptionsProviderType {
     func subscribe(
         sender: TransactionSender,
         node: String,
-        denom: String,
+        deposit: CoinToken,
         gigabytes: Int64,
         hours: Int64,
         completion: @escaping (Result<TransactionResult, Error>) -> Void

@@ -10,6 +10,7 @@ import Foundation
 public enum SubscriptionsProviderError: Error {
     case broadcastFailed
     case nonNodeSubscription
+    case insufficientFunds
     case sessionStartFailed
     case sessionsStopFailed
 }

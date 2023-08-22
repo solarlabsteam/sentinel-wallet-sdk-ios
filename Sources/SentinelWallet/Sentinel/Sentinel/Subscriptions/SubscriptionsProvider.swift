@@ -62,34 +62,73 @@ extension SubscriptionsProvider: SubscriptionsProviderType {
         })
     }
 
+    public func querySessions(
+        address: String,
+        completion: @escaping (Result<UInt64?, Error>) -> Void
+    ){
+        connectionProvider.openConnection(for: { channel in
+            do {
+                let request = Sentinel_Session_V2_QuerySessionsForAccountRequest.with {
+                    $0.address = address
+                }
+                let response = try Sentinel_Session_V2_QueryServiceClient(channel: channel)
+                    .querySessionsForAccount(request)
+                    .response
+                    .wait()
+                    .sessions
+                    .first(where: { $0.status == .active })?
+                    .id
+
+                completion(.success(response))
+            } catch {
+                completion(.failure(error))
+            }
+        })
+    }
+
     public func subscribe(
         sender: TransactionSender,
         node: String,
-        denom: String,
+        deposit: CoinToken,
         gigabytes: Int64,
         hours: Int64,
         completion: @escaping (Result<TransactionResult, Error>) -> Void
     ) {
-        let startMessage = Sentinel_Node_V2_MsgSubscribeRequest.with {
-            $0.from = sender.owner
-            $0.nodeAddress = node
-            $0.gigabytes = gigabytes
-            $0.hours = hours
-            $0.denom = denom
-        }
+        transactionProvider.fetchBalance(for: sender.owner) { [self] result in
+            switch result {
+            case .failure(let error):
+                log.error(error)
+                completion(.failure(error))
+            case .success(let balance):
+                guard balance.contains(
+                    where: { $0.denom == deposit.denom && Int($0.amount) ?? 0 > Int(deposit.amount) ?? 0 }
+                ) else {
+                    completion(.failure(SubscriptionsProviderError.insufficientFunds))
+                    return
+                }
 
-        let anyMessage = Google_Protobuf2_Any.with {
-            $0.typeURL = constants.subscribeToNodeURL
-            $0.value = try! startMessage.serializedData()
-        }
+                let startMessage = Sentinel_Node_V2_MsgSubscribeRequest.with {
+                    $0.from = sender.owner
+                    $0.nodeAddress = node
+                    $0.gigabytes = gigabytes
+                    $0.hours = hours
+                    $0.denom = deposit.denom
+                }
 
-        transactionProvider.broadcast(
-            sender: sender,
-            recipient: node,
-            messages: [anyMessage],
-            gasFactor: 0,
-            completion: completion
-        )
+                let anyMessage = Google_Protobuf2_Any.with {
+                    $0.typeURL = constants.subscribeToNodeURL
+                    $0.value = try! startMessage.serializedData()
+                }
+
+                self.transactionProvider.broadcast(
+                    sender: sender,
+                    recipient: node,
+                    messages: [anyMessage],
+                    gasFactor: 0,
+                    completion: completion
+                )
+            }
+        }
     }
     
     /// Cancel any type of subscription (to a node or to a plan)
