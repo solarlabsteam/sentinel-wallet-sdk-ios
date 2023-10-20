@@ -21,6 +21,7 @@ private struct Constants {
 }
 private let constants = Constants()
 
+@available(*, deprecated, message: "Use AsynsSubscriptionsProvider instead.")
 final public class SubscriptionsProvider {
     private let connectionProvider: ClientConnectionProviderType
     private let transactionProvider: TransactionProviderType

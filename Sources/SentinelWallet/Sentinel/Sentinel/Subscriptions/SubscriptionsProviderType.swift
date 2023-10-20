@@ -7,6 +7,7 @@
 
 import Foundation
 
+@available(*, deprecated, message: "Use SubscriptionsProviderType instead.")
 public protocol SubscriptionsProviderType {
     func fetchBalance(
         for wallet: String,
