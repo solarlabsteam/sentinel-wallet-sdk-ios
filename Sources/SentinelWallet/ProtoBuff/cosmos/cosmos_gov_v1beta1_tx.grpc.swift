@@ -22,6 +22,7 @@
 //
 import GRPC
 import NIO
+import NIOConcurrencyHelpers
 import SwiftProtobuf
 
 
@@ -41,6 +42,11 @@ internal protocol Cosmos_Gov_V1beta1_MsgClientProtocol: GRPCClient {
     _ request: Cosmos_Gov_V1beta1_MsgVote,
     callOptions: CallOptions?
   ) -> UnaryCall<Cosmos_Gov_V1beta1_MsgVote, Cosmos_Gov_V1beta1_MsgVoteResponse>
+
+  func voteWeighted(
+    _ request: Cosmos_Gov_V1beta1_MsgVoteWeighted,
+    callOptions: CallOptions?
+  ) -> UnaryCall<Cosmos_Gov_V1beta1_MsgVoteWeighted, Cosmos_Gov_V1beta1_MsgVoteWeightedResponse>
 
   func deposit(
     _ request: Cosmos_Gov_V1beta1_MsgDeposit,
@@ -64,7 +70,7 @@ extension Cosmos_Gov_V1beta1_MsgClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Gov_V1beta1_MsgSubmitProposal, Cosmos_Gov_V1beta1_MsgSubmitProposalResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.gov.v1beta1.Msg/SubmitProposal",
+      path: Cosmos_Gov_V1beta1_MsgClientMetadata.Methods.submitProposal.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeSubmitProposalInterceptors() ?? []
@@ -82,10 +88,30 @@ extension Cosmos_Gov_V1beta1_MsgClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Gov_V1beta1_MsgVote, Cosmos_Gov_V1beta1_MsgVoteResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.gov.v1beta1.Msg/Vote",
+      path: Cosmos_Gov_V1beta1_MsgClientMetadata.Methods.vote.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeVoteInterceptors() ?? []
+    )
+  }
+
+  /// VoteWeighted defines a method to add a weighted vote on a specific proposal.
+  ///
+  /// Since: cosmos-sdk 0.43
+  ///
+  /// - Parameters:
+  ///   - request: Request to send to VoteWeighted.
+  ///   - callOptions: Call options.
+  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
+  internal func voteWeighted(
+    _ request: Cosmos_Gov_V1beta1_MsgVoteWeighted,
+    callOptions: CallOptions? = nil
+  ) -> UnaryCall<Cosmos_Gov_V1beta1_MsgVoteWeighted, Cosmos_Gov_V1beta1_MsgVoteWeightedResponse> {
+    return self.makeUnaryCall(
+      path: Cosmos_Gov_V1beta1_MsgClientMetadata.Methods.voteWeighted.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeVoteWeightedInterceptors() ?? []
     )
   }
 
@@ -100,7 +126,7 @@ extension Cosmos_Gov_V1beta1_MsgClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Gov_V1beta1_MsgDeposit, Cosmos_Gov_V1beta1_MsgDepositResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.gov.v1beta1.Msg/Deposit",
+      path: Cosmos_Gov_V1beta1_MsgClientMetadata.Methods.deposit.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeDepositInterceptors() ?? []
@@ -108,20 +134,43 @@ extension Cosmos_Gov_V1beta1_MsgClientProtocol {
   }
 }
 
-internal protocol Cosmos_Gov_V1beta1_MsgClientInterceptorFactoryProtocol {
+@available(*, deprecated)
+extension Cosmos_Gov_V1beta1_MsgClient: @unchecked Sendable {}
 
-  /// - Returns: Interceptors to use when invoking 'submitProposal'.
-  func makeSubmitProposalInterceptors() -> [ClientInterceptor<Cosmos_Gov_V1beta1_MsgSubmitProposal, Cosmos_Gov_V1beta1_MsgSubmitProposalResponse>]
+@available(*, deprecated, renamed: "Cosmos_Gov_V1beta1_MsgNIOClient")
+internal final class Cosmos_Gov_V1beta1_MsgClient: Cosmos_Gov_V1beta1_MsgClientProtocol {
+  private let lock = Lock()
+  private var _defaultCallOptions: CallOptions
+  private var _interceptors: Cosmos_Gov_V1beta1_MsgClientInterceptorFactoryProtocol?
+  internal let channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions {
+    get { self.lock.withLock { return self._defaultCallOptions } }
+    set { self.lock.withLockVoid { self._defaultCallOptions = newValue } }
+  }
+  internal var interceptors: Cosmos_Gov_V1beta1_MsgClientInterceptorFactoryProtocol? {
+    get { self.lock.withLock { return self._interceptors } }
+    set { self.lock.withLockVoid { self._interceptors = newValue } }
+  }
 
-  /// - Returns: Interceptors to use when invoking 'vote'.
-  func makeVoteInterceptors() -> [ClientInterceptor<Cosmos_Gov_V1beta1_MsgVote, Cosmos_Gov_V1beta1_MsgVoteResponse>]
-
-  /// - Returns: Interceptors to use when invoking 'deposit'.
-  func makeDepositInterceptors() -> [ClientInterceptor<Cosmos_Gov_V1beta1_MsgDeposit, Cosmos_Gov_V1beta1_MsgDepositResponse>]
+  /// Creates a client for the cosmos.gov.v1beta1.Msg service.
+  ///
+  /// - Parameters:
+  ///   - channel: `GRPCChannel` to the service host.
+  ///   - defaultCallOptions: Options to use for each service call if the user doesn't provide them.
+  ///   - interceptors: A factory providing interceptors for each RPC.
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Cosmos_Gov_V1beta1_MsgClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self._defaultCallOptions = defaultCallOptions
+    self._interceptors = interceptors
+  }
 }
 
-internal final class Cosmos_Gov_V1beta1_MsgClient: Cosmos_Gov_V1beta1_MsgClientProtocol {
-  internal let channel: GRPCChannel
+internal struct Cosmos_Gov_V1beta1_MsgNIOClient: Cosmos_Gov_V1beta1_MsgClientProtocol {
+  internal var channel: GRPCChannel
   internal var defaultCallOptions: CallOptions
   internal var interceptors: Cosmos_Gov_V1beta1_MsgClientInterceptorFactoryProtocol?
 
@@ -143,6 +192,214 @@ internal final class Cosmos_Gov_V1beta1_MsgClient: Cosmos_Gov_V1beta1_MsgClientP
 }
 
 /// Msg defines the bank Msg service.
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal protocol Cosmos_Gov_V1beta1_MsgAsyncClientProtocol: GRPCClient {
+  static var serviceDescriptor: GRPCServiceDescriptor { get }
+  var interceptors: Cosmos_Gov_V1beta1_MsgClientInterceptorFactoryProtocol? { get }
+
+  func makeSubmitProposalCall(
+    _ request: Cosmos_Gov_V1beta1_MsgSubmitProposal,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_MsgSubmitProposal, Cosmos_Gov_V1beta1_MsgSubmitProposalResponse>
+
+  func makeVoteCall(
+    _ request: Cosmos_Gov_V1beta1_MsgVote,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_MsgVote, Cosmos_Gov_V1beta1_MsgVoteResponse>
+
+  func makeVoteWeightedCall(
+    _ request: Cosmos_Gov_V1beta1_MsgVoteWeighted,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_MsgVoteWeighted, Cosmos_Gov_V1beta1_MsgVoteWeightedResponse>
+
+  func makeDepositCall(
+    _ request: Cosmos_Gov_V1beta1_MsgDeposit,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_MsgDeposit, Cosmos_Gov_V1beta1_MsgDepositResponse>
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Gov_V1beta1_MsgAsyncClientProtocol {
+  internal static var serviceDescriptor: GRPCServiceDescriptor {
+    return Cosmos_Gov_V1beta1_MsgClientMetadata.serviceDescriptor
+  }
+
+  internal var interceptors: Cosmos_Gov_V1beta1_MsgClientInterceptorFactoryProtocol? {
+    return nil
+  }
+
+  internal func makeSubmitProposalCall(
+    _ request: Cosmos_Gov_V1beta1_MsgSubmitProposal,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_MsgSubmitProposal, Cosmos_Gov_V1beta1_MsgSubmitProposalResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_MsgClientMetadata.Methods.submitProposal.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeSubmitProposalInterceptors() ?? []
+    )
+  }
+
+  internal func makeVoteCall(
+    _ request: Cosmos_Gov_V1beta1_MsgVote,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_MsgVote, Cosmos_Gov_V1beta1_MsgVoteResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_MsgClientMetadata.Methods.vote.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeVoteInterceptors() ?? []
+    )
+  }
+
+  internal func makeVoteWeightedCall(
+    _ request: Cosmos_Gov_V1beta1_MsgVoteWeighted,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_MsgVoteWeighted, Cosmos_Gov_V1beta1_MsgVoteWeightedResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_MsgClientMetadata.Methods.voteWeighted.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeVoteWeightedInterceptors() ?? []
+    )
+  }
+
+  internal func makeDepositCall(
+    _ request: Cosmos_Gov_V1beta1_MsgDeposit,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_MsgDeposit, Cosmos_Gov_V1beta1_MsgDepositResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_MsgClientMetadata.Methods.deposit.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDepositInterceptors() ?? []
+    )
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Gov_V1beta1_MsgAsyncClientProtocol {
+  internal func submitProposal(
+    _ request: Cosmos_Gov_V1beta1_MsgSubmitProposal,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Gov_V1beta1_MsgSubmitProposalResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_MsgClientMetadata.Methods.submitProposal.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeSubmitProposalInterceptors() ?? []
+    )
+  }
+
+  internal func vote(
+    _ request: Cosmos_Gov_V1beta1_MsgVote,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Gov_V1beta1_MsgVoteResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_MsgClientMetadata.Methods.vote.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeVoteInterceptors() ?? []
+    )
+  }
+
+  internal func voteWeighted(
+    _ request: Cosmos_Gov_V1beta1_MsgVoteWeighted,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Gov_V1beta1_MsgVoteWeightedResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_MsgClientMetadata.Methods.voteWeighted.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeVoteWeightedInterceptors() ?? []
+    )
+  }
+
+  internal func deposit(
+    _ request: Cosmos_Gov_V1beta1_MsgDeposit,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Gov_V1beta1_MsgDepositResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_MsgClientMetadata.Methods.deposit.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDepositInterceptors() ?? []
+    )
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal struct Cosmos_Gov_V1beta1_MsgAsyncClient: Cosmos_Gov_V1beta1_MsgAsyncClientProtocol {
+  internal var channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions
+  internal var interceptors: Cosmos_Gov_V1beta1_MsgClientInterceptorFactoryProtocol?
+
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Cosmos_Gov_V1beta1_MsgClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self.defaultCallOptions = defaultCallOptions
+    self.interceptors = interceptors
+  }
+}
+
+internal protocol Cosmos_Gov_V1beta1_MsgClientInterceptorFactoryProtocol: Sendable {
+
+  /// - Returns: Interceptors to use when invoking 'submitProposal'.
+  func makeSubmitProposalInterceptors() -> [ClientInterceptor<Cosmos_Gov_V1beta1_MsgSubmitProposal, Cosmos_Gov_V1beta1_MsgSubmitProposalResponse>]
+
+  /// - Returns: Interceptors to use when invoking 'vote'.
+  func makeVoteInterceptors() -> [ClientInterceptor<Cosmos_Gov_V1beta1_MsgVote, Cosmos_Gov_V1beta1_MsgVoteResponse>]
+
+  /// - Returns: Interceptors to use when invoking 'voteWeighted'.
+  func makeVoteWeightedInterceptors() -> [ClientInterceptor<Cosmos_Gov_V1beta1_MsgVoteWeighted, Cosmos_Gov_V1beta1_MsgVoteWeightedResponse>]
+
+  /// - Returns: Interceptors to use when invoking 'deposit'.
+  func makeDepositInterceptors() -> [ClientInterceptor<Cosmos_Gov_V1beta1_MsgDeposit, Cosmos_Gov_V1beta1_MsgDepositResponse>]
+}
+
+internal enum Cosmos_Gov_V1beta1_MsgClientMetadata {
+  internal static let serviceDescriptor = GRPCServiceDescriptor(
+    name: "Msg",
+    fullName: "cosmos.gov.v1beta1.Msg",
+    methods: [
+      Cosmos_Gov_V1beta1_MsgClientMetadata.Methods.submitProposal,
+      Cosmos_Gov_V1beta1_MsgClientMetadata.Methods.vote,
+      Cosmos_Gov_V1beta1_MsgClientMetadata.Methods.voteWeighted,
+      Cosmos_Gov_V1beta1_MsgClientMetadata.Methods.deposit,
+    ]
+  )
+
+  internal enum Methods {
+    internal static let submitProposal = GRPCMethodDescriptor(
+      name: "SubmitProposal",
+      path: "/cosmos.gov.v1beta1.Msg/SubmitProposal",
+      type: GRPCCallType.unary
+    )
+
+    internal static let vote = GRPCMethodDescriptor(
+      name: "Vote",
+      path: "/cosmos.gov.v1beta1.Msg/Vote",
+      type: GRPCCallType.unary
+    )
+
+    internal static let voteWeighted = GRPCMethodDescriptor(
+      name: "VoteWeighted",
+      path: "/cosmos.gov.v1beta1.Msg/VoteWeighted",
+      type: GRPCCallType.unary
+    )
+
+    internal static let deposit = GRPCMethodDescriptor(
+      name: "Deposit",
+      path: "/cosmos.gov.v1beta1.Msg/Deposit",
+      type: GRPCCallType.unary
+    )
+  }
+}
+
+/// Msg defines the bank Msg service.
 ///
 /// To build a server, implement a class that conforms to this protocol.
 internal protocol Cosmos_Gov_V1beta1_MsgProvider: CallHandlerProvider {
@@ -154,12 +411,19 @@ internal protocol Cosmos_Gov_V1beta1_MsgProvider: CallHandlerProvider {
   /// Vote defines a method to add a vote on a specific proposal.
   func vote(request: Cosmos_Gov_V1beta1_MsgVote, context: StatusOnlyCallContext) -> EventLoopFuture<Cosmos_Gov_V1beta1_MsgVoteResponse>
 
+  /// VoteWeighted defines a method to add a weighted vote on a specific proposal.
+  ///
+  /// Since: cosmos-sdk 0.43
+  func voteWeighted(request: Cosmos_Gov_V1beta1_MsgVoteWeighted, context: StatusOnlyCallContext) -> EventLoopFuture<Cosmos_Gov_V1beta1_MsgVoteWeightedResponse>
+
   /// Deposit defines a method to add deposit on a specific proposal.
   func deposit(request: Cosmos_Gov_V1beta1_MsgDeposit, context: StatusOnlyCallContext) -> EventLoopFuture<Cosmos_Gov_V1beta1_MsgDepositResponse>
 }
 
 extension Cosmos_Gov_V1beta1_MsgProvider {
-  internal var serviceName: Substring { return "cosmos.gov.v1beta1.Msg" }
+  internal var serviceName: Substring {
+    return Cosmos_Gov_V1beta1_MsgServerMetadata.serviceDescriptor.fullName[...]
+  }
 
   /// Determines, calls and returns the appropriate request handler, depending on the request's method.
   /// Returns nil for methods not handled by this service.
@@ -186,6 +450,15 @@ extension Cosmos_Gov_V1beta1_MsgProvider {
         userFunction: self.vote(request:context:)
       )
 
+    case "VoteWeighted":
+      return UnaryServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Gov_V1beta1_MsgVoteWeighted>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Gov_V1beta1_MsgVoteWeightedResponse>(),
+        interceptors: self.interceptors?.makeVoteWeightedInterceptors() ?? [],
+        userFunction: self.voteWeighted(request:context:)
+      )
+
     case "Deposit":
       return UnaryServerHandler(
         context: context,
@@ -193,6 +466,102 @@ extension Cosmos_Gov_V1beta1_MsgProvider {
         responseSerializer: ProtobufSerializer<Cosmos_Gov_V1beta1_MsgDepositResponse>(),
         interceptors: self.interceptors?.makeDepositInterceptors() ?? [],
         userFunction: self.deposit(request:context:)
+      )
+
+    default:
+      return nil
+    }
+  }
+}
+
+/// Msg defines the bank Msg service.
+///
+/// To implement a server, implement an object which conforms to this protocol.
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal protocol Cosmos_Gov_V1beta1_MsgAsyncProvider: CallHandlerProvider {
+  static var serviceDescriptor: GRPCServiceDescriptor { get }
+  var interceptors: Cosmos_Gov_V1beta1_MsgServerInterceptorFactoryProtocol? { get }
+
+  /// SubmitProposal defines a method to create new proposal given a content.
+  @Sendable func submitProposal(
+    request: Cosmos_Gov_V1beta1_MsgSubmitProposal,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Gov_V1beta1_MsgSubmitProposalResponse
+
+  /// Vote defines a method to add a vote on a specific proposal.
+  @Sendable func vote(
+    request: Cosmos_Gov_V1beta1_MsgVote,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Gov_V1beta1_MsgVoteResponse
+
+  /// VoteWeighted defines a method to add a weighted vote on a specific proposal.
+  ///
+  /// Since: cosmos-sdk 0.43
+  @Sendable func voteWeighted(
+    request: Cosmos_Gov_V1beta1_MsgVoteWeighted,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Gov_V1beta1_MsgVoteWeightedResponse
+
+  /// Deposit defines a method to add deposit on a specific proposal.
+  @Sendable func deposit(
+    request: Cosmos_Gov_V1beta1_MsgDeposit,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Gov_V1beta1_MsgDepositResponse
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Gov_V1beta1_MsgAsyncProvider {
+  internal static var serviceDescriptor: GRPCServiceDescriptor {
+    return Cosmos_Gov_V1beta1_MsgServerMetadata.serviceDescriptor
+  }
+
+  internal var serviceName: Substring {
+    return Cosmos_Gov_V1beta1_MsgServerMetadata.serviceDescriptor.fullName[...]
+  }
+
+  internal var interceptors: Cosmos_Gov_V1beta1_MsgServerInterceptorFactoryProtocol? {
+    return nil
+  }
+
+  internal func handle(
+    method name: Substring,
+    context: CallHandlerContext
+  ) -> GRPCServerHandlerProtocol? {
+    switch name {
+    case "SubmitProposal":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Gov_V1beta1_MsgSubmitProposal>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Gov_V1beta1_MsgSubmitProposalResponse>(),
+        interceptors: self.interceptors?.makeSubmitProposalInterceptors() ?? [],
+        wrapping: self.submitProposal(request:context:)
+      )
+
+    case "Vote":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Gov_V1beta1_MsgVote>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Gov_V1beta1_MsgVoteResponse>(),
+        interceptors: self.interceptors?.makeVoteInterceptors() ?? [],
+        wrapping: self.vote(request:context:)
+      )
+
+    case "VoteWeighted":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Gov_V1beta1_MsgVoteWeighted>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Gov_V1beta1_MsgVoteWeightedResponse>(),
+        interceptors: self.interceptors?.makeVoteWeightedInterceptors() ?? [],
+        wrapping: self.voteWeighted(request:context:)
+      )
+
+    case "Deposit":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Gov_V1beta1_MsgDeposit>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Gov_V1beta1_MsgDepositResponse>(),
+        interceptors: self.interceptors?.makeDepositInterceptors() ?? [],
+        wrapping: self.deposit(request:context:)
       )
 
     default:
@@ -211,7 +580,50 @@ internal protocol Cosmos_Gov_V1beta1_MsgServerInterceptorFactoryProtocol {
   ///   Defaults to calling `self.makeInterceptors()`.
   func makeVoteInterceptors() -> [ServerInterceptor<Cosmos_Gov_V1beta1_MsgVote, Cosmos_Gov_V1beta1_MsgVoteResponse>]
 
+  /// - Returns: Interceptors to use when handling 'voteWeighted'.
+  ///   Defaults to calling `self.makeInterceptors()`.
+  func makeVoteWeightedInterceptors() -> [ServerInterceptor<Cosmos_Gov_V1beta1_MsgVoteWeighted, Cosmos_Gov_V1beta1_MsgVoteWeightedResponse>]
+
   /// - Returns: Interceptors to use when handling 'deposit'.
   ///   Defaults to calling `self.makeInterceptors()`.
   func makeDepositInterceptors() -> [ServerInterceptor<Cosmos_Gov_V1beta1_MsgDeposit, Cosmos_Gov_V1beta1_MsgDepositResponse>]
+}
+
+internal enum Cosmos_Gov_V1beta1_MsgServerMetadata {
+  internal static let serviceDescriptor = GRPCServiceDescriptor(
+    name: "Msg",
+    fullName: "cosmos.gov.v1beta1.Msg",
+    methods: [
+      Cosmos_Gov_V1beta1_MsgServerMetadata.Methods.submitProposal,
+      Cosmos_Gov_V1beta1_MsgServerMetadata.Methods.vote,
+      Cosmos_Gov_V1beta1_MsgServerMetadata.Methods.voteWeighted,
+      Cosmos_Gov_V1beta1_MsgServerMetadata.Methods.deposit,
+    ]
+  )
+
+  internal enum Methods {
+    internal static let submitProposal = GRPCMethodDescriptor(
+      name: "SubmitProposal",
+      path: "/cosmos.gov.v1beta1.Msg/SubmitProposal",
+      type: GRPCCallType.unary
+    )
+
+    internal static let vote = GRPCMethodDescriptor(
+      name: "Vote",
+      path: "/cosmos.gov.v1beta1.Msg/Vote",
+      type: GRPCCallType.unary
+    )
+
+    internal static let voteWeighted = GRPCMethodDescriptor(
+      name: "VoteWeighted",
+      path: "/cosmos.gov.v1beta1.Msg/VoteWeighted",
+      type: GRPCCallType.unary
+    )
+
+    internal static let deposit = GRPCMethodDescriptor(
+      name: "Deposit",
+      path: "/cosmos.gov.v1beta1.Msg/Deposit",
+      type: GRPCCallType.unary
+    )
+  }
 }

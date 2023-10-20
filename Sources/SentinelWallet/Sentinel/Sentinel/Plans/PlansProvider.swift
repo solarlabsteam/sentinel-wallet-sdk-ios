@@ -8,6 +8,7 @@
 import Foundation
 import GRPC
 import NIO
+import SwiftProtobuf
 
 // MARK: - Constants
 
@@ -48,7 +49,7 @@ extension PlansProvider: PlansProviderType {
             $0.denom = denom
         }
 
-        let anyMessage = Google_Protobuf2_Any.with {
+        let anyMessage = Google_Protobuf_Any.with {
             $0.typeURL = constants.subscribeToPlanURL
             $0.value = try! startMessage.serializedData()
         }

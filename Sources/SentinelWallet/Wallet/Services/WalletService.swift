@@ -9,6 +9,7 @@ import Foundation
 import HDWallet
 import GRPC
 import NIO
+import SwiftProtobuf
 
 private struct Constants {
     let defaultFeePrice = 10000
@@ -301,7 +302,7 @@ extension WalletService {
             $0.toAddress = account
             $0.amount = [sendCoin]
         }
-        let anyMessage = Google_Protobuf2_Any.with {
+        let anyMessage = Google_Protobuf_Any.with {
             $0.typeURL = constants.sendMessageURL
             $0.value = try! sendMessage.serializedData()
         }

@@ -8,6 +8,7 @@
 import Foundation
 import GRPC
 import NIO
+import SwiftProtobuf
 
 // MARK: - Constants
 
@@ -124,7 +125,7 @@ extension SubscriptionsProvider: SubscriptionsProviderType {
             $0.denom = denom
         }
 
-        let anyMessage = Google_Protobuf2_Any.with {
+        let anyMessage = Google_Protobuf_Any.with {
             $0.typeURL = constants.subscribeToNodeURL
             $0.value = try! startMessage.serializedData()
         }
@@ -145,13 +146,13 @@ extension SubscriptionsProvider: SubscriptionsProviderType {
         node: String,
         completion: @escaping (Result<TransactionResult, Error>) -> Void
     ) {
-        let messages = subscriptions.map { subscriptionID -> Google_Protobuf2_Any in
+        let messages = subscriptions.map { subscriptionID -> Google_Protobuf_Any in
             let startMessage = Sentinel_Subscription_V2_MsgCancelRequest.with {
                 $0.id = subscriptionID
                 $0.from = sender.owner
             }
 
-            let anyMessage = Google_Protobuf2_Any.with {
+            let anyMessage = Google_Protobuf_Any.with {
                 $0.typeURL = constants.cancelSubscriptionURL
                 $0.value = try! startMessage.serializedData()
             }
@@ -247,7 +248,7 @@ extension SubscriptionsProvider {
             $0.address = node
         }
         
-        let anyMessage = Google_Protobuf2_Any.with {
+        let anyMessage = Google_Protobuf_Any.with {
             $0.typeURL = constants.startSessionURL
             $0.value = try! startMessage.serializedData()
         }
@@ -283,13 +284,13 @@ extension SubscriptionsProvider {
         }
     }
     
-    private func formStopMessage(activeSession: UInt64?, sender: TransactionSender) -> [Google_Protobuf2_Any] {
+    private func formStopMessage(activeSession: UInt64?, sender: TransactionSender) -> [Google_Protobuf_Any] {
         guard let activeSession = activeSession else { return [] }
         let stopMessage = Sentinel_Session_V2_MsgEndRequest.with {
             $0.id = activeSession
             $0.from = sender.owner
         }
-        let anyMessage = Google_Protobuf2_Any.with {
+        let anyMessage = Google_Protobuf_Any.with {
             $0.typeURL = constants.stopSessionURL
             $0.value = try! stopMessage.serializedData()
         }

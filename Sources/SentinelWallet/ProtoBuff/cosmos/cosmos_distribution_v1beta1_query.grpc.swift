@@ -22,6 +22,7 @@
 //
 import GRPC
 import NIO
+import NIOConcurrencyHelpers
 import SwiftProtobuf
 
 
@@ -36,6 +37,11 @@ internal protocol Cosmos_Distribution_V1beta1_QueryClientProtocol: GRPCClient {
     _ request: Cosmos_Distribution_V1beta1_QueryParamsRequest,
     callOptions: CallOptions?
   ) -> UnaryCall<Cosmos_Distribution_V1beta1_QueryParamsRequest, Cosmos_Distribution_V1beta1_QueryParamsResponse>
+
+  func validatorDistributionInfo(
+    _ request: Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoRequest,
+    callOptions: CallOptions?
+  ) -> UnaryCall<Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoRequest, Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoResponse>
 
   func validatorOutstandingRewards(
     _ request: Cosmos_Distribution_V1beta1_QueryValidatorOutstandingRewardsRequest,
@@ -94,10 +100,28 @@ extension Cosmos_Distribution_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Distribution_V1beta1_QueryParamsRequest, Cosmos_Distribution_V1beta1_QueryParamsResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.distribution.v1beta1.Query/Params",
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.params.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeParamsInterceptors() ?? []
+    )
+  }
+
+  /// ValidatorDistributionInfo queries validator commission and self-delegation rewards for validator
+  ///
+  /// - Parameters:
+  ///   - request: Request to send to ValidatorDistributionInfo.
+  ///   - callOptions: Call options.
+  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
+  internal func validatorDistributionInfo(
+    _ request: Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoRequest,
+    callOptions: CallOptions? = nil
+  ) -> UnaryCall<Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoRequest, Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoResponse> {
+    return self.makeUnaryCall(
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.validatorDistributionInfo.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeValidatorDistributionInfoInterceptors() ?? []
     )
   }
 
@@ -112,7 +136,7 @@ extension Cosmos_Distribution_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Distribution_V1beta1_QueryValidatorOutstandingRewardsRequest, Cosmos_Distribution_V1beta1_QueryValidatorOutstandingRewardsResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.distribution.v1beta1.Query/ValidatorOutstandingRewards",
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.validatorOutstandingRewards.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeValidatorOutstandingRewardsInterceptors() ?? []
@@ -130,7 +154,7 @@ extension Cosmos_Distribution_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Distribution_V1beta1_QueryValidatorCommissionRequest, Cosmos_Distribution_V1beta1_QueryValidatorCommissionResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.distribution.v1beta1.Query/ValidatorCommission",
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.validatorCommission.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeValidatorCommissionInterceptors() ?? []
@@ -148,7 +172,7 @@ extension Cosmos_Distribution_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Distribution_V1beta1_QueryValidatorSlashesRequest, Cosmos_Distribution_V1beta1_QueryValidatorSlashesResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.distribution.v1beta1.Query/ValidatorSlashes",
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.validatorSlashes.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeValidatorSlashesInterceptors() ?? []
@@ -166,14 +190,14 @@ extension Cosmos_Distribution_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Distribution_V1beta1_QueryDelegationRewardsRequest, Cosmos_Distribution_V1beta1_QueryDelegationRewardsResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.distribution.v1beta1.Query/DelegationRewards",
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.delegationRewards.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeDelegationRewardsInterceptors() ?? []
     )
   }
 
-  /// DelegationTotalRewards queries the total rewards accrued by a each
+  /// DelegationTotalRewards queries the total rewards accrued by each
   /// validator.
   ///
   /// - Parameters:
@@ -185,7 +209,7 @@ extension Cosmos_Distribution_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Distribution_V1beta1_QueryDelegationTotalRewardsRequest, Cosmos_Distribution_V1beta1_QueryDelegationTotalRewardsResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.distribution.v1beta1.Query/DelegationTotalRewards",
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.delegationTotalRewards.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeDelegationTotalRewardsInterceptors() ?? []
@@ -203,7 +227,7 @@ extension Cosmos_Distribution_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Distribution_V1beta1_QueryDelegatorValidatorsRequest, Cosmos_Distribution_V1beta1_QueryDelegatorValidatorsResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.distribution.v1beta1.Query/DelegatorValidators",
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.delegatorValidators.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeDelegatorValidatorsInterceptors() ?? []
@@ -221,7 +245,7 @@ extension Cosmos_Distribution_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Distribution_V1beta1_QueryDelegatorWithdrawAddressRequest, Cosmos_Distribution_V1beta1_QueryDelegatorWithdrawAddressResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.distribution.v1beta1.Query/DelegatorWithdrawAddress",
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.delegatorWithdrawAddress.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeDelegatorWithdrawAddressInterceptors() ?? []
@@ -239,7 +263,7 @@ extension Cosmos_Distribution_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Distribution_V1beta1_QueryCommunityPoolRequest, Cosmos_Distribution_V1beta1_QueryCommunityPoolResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.distribution.v1beta1.Query/CommunityPool",
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.communityPool.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeCommunityPoolInterceptors() ?? []
@@ -247,10 +271,398 @@ extension Cosmos_Distribution_V1beta1_QueryClientProtocol {
   }
 }
 
-internal protocol Cosmos_Distribution_V1beta1_QueryClientInterceptorFactoryProtocol {
+@available(*, deprecated)
+extension Cosmos_Distribution_V1beta1_QueryClient: @unchecked Sendable {}
+
+@available(*, deprecated, renamed: "Cosmos_Distribution_V1beta1_QueryNIOClient")
+internal final class Cosmos_Distribution_V1beta1_QueryClient: Cosmos_Distribution_V1beta1_QueryClientProtocol {
+  private let lock = Lock()
+  private var _defaultCallOptions: CallOptions
+  private var _interceptors: Cosmos_Distribution_V1beta1_QueryClientInterceptorFactoryProtocol?
+  internal let channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions {
+    get { self.lock.withLock { return self._defaultCallOptions } }
+    set { self.lock.withLockVoid { self._defaultCallOptions = newValue } }
+  }
+  internal var interceptors: Cosmos_Distribution_V1beta1_QueryClientInterceptorFactoryProtocol? {
+    get { self.lock.withLock { return self._interceptors } }
+    set { self.lock.withLockVoid { self._interceptors = newValue } }
+  }
+
+  /// Creates a client for the cosmos.distribution.v1beta1.Query service.
+  ///
+  /// - Parameters:
+  ///   - channel: `GRPCChannel` to the service host.
+  ///   - defaultCallOptions: Options to use for each service call if the user doesn't provide them.
+  ///   - interceptors: A factory providing interceptors for each RPC.
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Cosmos_Distribution_V1beta1_QueryClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self._defaultCallOptions = defaultCallOptions
+    self._interceptors = interceptors
+  }
+}
+
+internal struct Cosmos_Distribution_V1beta1_QueryNIOClient: Cosmos_Distribution_V1beta1_QueryClientProtocol {
+  internal var channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions
+  internal var interceptors: Cosmos_Distribution_V1beta1_QueryClientInterceptorFactoryProtocol?
+
+  /// Creates a client for the cosmos.distribution.v1beta1.Query service.
+  ///
+  /// - Parameters:
+  ///   - channel: `GRPCChannel` to the service host.
+  ///   - defaultCallOptions: Options to use for each service call if the user doesn't provide them.
+  ///   - interceptors: A factory providing interceptors for each RPC.
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Cosmos_Distribution_V1beta1_QueryClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self.defaultCallOptions = defaultCallOptions
+    self.interceptors = interceptors
+  }
+}
+
+/// Query defines the gRPC querier service for distribution module.
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal protocol Cosmos_Distribution_V1beta1_QueryAsyncClientProtocol: GRPCClient {
+  static var serviceDescriptor: GRPCServiceDescriptor { get }
+  var interceptors: Cosmos_Distribution_V1beta1_QueryClientInterceptorFactoryProtocol? { get }
+
+  func makeParamsCall(
+    _ request: Cosmos_Distribution_V1beta1_QueryParamsRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_QueryParamsRequest, Cosmos_Distribution_V1beta1_QueryParamsResponse>
+
+  func makeValidatorDistributionInfoCall(
+    _ request: Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoRequest, Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoResponse>
+
+  func makeValidatorOutstandingRewardsCall(
+    _ request: Cosmos_Distribution_V1beta1_QueryValidatorOutstandingRewardsRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_QueryValidatorOutstandingRewardsRequest, Cosmos_Distribution_V1beta1_QueryValidatorOutstandingRewardsResponse>
+
+  func makeValidatorCommissionCall(
+    _ request: Cosmos_Distribution_V1beta1_QueryValidatorCommissionRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_QueryValidatorCommissionRequest, Cosmos_Distribution_V1beta1_QueryValidatorCommissionResponse>
+
+  func makeValidatorSlashesCall(
+    _ request: Cosmos_Distribution_V1beta1_QueryValidatorSlashesRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_QueryValidatorSlashesRequest, Cosmos_Distribution_V1beta1_QueryValidatorSlashesResponse>
+
+  func makeDelegationRewardsCall(
+    _ request: Cosmos_Distribution_V1beta1_QueryDelegationRewardsRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_QueryDelegationRewardsRequest, Cosmos_Distribution_V1beta1_QueryDelegationRewardsResponse>
+
+  func makeDelegationTotalRewardsCall(
+    _ request: Cosmos_Distribution_V1beta1_QueryDelegationTotalRewardsRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_QueryDelegationTotalRewardsRequest, Cosmos_Distribution_V1beta1_QueryDelegationTotalRewardsResponse>
+
+  func makeDelegatorValidatorsCall(
+    _ request: Cosmos_Distribution_V1beta1_QueryDelegatorValidatorsRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_QueryDelegatorValidatorsRequest, Cosmos_Distribution_V1beta1_QueryDelegatorValidatorsResponse>
+
+  func makeDelegatorWithdrawAddressCall(
+    _ request: Cosmos_Distribution_V1beta1_QueryDelegatorWithdrawAddressRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_QueryDelegatorWithdrawAddressRequest, Cosmos_Distribution_V1beta1_QueryDelegatorWithdrawAddressResponse>
+
+  func makeCommunityPoolCall(
+    _ request: Cosmos_Distribution_V1beta1_QueryCommunityPoolRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_QueryCommunityPoolRequest, Cosmos_Distribution_V1beta1_QueryCommunityPoolResponse>
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Distribution_V1beta1_QueryAsyncClientProtocol {
+  internal static var serviceDescriptor: GRPCServiceDescriptor {
+    return Cosmos_Distribution_V1beta1_QueryClientMetadata.serviceDescriptor
+  }
+
+  internal var interceptors: Cosmos_Distribution_V1beta1_QueryClientInterceptorFactoryProtocol? {
+    return nil
+  }
+
+  internal func makeParamsCall(
+    _ request: Cosmos_Distribution_V1beta1_QueryParamsRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_QueryParamsRequest, Cosmos_Distribution_V1beta1_QueryParamsResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.params.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeParamsInterceptors() ?? []
+    )
+  }
+
+  internal func makeValidatorDistributionInfoCall(
+    _ request: Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoRequest, Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.validatorDistributionInfo.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeValidatorDistributionInfoInterceptors() ?? []
+    )
+  }
+
+  internal func makeValidatorOutstandingRewardsCall(
+    _ request: Cosmos_Distribution_V1beta1_QueryValidatorOutstandingRewardsRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_QueryValidatorOutstandingRewardsRequest, Cosmos_Distribution_V1beta1_QueryValidatorOutstandingRewardsResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.validatorOutstandingRewards.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeValidatorOutstandingRewardsInterceptors() ?? []
+    )
+  }
+
+  internal func makeValidatorCommissionCall(
+    _ request: Cosmos_Distribution_V1beta1_QueryValidatorCommissionRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_QueryValidatorCommissionRequest, Cosmos_Distribution_V1beta1_QueryValidatorCommissionResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.validatorCommission.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeValidatorCommissionInterceptors() ?? []
+    )
+  }
+
+  internal func makeValidatorSlashesCall(
+    _ request: Cosmos_Distribution_V1beta1_QueryValidatorSlashesRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_QueryValidatorSlashesRequest, Cosmos_Distribution_V1beta1_QueryValidatorSlashesResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.validatorSlashes.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeValidatorSlashesInterceptors() ?? []
+    )
+  }
+
+  internal func makeDelegationRewardsCall(
+    _ request: Cosmos_Distribution_V1beta1_QueryDelegationRewardsRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_QueryDelegationRewardsRequest, Cosmos_Distribution_V1beta1_QueryDelegationRewardsResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.delegationRewards.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDelegationRewardsInterceptors() ?? []
+    )
+  }
+
+  internal func makeDelegationTotalRewardsCall(
+    _ request: Cosmos_Distribution_V1beta1_QueryDelegationTotalRewardsRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_QueryDelegationTotalRewardsRequest, Cosmos_Distribution_V1beta1_QueryDelegationTotalRewardsResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.delegationTotalRewards.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDelegationTotalRewardsInterceptors() ?? []
+    )
+  }
+
+  internal func makeDelegatorValidatorsCall(
+    _ request: Cosmos_Distribution_V1beta1_QueryDelegatorValidatorsRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_QueryDelegatorValidatorsRequest, Cosmos_Distribution_V1beta1_QueryDelegatorValidatorsResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.delegatorValidators.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDelegatorValidatorsInterceptors() ?? []
+    )
+  }
+
+  internal func makeDelegatorWithdrawAddressCall(
+    _ request: Cosmos_Distribution_V1beta1_QueryDelegatorWithdrawAddressRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_QueryDelegatorWithdrawAddressRequest, Cosmos_Distribution_V1beta1_QueryDelegatorWithdrawAddressResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.delegatorWithdrawAddress.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDelegatorWithdrawAddressInterceptors() ?? []
+    )
+  }
+
+  internal func makeCommunityPoolCall(
+    _ request: Cosmos_Distribution_V1beta1_QueryCommunityPoolRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_QueryCommunityPoolRequest, Cosmos_Distribution_V1beta1_QueryCommunityPoolResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.communityPool.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeCommunityPoolInterceptors() ?? []
+    )
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Distribution_V1beta1_QueryAsyncClientProtocol {
+  internal func params(
+    _ request: Cosmos_Distribution_V1beta1_QueryParamsRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Distribution_V1beta1_QueryParamsResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.params.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeParamsInterceptors() ?? []
+    )
+  }
+
+  internal func validatorDistributionInfo(
+    _ request: Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.validatorDistributionInfo.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeValidatorDistributionInfoInterceptors() ?? []
+    )
+  }
+
+  internal func validatorOutstandingRewards(
+    _ request: Cosmos_Distribution_V1beta1_QueryValidatorOutstandingRewardsRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Distribution_V1beta1_QueryValidatorOutstandingRewardsResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.validatorOutstandingRewards.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeValidatorOutstandingRewardsInterceptors() ?? []
+    )
+  }
+
+  internal func validatorCommission(
+    _ request: Cosmos_Distribution_V1beta1_QueryValidatorCommissionRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Distribution_V1beta1_QueryValidatorCommissionResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.validatorCommission.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeValidatorCommissionInterceptors() ?? []
+    )
+  }
+
+  internal func validatorSlashes(
+    _ request: Cosmos_Distribution_V1beta1_QueryValidatorSlashesRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Distribution_V1beta1_QueryValidatorSlashesResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.validatorSlashes.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeValidatorSlashesInterceptors() ?? []
+    )
+  }
+
+  internal func delegationRewards(
+    _ request: Cosmos_Distribution_V1beta1_QueryDelegationRewardsRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Distribution_V1beta1_QueryDelegationRewardsResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.delegationRewards.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDelegationRewardsInterceptors() ?? []
+    )
+  }
+
+  internal func delegationTotalRewards(
+    _ request: Cosmos_Distribution_V1beta1_QueryDelegationTotalRewardsRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Distribution_V1beta1_QueryDelegationTotalRewardsResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.delegationTotalRewards.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDelegationTotalRewardsInterceptors() ?? []
+    )
+  }
+
+  internal func delegatorValidators(
+    _ request: Cosmos_Distribution_V1beta1_QueryDelegatorValidatorsRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Distribution_V1beta1_QueryDelegatorValidatorsResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.delegatorValidators.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDelegatorValidatorsInterceptors() ?? []
+    )
+  }
+
+  internal func delegatorWithdrawAddress(
+    _ request: Cosmos_Distribution_V1beta1_QueryDelegatorWithdrawAddressRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Distribution_V1beta1_QueryDelegatorWithdrawAddressResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.delegatorWithdrawAddress.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDelegatorWithdrawAddressInterceptors() ?? []
+    )
+  }
+
+  internal func communityPool(
+    _ request: Cosmos_Distribution_V1beta1_QueryCommunityPoolRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Distribution_V1beta1_QueryCommunityPoolResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.communityPool.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeCommunityPoolInterceptors() ?? []
+    )
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal struct Cosmos_Distribution_V1beta1_QueryAsyncClient: Cosmos_Distribution_V1beta1_QueryAsyncClientProtocol {
+  internal var channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions
+  internal var interceptors: Cosmos_Distribution_V1beta1_QueryClientInterceptorFactoryProtocol?
+
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Cosmos_Distribution_V1beta1_QueryClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self.defaultCallOptions = defaultCallOptions
+    self.interceptors = interceptors
+  }
+}
+
+internal protocol Cosmos_Distribution_V1beta1_QueryClientInterceptorFactoryProtocol: Sendable {
 
   /// - Returns: Interceptors to use when invoking 'params'.
   func makeParamsInterceptors() -> [ClientInterceptor<Cosmos_Distribution_V1beta1_QueryParamsRequest, Cosmos_Distribution_V1beta1_QueryParamsResponse>]
+
+  /// - Returns: Interceptors to use when invoking 'validatorDistributionInfo'.
+  func makeValidatorDistributionInfoInterceptors() -> [ClientInterceptor<Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoRequest, Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoResponse>]
 
   /// - Returns: Interceptors to use when invoking 'validatorOutstandingRewards'.
   func makeValidatorOutstandingRewardsInterceptors() -> [ClientInterceptor<Cosmos_Distribution_V1beta1_QueryValidatorOutstandingRewardsRequest, Cosmos_Distribution_V1beta1_QueryValidatorOutstandingRewardsResponse>]
@@ -277,25 +689,84 @@ internal protocol Cosmos_Distribution_V1beta1_QueryClientInterceptorFactoryProto
   func makeCommunityPoolInterceptors() -> [ClientInterceptor<Cosmos_Distribution_V1beta1_QueryCommunityPoolRequest, Cosmos_Distribution_V1beta1_QueryCommunityPoolResponse>]
 }
 
-internal final class Cosmos_Distribution_V1beta1_QueryClient: Cosmos_Distribution_V1beta1_QueryClientProtocol {
-  internal let channel: GRPCChannel
-  internal var defaultCallOptions: CallOptions
-  internal var interceptors: Cosmos_Distribution_V1beta1_QueryClientInterceptorFactoryProtocol?
+internal enum Cosmos_Distribution_V1beta1_QueryClientMetadata {
+  internal static let serviceDescriptor = GRPCServiceDescriptor(
+    name: "Query",
+    fullName: "cosmos.distribution.v1beta1.Query",
+    methods: [
+      Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.params,
+      Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.validatorDistributionInfo,
+      Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.validatorOutstandingRewards,
+      Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.validatorCommission,
+      Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.validatorSlashes,
+      Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.delegationRewards,
+      Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.delegationTotalRewards,
+      Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.delegatorValidators,
+      Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.delegatorWithdrawAddress,
+      Cosmos_Distribution_V1beta1_QueryClientMetadata.Methods.communityPool,
+    ]
+  )
 
-  /// Creates a client for the cosmos.distribution.v1beta1.Query service.
-  ///
-  /// - Parameters:
-  ///   - channel: `GRPCChannel` to the service host.
-  ///   - defaultCallOptions: Options to use for each service call if the user doesn't provide them.
-  ///   - interceptors: A factory providing interceptors for each RPC.
-  internal init(
-    channel: GRPCChannel,
-    defaultCallOptions: CallOptions = CallOptions(),
-    interceptors: Cosmos_Distribution_V1beta1_QueryClientInterceptorFactoryProtocol? = nil
-  ) {
-    self.channel = channel
-    self.defaultCallOptions = defaultCallOptions
-    self.interceptors = interceptors
+  internal enum Methods {
+    internal static let params = GRPCMethodDescriptor(
+      name: "Params",
+      path: "/cosmos.distribution.v1beta1.Query/Params",
+      type: GRPCCallType.unary
+    )
+
+    internal static let validatorDistributionInfo = GRPCMethodDescriptor(
+      name: "ValidatorDistributionInfo",
+      path: "/cosmos.distribution.v1beta1.Query/ValidatorDistributionInfo",
+      type: GRPCCallType.unary
+    )
+
+    internal static let validatorOutstandingRewards = GRPCMethodDescriptor(
+      name: "ValidatorOutstandingRewards",
+      path: "/cosmos.distribution.v1beta1.Query/ValidatorOutstandingRewards",
+      type: GRPCCallType.unary
+    )
+
+    internal static let validatorCommission = GRPCMethodDescriptor(
+      name: "ValidatorCommission",
+      path: "/cosmos.distribution.v1beta1.Query/ValidatorCommission",
+      type: GRPCCallType.unary
+    )
+
+    internal static let validatorSlashes = GRPCMethodDescriptor(
+      name: "ValidatorSlashes",
+      path: "/cosmos.distribution.v1beta1.Query/ValidatorSlashes",
+      type: GRPCCallType.unary
+    )
+
+    internal static let delegationRewards = GRPCMethodDescriptor(
+      name: "DelegationRewards",
+      path: "/cosmos.distribution.v1beta1.Query/DelegationRewards",
+      type: GRPCCallType.unary
+    )
+
+    internal static let delegationTotalRewards = GRPCMethodDescriptor(
+      name: "DelegationTotalRewards",
+      path: "/cosmos.distribution.v1beta1.Query/DelegationTotalRewards",
+      type: GRPCCallType.unary
+    )
+
+    internal static let delegatorValidators = GRPCMethodDescriptor(
+      name: "DelegatorValidators",
+      path: "/cosmos.distribution.v1beta1.Query/DelegatorValidators",
+      type: GRPCCallType.unary
+    )
+
+    internal static let delegatorWithdrawAddress = GRPCMethodDescriptor(
+      name: "DelegatorWithdrawAddress",
+      path: "/cosmos.distribution.v1beta1.Query/DelegatorWithdrawAddress",
+      type: GRPCCallType.unary
+    )
+
+    internal static let communityPool = GRPCMethodDescriptor(
+      name: "CommunityPool",
+      path: "/cosmos.distribution.v1beta1.Query/CommunityPool",
+      type: GRPCCallType.unary
+    )
   }
 }
 
@@ -307,6 +778,9 @@ internal protocol Cosmos_Distribution_V1beta1_QueryProvider: CallHandlerProvider
 
   /// Params queries params of the distribution module.
   func params(request: Cosmos_Distribution_V1beta1_QueryParamsRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Cosmos_Distribution_V1beta1_QueryParamsResponse>
+
+  /// ValidatorDistributionInfo queries validator commission and self-delegation rewards for validator
+  func validatorDistributionInfo(request: Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoResponse>
 
   /// ValidatorOutstandingRewards queries rewards of a validator address.
   func validatorOutstandingRewards(request: Cosmos_Distribution_V1beta1_QueryValidatorOutstandingRewardsRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Cosmos_Distribution_V1beta1_QueryValidatorOutstandingRewardsResponse>
@@ -320,7 +794,7 @@ internal protocol Cosmos_Distribution_V1beta1_QueryProvider: CallHandlerProvider
   /// DelegationRewards queries the total rewards accrued by a delegation.
   func delegationRewards(request: Cosmos_Distribution_V1beta1_QueryDelegationRewardsRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Cosmos_Distribution_V1beta1_QueryDelegationRewardsResponse>
 
-  /// DelegationTotalRewards queries the total rewards accrued by a each
+  /// DelegationTotalRewards queries the total rewards accrued by each
   /// validator.
   func delegationTotalRewards(request: Cosmos_Distribution_V1beta1_QueryDelegationTotalRewardsRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Cosmos_Distribution_V1beta1_QueryDelegationTotalRewardsResponse>
 
@@ -335,7 +809,9 @@ internal protocol Cosmos_Distribution_V1beta1_QueryProvider: CallHandlerProvider
 }
 
 extension Cosmos_Distribution_V1beta1_QueryProvider {
-  internal var serviceName: Substring { return "cosmos.distribution.v1beta1.Query" }
+  internal var serviceName: Substring {
+    return Cosmos_Distribution_V1beta1_QueryServerMetadata.serviceDescriptor.fullName[...]
+  }
 
   /// Determines, calls and returns the appropriate request handler, depending on the request's method.
   /// Returns nil for methods not handled by this service.
@@ -351,6 +827,15 @@ extension Cosmos_Distribution_V1beta1_QueryProvider {
         responseSerializer: ProtobufSerializer<Cosmos_Distribution_V1beta1_QueryParamsResponse>(),
         interceptors: self.interceptors?.makeParamsInterceptors() ?? [],
         userFunction: self.params(request:context:)
+      )
+
+    case "ValidatorDistributionInfo":
+      return UnaryServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoResponse>(),
+        interceptors: self.interceptors?.makeValidatorDistributionInfoInterceptors() ?? [],
+        userFunction: self.validatorDistributionInfo(request:context:)
       )
 
     case "ValidatorOutstandingRewards":
@@ -431,11 +916,200 @@ extension Cosmos_Distribution_V1beta1_QueryProvider {
   }
 }
 
+/// Query defines the gRPC querier service for distribution module.
+///
+/// To implement a server, implement an object which conforms to this protocol.
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal protocol Cosmos_Distribution_V1beta1_QueryAsyncProvider: CallHandlerProvider {
+  static var serviceDescriptor: GRPCServiceDescriptor { get }
+  var interceptors: Cosmos_Distribution_V1beta1_QueryServerInterceptorFactoryProtocol? { get }
+
+  /// Params queries params of the distribution module.
+  @Sendable func params(
+    request: Cosmos_Distribution_V1beta1_QueryParamsRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Distribution_V1beta1_QueryParamsResponse
+
+  /// ValidatorDistributionInfo queries validator commission and self-delegation rewards for validator
+  @Sendable func validatorDistributionInfo(
+    request: Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoResponse
+
+  /// ValidatorOutstandingRewards queries rewards of a validator address.
+  @Sendable func validatorOutstandingRewards(
+    request: Cosmos_Distribution_V1beta1_QueryValidatorOutstandingRewardsRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Distribution_V1beta1_QueryValidatorOutstandingRewardsResponse
+
+  /// ValidatorCommission queries accumulated commission for a validator.
+  @Sendable func validatorCommission(
+    request: Cosmos_Distribution_V1beta1_QueryValidatorCommissionRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Distribution_V1beta1_QueryValidatorCommissionResponse
+
+  /// ValidatorSlashes queries slash events of a validator.
+  @Sendable func validatorSlashes(
+    request: Cosmos_Distribution_V1beta1_QueryValidatorSlashesRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Distribution_V1beta1_QueryValidatorSlashesResponse
+
+  /// DelegationRewards queries the total rewards accrued by a delegation.
+  @Sendable func delegationRewards(
+    request: Cosmos_Distribution_V1beta1_QueryDelegationRewardsRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Distribution_V1beta1_QueryDelegationRewardsResponse
+
+  /// DelegationTotalRewards queries the total rewards accrued by each
+  /// validator.
+  @Sendable func delegationTotalRewards(
+    request: Cosmos_Distribution_V1beta1_QueryDelegationTotalRewardsRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Distribution_V1beta1_QueryDelegationTotalRewardsResponse
+
+  /// DelegatorValidators queries the validators of a delegator.
+  @Sendable func delegatorValidators(
+    request: Cosmos_Distribution_V1beta1_QueryDelegatorValidatorsRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Distribution_V1beta1_QueryDelegatorValidatorsResponse
+
+  /// DelegatorWithdrawAddress queries withdraw address of a delegator.
+  @Sendable func delegatorWithdrawAddress(
+    request: Cosmos_Distribution_V1beta1_QueryDelegatorWithdrawAddressRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Distribution_V1beta1_QueryDelegatorWithdrawAddressResponse
+
+  /// CommunityPool queries the community pool coins.
+  @Sendable func communityPool(
+    request: Cosmos_Distribution_V1beta1_QueryCommunityPoolRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Distribution_V1beta1_QueryCommunityPoolResponse
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Distribution_V1beta1_QueryAsyncProvider {
+  internal static var serviceDescriptor: GRPCServiceDescriptor {
+    return Cosmos_Distribution_V1beta1_QueryServerMetadata.serviceDescriptor
+  }
+
+  internal var serviceName: Substring {
+    return Cosmos_Distribution_V1beta1_QueryServerMetadata.serviceDescriptor.fullName[...]
+  }
+
+  internal var interceptors: Cosmos_Distribution_V1beta1_QueryServerInterceptorFactoryProtocol? {
+    return nil
+  }
+
+  internal func handle(
+    method name: Substring,
+    context: CallHandlerContext
+  ) -> GRPCServerHandlerProtocol? {
+    switch name {
+    case "Params":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Distribution_V1beta1_QueryParamsRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Distribution_V1beta1_QueryParamsResponse>(),
+        interceptors: self.interceptors?.makeParamsInterceptors() ?? [],
+        wrapping: self.params(request:context:)
+      )
+
+    case "ValidatorDistributionInfo":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoResponse>(),
+        interceptors: self.interceptors?.makeValidatorDistributionInfoInterceptors() ?? [],
+        wrapping: self.validatorDistributionInfo(request:context:)
+      )
+
+    case "ValidatorOutstandingRewards":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Distribution_V1beta1_QueryValidatorOutstandingRewardsRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Distribution_V1beta1_QueryValidatorOutstandingRewardsResponse>(),
+        interceptors: self.interceptors?.makeValidatorOutstandingRewardsInterceptors() ?? [],
+        wrapping: self.validatorOutstandingRewards(request:context:)
+      )
+
+    case "ValidatorCommission":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Distribution_V1beta1_QueryValidatorCommissionRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Distribution_V1beta1_QueryValidatorCommissionResponse>(),
+        interceptors: self.interceptors?.makeValidatorCommissionInterceptors() ?? [],
+        wrapping: self.validatorCommission(request:context:)
+      )
+
+    case "ValidatorSlashes":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Distribution_V1beta1_QueryValidatorSlashesRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Distribution_V1beta1_QueryValidatorSlashesResponse>(),
+        interceptors: self.interceptors?.makeValidatorSlashesInterceptors() ?? [],
+        wrapping: self.validatorSlashes(request:context:)
+      )
+
+    case "DelegationRewards":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Distribution_V1beta1_QueryDelegationRewardsRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Distribution_V1beta1_QueryDelegationRewardsResponse>(),
+        interceptors: self.interceptors?.makeDelegationRewardsInterceptors() ?? [],
+        wrapping: self.delegationRewards(request:context:)
+      )
+
+    case "DelegationTotalRewards":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Distribution_V1beta1_QueryDelegationTotalRewardsRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Distribution_V1beta1_QueryDelegationTotalRewardsResponse>(),
+        interceptors: self.interceptors?.makeDelegationTotalRewardsInterceptors() ?? [],
+        wrapping: self.delegationTotalRewards(request:context:)
+      )
+
+    case "DelegatorValidators":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Distribution_V1beta1_QueryDelegatorValidatorsRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Distribution_V1beta1_QueryDelegatorValidatorsResponse>(),
+        interceptors: self.interceptors?.makeDelegatorValidatorsInterceptors() ?? [],
+        wrapping: self.delegatorValidators(request:context:)
+      )
+
+    case "DelegatorWithdrawAddress":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Distribution_V1beta1_QueryDelegatorWithdrawAddressRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Distribution_V1beta1_QueryDelegatorWithdrawAddressResponse>(),
+        interceptors: self.interceptors?.makeDelegatorWithdrawAddressInterceptors() ?? [],
+        wrapping: self.delegatorWithdrawAddress(request:context:)
+      )
+
+    case "CommunityPool":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Distribution_V1beta1_QueryCommunityPoolRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Distribution_V1beta1_QueryCommunityPoolResponse>(),
+        interceptors: self.interceptors?.makeCommunityPoolInterceptors() ?? [],
+        wrapping: self.communityPool(request:context:)
+      )
+
+    default:
+      return nil
+    }
+  }
+}
+
 internal protocol Cosmos_Distribution_V1beta1_QueryServerInterceptorFactoryProtocol {
 
   /// - Returns: Interceptors to use when handling 'params'.
   ///   Defaults to calling `self.makeInterceptors()`.
   func makeParamsInterceptors() -> [ServerInterceptor<Cosmos_Distribution_V1beta1_QueryParamsRequest, Cosmos_Distribution_V1beta1_QueryParamsResponse>]
+
+  /// - Returns: Interceptors to use when handling 'validatorDistributionInfo'.
+  ///   Defaults to calling `self.makeInterceptors()`.
+  func makeValidatorDistributionInfoInterceptors() -> [ServerInterceptor<Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoRequest, Cosmos_Distribution_V1beta1_QueryValidatorDistributionInfoResponse>]
 
   /// - Returns: Interceptors to use when handling 'validatorOutstandingRewards'.
   ///   Defaults to calling `self.makeInterceptors()`.
@@ -468,4 +1142,85 @@ internal protocol Cosmos_Distribution_V1beta1_QueryServerInterceptorFactoryProto
   /// - Returns: Interceptors to use when handling 'communityPool'.
   ///   Defaults to calling `self.makeInterceptors()`.
   func makeCommunityPoolInterceptors() -> [ServerInterceptor<Cosmos_Distribution_V1beta1_QueryCommunityPoolRequest, Cosmos_Distribution_V1beta1_QueryCommunityPoolResponse>]
+}
+
+internal enum Cosmos_Distribution_V1beta1_QueryServerMetadata {
+  internal static let serviceDescriptor = GRPCServiceDescriptor(
+    name: "Query",
+    fullName: "cosmos.distribution.v1beta1.Query",
+    methods: [
+      Cosmos_Distribution_V1beta1_QueryServerMetadata.Methods.params,
+      Cosmos_Distribution_V1beta1_QueryServerMetadata.Methods.validatorDistributionInfo,
+      Cosmos_Distribution_V1beta1_QueryServerMetadata.Methods.validatorOutstandingRewards,
+      Cosmos_Distribution_V1beta1_QueryServerMetadata.Methods.validatorCommission,
+      Cosmos_Distribution_V1beta1_QueryServerMetadata.Methods.validatorSlashes,
+      Cosmos_Distribution_V1beta1_QueryServerMetadata.Methods.delegationRewards,
+      Cosmos_Distribution_V1beta1_QueryServerMetadata.Methods.delegationTotalRewards,
+      Cosmos_Distribution_V1beta1_QueryServerMetadata.Methods.delegatorValidators,
+      Cosmos_Distribution_V1beta1_QueryServerMetadata.Methods.delegatorWithdrawAddress,
+      Cosmos_Distribution_V1beta1_QueryServerMetadata.Methods.communityPool,
+    ]
+  )
+
+  internal enum Methods {
+    internal static let params = GRPCMethodDescriptor(
+      name: "Params",
+      path: "/cosmos.distribution.v1beta1.Query/Params",
+      type: GRPCCallType.unary
+    )
+
+    internal static let validatorDistributionInfo = GRPCMethodDescriptor(
+      name: "ValidatorDistributionInfo",
+      path: "/cosmos.distribution.v1beta1.Query/ValidatorDistributionInfo",
+      type: GRPCCallType.unary
+    )
+
+    internal static let validatorOutstandingRewards = GRPCMethodDescriptor(
+      name: "ValidatorOutstandingRewards",
+      path: "/cosmos.distribution.v1beta1.Query/ValidatorOutstandingRewards",
+      type: GRPCCallType.unary
+    )
+
+    internal static let validatorCommission = GRPCMethodDescriptor(
+      name: "ValidatorCommission",
+      path: "/cosmos.distribution.v1beta1.Query/ValidatorCommission",
+      type: GRPCCallType.unary
+    )
+
+    internal static let validatorSlashes = GRPCMethodDescriptor(
+      name: "ValidatorSlashes",
+      path: "/cosmos.distribution.v1beta1.Query/ValidatorSlashes",
+      type: GRPCCallType.unary
+    )
+
+    internal static let delegationRewards = GRPCMethodDescriptor(
+      name: "DelegationRewards",
+      path: "/cosmos.distribution.v1beta1.Query/DelegationRewards",
+      type: GRPCCallType.unary
+    )
+
+    internal static let delegationTotalRewards = GRPCMethodDescriptor(
+      name: "DelegationTotalRewards",
+      path: "/cosmos.distribution.v1beta1.Query/DelegationTotalRewards",
+      type: GRPCCallType.unary
+    )
+
+    internal static let delegatorValidators = GRPCMethodDescriptor(
+      name: "DelegatorValidators",
+      path: "/cosmos.distribution.v1beta1.Query/DelegatorValidators",
+      type: GRPCCallType.unary
+    )
+
+    internal static let delegatorWithdrawAddress = GRPCMethodDescriptor(
+      name: "DelegatorWithdrawAddress",
+      path: "/cosmos.distribution.v1beta1.Query/DelegatorWithdrawAddress",
+      type: GRPCCallType.unary
+    )
+
+    internal static let communityPool = GRPCMethodDescriptor(
+      name: "CommunityPool",
+      path: "/cosmos.distribution.v1beta1.Query/CommunityPool",
+      type: GRPCCallType.unary
+    )
+  }
 }

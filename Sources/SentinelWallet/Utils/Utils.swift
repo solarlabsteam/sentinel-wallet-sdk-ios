@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftProtobuf
 
 final class Utils {
     struct ParsedAuthorization {
@@ -14,7 +15,7 @@ final class Utils {
         let sequence: UInt64
     }
 
-    static func parseAuthorization(for account: Google_Protobuf2_Any) -> ParsedAuthorization? {
+    static func parseAuthorization(for account: Google_Protobuf_Any) -> ParsedAuthorization? {
         let urlType = account.typeURL
         if urlType.contains(Cosmos_Auth_V1beta1_BaseAccount.protoMessageName) {
             let auth = try! Cosmos_Auth_V1beta1_BaseAccount(serializedData: account.value)

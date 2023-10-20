@@ -22,6 +22,7 @@
 //
 import GRPC
 import NIO
+import NIOConcurrencyHelpers
 import SwiftProtobuf
 
 
@@ -64,7 +65,7 @@ extension Cosmos_Slashing_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Slashing_V1beta1_QueryParamsRequest, Cosmos_Slashing_V1beta1_QueryParamsResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.slashing.v1beta1.Query/Params",
+      path: Cosmos_Slashing_V1beta1_QueryClientMetadata.Methods.params.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeParamsInterceptors() ?? []
@@ -82,7 +83,7 @@ extension Cosmos_Slashing_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Slashing_V1beta1_QuerySigningInfoRequest, Cosmos_Slashing_V1beta1_QuerySigningInfoResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.slashing.v1beta1.Query/SigningInfo",
+      path: Cosmos_Slashing_V1beta1_QueryClientMetadata.Methods.signingInfo.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeSigningInfoInterceptors() ?? []
@@ -100,7 +101,7 @@ extension Cosmos_Slashing_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Slashing_V1beta1_QuerySigningInfosRequest, Cosmos_Slashing_V1beta1_QuerySigningInfosResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.slashing.v1beta1.Query/SigningInfos",
+      path: Cosmos_Slashing_V1beta1_QueryClientMetadata.Methods.signingInfos.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeSigningInfosInterceptors() ?? []
@@ -108,20 +109,43 @@ extension Cosmos_Slashing_V1beta1_QueryClientProtocol {
   }
 }
 
-internal protocol Cosmos_Slashing_V1beta1_QueryClientInterceptorFactoryProtocol {
+@available(*, deprecated)
+extension Cosmos_Slashing_V1beta1_QueryClient: @unchecked Sendable {}
 
-  /// - Returns: Interceptors to use when invoking 'params'.
-  func makeParamsInterceptors() -> [ClientInterceptor<Cosmos_Slashing_V1beta1_QueryParamsRequest, Cosmos_Slashing_V1beta1_QueryParamsResponse>]
+@available(*, deprecated, renamed: "Cosmos_Slashing_V1beta1_QueryNIOClient")
+internal final class Cosmos_Slashing_V1beta1_QueryClient: Cosmos_Slashing_V1beta1_QueryClientProtocol {
+  private let lock = Lock()
+  private var _defaultCallOptions: CallOptions
+  private var _interceptors: Cosmos_Slashing_V1beta1_QueryClientInterceptorFactoryProtocol?
+  internal let channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions {
+    get { self.lock.withLock { return self._defaultCallOptions } }
+    set { self.lock.withLockVoid { self._defaultCallOptions = newValue } }
+  }
+  internal var interceptors: Cosmos_Slashing_V1beta1_QueryClientInterceptorFactoryProtocol? {
+    get { self.lock.withLock { return self._interceptors } }
+    set { self.lock.withLockVoid { self._interceptors = newValue } }
+  }
 
-  /// - Returns: Interceptors to use when invoking 'signingInfo'.
-  func makeSigningInfoInterceptors() -> [ClientInterceptor<Cosmos_Slashing_V1beta1_QuerySigningInfoRequest, Cosmos_Slashing_V1beta1_QuerySigningInfoResponse>]
-
-  /// - Returns: Interceptors to use when invoking 'signingInfos'.
-  func makeSigningInfosInterceptors() -> [ClientInterceptor<Cosmos_Slashing_V1beta1_QuerySigningInfosRequest, Cosmos_Slashing_V1beta1_QuerySigningInfosResponse>]
+  /// Creates a client for the cosmos.slashing.v1beta1.Query service.
+  ///
+  /// - Parameters:
+  ///   - channel: `GRPCChannel` to the service host.
+  ///   - defaultCallOptions: Options to use for each service call if the user doesn't provide them.
+  ///   - interceptors: A factory providing interceptors for each RPC.
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Cosmos_Slashing_V1beta1_QueryClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self._defaultCallOptions = defaultCallOptions
+    self._interceptors = interceptors
+  }
 }
 
-internal final class Cosmos_Slashing_V1beta1_QueryClient: Cosmos_Slashing_V1beta1_QueryClientProtocol {
-  internal let channel: GRPCChannel
+internal struct Cosmos_Slashing_V1beta1_QueryNIOClient: Cosmos_Slashing_V1beta1_QueryClientProtocol {
+  internal var channel: GRPCChannel
   internal var defaultCallOptions: CallOptions
   internal var interceptors: Cosmos_Slashing_V1beta1_QueryClientInterceptorFactoryProtocol?
 
@@ -143,6 +167,175 @@ internal final class Cosmos_Slashing_V1beta1_QueryClient: Cosmos_Slashing_V1beta
 }
 
 /// Query provides defines the gRPC querier service
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal protocol Cosmos_Slashing_V1beta1_QueryAsyncClientProtocol: GRPCClient {
+  static var serviceDescriptor: GRPCServiceDescriptor { get }
+  var interceptors: Cosmos_Slashing_V1beta1_QueryClientInterceptorFactoryProtocol? { get }
+
+  func makeParamsCall(
+    _ request: Cosmos_Slashing_V1beta1_QueryParamsRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Slashing_V1beta1_QueryParamsRequest, Cosmos_Slashing_V1beta1_QueryParamsResponse>
+
+  func makeSigningInfoCall(
+    _ request: Cosmos_Slashing_V1beta1_QuerySigningInfoRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Slashing_V1beta1_QuerySigningInfoRequest, Cosmos_Slashing_V1beta1_QuerySigningInfoResponse>
+
+  func makeSigningInfosCall(
+    _ request: Cosmos_Slashing_V1beta1_QuerySigningInfosRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Slashing_V1beta1_QuerySigningInfosRequest, Cosmos_Slashing_V1beta1_QuerySigningInfosResponse>
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Slashing_V1beta1_QueryAsyncClientProtocol {
+  internal static var serviceDescriptor: GRPCServiceDescriptor {
+    return Cosmos_Slashing_V1beta1_QueryClientMetadata.serviceDescriptor
+  }
+
+  internal var interceptors: Cosmos_Slashing_V1beta1_QueryClientInterceptorFactoryProtocol? {
+    return nil
+  }
+
+  internal func makeParamsCall(
+    _ request: Cosmos_Slashing_V1beta1_QueryParamsRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Slashing_V1beta1_QueryParamsRequest, Cosmos_Slashing_V1beta1_QueryParamsResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Slashing_V1beta1_QueryClientMetadata.Methods.params.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeParamsInterceptors() ?? []
+    )
+  }
+
+  internal func makeSigningInfoCall(
+    _ request: Cosmos_Slashing_V1beta1_QuerySigningInfoRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Slashing_V1beta1_QuerySigningInfoRequest, Cosmos_Slashing_V1beta1_QuerySigningInfoResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Slashing_V1beta1_QueryClientMetadata.Methods.signingInfo.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeSigningInfoInterceptors() ?? []
+    )
+  }
+
+  internal func makeSigningInfosCall(
+    _ request: Cosmos_Slashing_V1beta1_QuerySigningInfosRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Slashing_V1beta1_QuerySigningInfosRequest, Cosmos_Slashing_V1beta1_QuerySigningInfosResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Slashing_V1beta1_QueryClientMetadata.Methods.signingInfos.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeSigningInfosInterceptors() ?? []
+    )
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Slashing_V1beta1_QueryAsyncClientProtocol {
+  internal func params(
+    _ request: Cosmos_Slashing_V1beta1_QueryParamsRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Slashing_V1beta1_QueryParamsResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Slashing_V1beta1_QueryClientMetadata.Methods.params.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeParamsInterceptors() ?? []
+    )
+  }
+
+  internal func signingInfo(
+    _ request: Cosmos_Slashing_V1beta1_QuerySigningInfoRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Slashing_V1beta1_QuerySigningInfoResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Slashing_V1beta1_QueryClientMetadata.Methods.signingInfo.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeSigningInfoInterceptors() ?? []
+    )
+  }
+
+  internal func signingInfos(
+    _ request: Cosmos_Slashing_V1beta1_QuerySigningInfosRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Slashing_V1beta1_QuerySigningInfosResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Slashing_V1beta1_QueryClientMetadata.Methods.signingInfos.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeSigningInfosInterceptors() ?? []
+    )
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal struct Cosmos_Slashing_V1beta1_QueryAsyncClient: Cosmos_Slashing_V1beta1_QueryAsyncClientProtocol {
+  internal var channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions
+  internal var interceptors: Cosmos_Slashing_V1beta1_QueryClientInterceptorFactoryProtocol?
+
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Cosmos_Slashing_V1beta1_QueryClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self.defaultCallOptions = defaultCallOptions
+    self.interceptors = interceptors
+  }
+}
+
+internal protocol Cosmos_Slashing_V1beta1_QueryClientInterceptorFactoryProtocol: Sendable {
+
+  /// - Returns: Interceptors to use when invoking 'params'.
+  func makeParamsInterceptors() -> [ClientInterceptor<Cosmos_Slashing_V1beta1_QueryParamsRequest, Cosmos_Slashing_V1beta1_QueryParamsResponse>]
+
+  /// - Returns: Interceptors to use when invoking 'signingInfo'.
+  func makeSigningInfoInterceptors() -> [ClientInterceptor<Cosmos_Slashing_V1beta1_QuerySigningInfoRequest, Cosmos_Slashing_V1beta1_QuerySigningInfoResponse>]
+
+  /// - Returns: Interceptors to use when invoking 'signingInfos'.
+  func makeSigningInfosInterceptors() -> [ClientInterceptor<Cosmos_Slashing_V1beta1_QuerySigningInfosRequest, Cosmos_Slashing_V1beta1_QuerySigningInfosResponse>]
+}
+
+internal enum Cosmos_Slashing_V1beta1_QueryClientMetadata {
+  internal static let serviceDescriptor = GRPCServiceDescriptor(
+    name: "Query",
+    fullName: "cosmos.slashing.v1beta1.Query",
+    methods: [
+      Cosmos_Slashing_V1beta1_QueryClientMetadata.Methods.params,
+      Cosmos_Slashing_V1beta1_QueryClientMetadata.Methods.signingInfo,
+      Cosmos_Slashing_V1beta1_QueryClientMetadata.Methods.signingInfos,
+    ]
+  )
+
+  internal enum Methods {
+    internal static let params = GRPCMethodDescriptor(
+      name: "Params",
+      path: "/cosmos.slashing.v1beta1.Query/Params",
+      type: GRPCCallType.unary
+    )
+
+    internal static let signingInfo = GRPCMethodDescriptor(
+      name: "SigningInfo",
+      path: "/cosmos.slashing.v1beta1.Query/SigningInfo",
+      type: GRPCCallType.unary
+    )
+
+    internal static let signingInfos = GRPCMethodDescriptor(
+      name: "SigningInfos",
+      path: "/cosmos.slashing.v1beta1.Query/SigningInfos",
+      type: GRPCCallType.unary
+    )
+  }
+}
+
+/// Query provides defines the gRPC querier service
 ///
 /// To build a server, implement a class that conforms to this protocol.
 internal protocol Cosmos_Slashing_V1beta1_QueryProvider: CallHandlerProvider {
@@ -159,7 +352,9 @@ internal protocol Cosmos_Slashing_V1beta1_QueryProvider: CallHandlerProvider {
 }
 
 extension Cosmos_Slashing_V1beta1_QueryProvider {
-  internal var serviceName: Substring { return "cosmos.slashing.v1beta1.Query" }
+  internal var serviceName: Substring {
+    return Cosmos_Slashing_V1beta1_QueryServerMetadata.serviceDescriptor.fullName[...]
+  }
 
   /// Determines, calls and returns the appropriate request handler, depending on the request's method.
   /// Returns nil for methods not handled by this service.
@@ -201,6 +396,85 @@ extension Cosmos_Slashing_V1beta1_QueryProvider {
   }
 }
 
+/// Query provides defines the gRPC querier service
+///
+/// To implement a server, implement an object which conforms to this protocol.
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal protocol Cosmos_Slashing_V1beta1_QueryAsyncProvider: CallHandlerProvider {
+  static var serviceDescriptor: GRPCServiceDescriptor { get }
+  var interceptors: Cosmos_Slashing_V1beta1_QueryServerInterceptorFactoryProtocol? { get }
+
+  /// Params queries the parameters of slashing module
+  @Sendable func params(
+    request: Cosmos_Slashing_V1beta1_QueryParamsRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Slashing_V1beta1_QueryParamsResponse
+
+  /// SigningInfo queries the signing info of given cons address
+  @Sendable func signingInfo(
+    request: Cosmos_Slashing_V1beta1_QuerySigningInfoRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Slashing_V1beta1_QuerySigningInfoResponse
+
+  /// SigningInfos queries signing info of all validators
+  @Sendable func signingInfos(
+    request: Cosmos_Slashing_V1beta1_QuerySigningInfosRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Slashing_V1beta1_QuerySigningInfosResponse
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Slashing_V1beta1_QueryAsyncProvider {
+  internal static var serviceDescriptor: GRPCServiceDescriptor {
+    return Cosmos_Slashing_V1beta1_QueryServerMetadata.serviceDescriptor
+  }
+
+  internal var serviceName: Substring {
+    return Cosmos_Slashing_V1beta1_QueryServerMetadata.serviceDescriptor.fullName[...]
+  }
+
+  internal var interceptors: Cosmos_Slashing_V1beta1_QueryServerInterceptorFactoryProtocol? {
+    return nil
+  }
+
+  internal func handle(
+    method name: Substring,
+    context: CallHandlerContext
+  ) -> GRPCServerHandlerProtocol? {
+    switch name {
+    case "Params":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Slashing_V1beta1_QueryParamsRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Slashing_V1beta1_QueryParamsResponse>(),
+        interceptors: self.interceptors?.makeParamsInterceptors() ?? [],
+        wrapping: self.params(request:context:)
+      )
+
+    case "SigningInfo":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Slashing_V1beta1_QuerySigningInfoRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Slashing_V1beta1_QuerySigningInfoResponse>(),
+        interceptors: self.interceptors?.makeSigningInfoInterceptors() ?? [],
+        wrapping: self.signingInfo(request:context:)
+      )
+
+    case "SigningInfos":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Slashing_V1beta1_QuerySigningInfosRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Slashing_V1beta1_QuerySigningInfosResponse>(),
+        interceptors: self.interceptors?.makeSigningInfosInterceptors() ?? [],
+        wrapping: self.signingInfos(request:context:)
+      )
+
+    default:
+      return nil
+    }
+  }
+}
+
 internal protocol Cosmos_Slashing_V1beta1_QueryServerInterceptorFactoryProtocol {
 
   /// - Returns: Interceptors to use when handling 'params'.
@@ -214,4 +488,36 @@ internal protocol Cosmos_Slashing_V1beta1_QueryServerInterceptorFactoryProtocol 
   /// - Returns: Interceptors to use when handling 'signingInfos'.
   ///   Defaults to calling `self.makeInterceptors()`.
   func makeSigningInfosInterceptors() -> [ServerInterceptor<Cosmos_Slashing_V1beta1_QuerySigningInfosRequest, Cosmos_Slashing_V1beta1_QuerySigningInfosResponse>]
+}
+
+internal enum Cosmos_Slashing_V1beta1_QueryServerMetadata {
+  internal static let serviceDescriptor = GRPCServiceDescriptor(
+    name: "Query",
+    fullName: "cosmos.slashing.v1beta1.Query",
+    methods: [
+      Cosmos_Slashing_V1beta1_QueryServerMetadata.Methods.params,
+      Cosmos_Slashing_V1beta1_QueryServerMetadata.Methods.signingInfo,
+      Cosmos_Slashing_V1beta1_QueryServerMetadata.Methods.signingInfos,
+    ]
+  )
+
+  internal enum Methods {
+    internal static let params = GRPCMethodDescriptor(
+      name: "Params",
+      path: "/cosmos.slashing.v1beta1.Query/Params",
+      type: GRPCCallType.unary
+    )
+
+    internal static let signingInfo = GRPCMethodDescriptor(
+      name: "SigningInfo",
+      path: "/cosmos.slashing.v1beta1.Query/SigningInfo",
+      type: GRPCCallType.unary
+    )
+
+    internal static let signingInfos = GRPCMethodDescriptor(
+      name: "SigningInfos",
+      path: "/cosmos.slashing.v1beta1.Query/SigningInfos",
+      type: GRPCCallType.unary
+    )
+  }
 }

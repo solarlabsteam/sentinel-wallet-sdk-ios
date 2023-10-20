@@ -9,6 +9,7 @@ import Foundation
 import GRPC
 import NIO
 import HDWallet
+import SwiftProtobuf
 
 private struct Constants {
 #warning("TODO @lika Calculate gas amount correctly")
@@ -40,12 +41,12 @@ public struct TransactionSender {
 }
 
 protocol TransactionProviderType {
-    func fetchAuthorization(for address: String, completion: @escaping (Result<Google_Protobuf2_Any, Error>) -> Void)
+    func fetchAuthorization(for address: String, completion: @escaping (Result<Google_Protobuf_Any, Error>) -> Void)
 
     func broadcast(
         sender: TransactionSender,
         recipient: String,
-        messages: [Google_Protobuf2_Any],
+        messages: [Google_Protobuf_Any],
         gasFactor: Int,
         completion: @escaping (Result<TransactionResult, Error>) -> Void
     )
@@ -53,7 +54,7 @@ protocol TransactionProviderType {
     func broadcast(
         sender: TransactionSender,
         recipient: String,
-        messages: [Google_Protobuf2_Any],
+        messages: [Google_Protobuf_Any],
         memo: String?,
         gasFactor: Int,
         completion: @escaping (Result<Cosmos_Tx_V1beta1_BroadcastTxResponse, Error>) -> Void
@@ -78,7 +79,7 @@ final class TransactionProvider {
 extension TransactionProvider: TransactionProviderType {
     func fetchAuthorization(
         for address: String,
-        completion: @escaping (Result<Google_Protobuf2_Any, Error>) -> Void
+        completion: @escaping (Result<Google_Protobuf_Any, Error>) -> Void
     ) {
         connectionProvider.openConnection(for: { [weak self] channel in
             guard let self = self else { return }
@@ -98,7 +99,7 @@ extension TransactionProvider: TransactionProviderType {
     func broadcast(
         sender: TransactionSender,
         recipient: String,
-        messages: [Google_Protobuf2_Any],
+        messages: [Google_Protobuf_Any],
         gasFactor: Int,
         completion: @escaping (Result<TransactionResult, Error>) -> Void
     ) {
@@ -116,7 +117,7 @@ extension TransactionProvider: TransactionProviderType {
     func broadcast(
         sender: TransactionSender,
         recipient: String,
-        messages: [Google_Protobuf2_Any],
+        messages: [Google_Protobuf_Any],
         memo: String?,
         gasFactor: Int = 0,
         completion: @escaping (Result<Cosmos_Tx_V1beta1_BroadcastTxResponse, Error>) -> Void

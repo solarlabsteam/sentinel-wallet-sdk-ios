@@ -7,13 +7,14 @@
 
 import Foundation
 import HDWallet
+import SwiftProtobuf
 
 final class Signer {
     static func generateSignedRequest(
-        with account: Google_Protobuf2_Any,
+        with account: Google_Protobuf_Any,
         to address: String,
         fee: Fee,
-        for messages: [Google_Protobuf2_Any],
+        for messages: [Google_Protobuf_Any],
         memo: String,
         mode: Cosmos_Tx_V1beta1_BroadcastMode = .block,
         mnemonic: [String],
@@ -68,14 +69,14 @@ final class Signer {
 
 extension Signer {
     private static func getGrpcSignerInfo(
-        account: Google_Protobuf2_Any,
+        account: Google_Protobuf_Any,
         privateKey: PrivateKey,
         sequence: UInt64
     ) -> Cosmos_Tx_V1beta1_SignerInfo {
         let single = Cosmos_Tx_V1beta1_ModeInfo.Single.with { $0.mode = Cosmos_Tx_Signing_V1beta1_SignMode.direct }
         let mode = Cosmos_Tx_V1beta1_ModeInfo.with { $0.single = single }
         let pub = Cosmos_Crypto_Secp256k1_PubKey.with { $0.key = privateKey.publicKey.data }
-        let pubKey = Google_Protobuf2_Any.with {
+        let pubKey = Google_Protobuf_Any.with {
             $0.typeURL = "/cosmos.crypto.secp256k1.PubKey"
             $0.value = try! pub.serializedData()
         }
@@ -106,7 +107,7 @@ extension Signer {
     }
 
     private static func getGrpcRawTx(
-        account: Google_Protobuf2_Any,
+        account: Google_Protobuf_Any,
         accountNumber: UInt64,
         txBody: Cosmos_Tx_V1beta1_TxBody,
         authInfo: Cosmos_Tx_V1beta1_AuthInfo,

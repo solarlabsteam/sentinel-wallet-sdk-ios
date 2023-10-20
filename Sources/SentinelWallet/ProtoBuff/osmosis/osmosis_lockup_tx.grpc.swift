@@ -22,6 +22,7 @@
 //
 import GRPC
 import NIO
+import NIOConcurrencyHelpers
 import SwiftProtobuf
 
 
@@ -42,20 +43,25 @@ internal protocol Osmosis_Lockup_MsgClientProtocol: GRPCClient {
     callOptions: CallOptions?
   ) -> UnaryCall<Osmosis_Lockup_MsgBeginUnlockingAll, Osmosis_Lockup_MsgBeginUnlockingAllResponse>
 
-  func unlockTokens(
-    _ request: Osmosis_Lockup_MsgUnlockTokens,
-    callOptions: CallOptions?
-  ) -> UnaryCall<Osmosis_Lockup_MsgUnlockTokens, Osmosis_Lockup_MsgUnlockTokensResponse>
-
   func beginUnlocking(
     _ request: Osmosis_Lockup_MsgBeginUnlocking,
     callOptions: CallOptions?
   ) -> UnaryCall<Osmosis_Lockup_MsgBeginUnlocking, Osmosis_Lockup_MsgBeginUnlockingResponse>
 
-  func unlockPeriodLock(
-    _ request: Osmosis_Lockup_MsgUnlockPeriodLock,
+  func extendLockup(
+    _ request: Osmosis_Lockup_MsgExtendLockup,
     callOptions: CallOptions?
-  ) -> UnaryCall<Osmosis_Lockup_MsgUnlockPeriodLock, Osmosis_Lockup_MsgUnlockPeriodLockResponse>
+  ) -> UnaryCall<Osmosis_Lockup_MsgExtendLockup, Osmosis_Lockup_MsgExtendLockupResponse>
+
+  func forceUnlock(
+    _ request: Osmosis_Lockup_MsgForceUnlock,
+    callOptions: CallOptions?
+  ) -> UnaryCall<Osmosis_Lockup_MsgForceUnlock, Osmosis_Lockup_MsgForceUnlockResponse>
+
+  func setRewardReceiverAddress(
+    _ request: Osmosis_Lockup_MsgSetRewardReceiverAddress,
+    callOptions: CallOptions?
+  ) -> UnaryCall<Osmosis_Lockup_MsgSetRewardReceiverAddress, Osmosis_Lockup_MsgSetRewardReceiverAddressResponse>
 }
 
 extension Osmosis_Lockup_MsgClientProtocol {
@@ -74,7 +80,7 @@ extension Osmosis_Lockup_MsgClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Osmosis_Lockup_MsgLockTokens, Osmosis_Lockup_MsgLockTokensResponse> {
     return self.makeUnaryCall(
-      path: "/osmosis.lockup.Msg/LockTokens",
+      path: Osmosis_Lockup_MsgClientMetadata.Methods.lockTokens.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeLockTokensInterceptors() ?? []
@@ -92,28 +98,10 @@ extension Osmosis_Lockup_MsgClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Osmosis_Lockup_MsgBeginUnlockingAll, Osmosis_Lockup_MsgBeginUnlockingAllResponse> {
     return self.makeUnaryCall(
-      path: "/osmosis.lockup.Msg/BeginUnlockingAll",
+      path: Osmosis_Lockup_MsgClientMetadata.Methods.beginUnlockingAll.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeBeginUnlockingAllInterceptors() ?? []
-    )
-  }
-
-  /// UnlockTokens unlock all unlockable tokens
-  ///
-  /// - Parameters:
-  ///   - request: Request to send to UnlockTokens.
-  ///   - callOptions: Call options.
-  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
-  internal func unlockTokens(
-    _ request: Osmosis_Lockup_MsgUnlockTokens,
-    callOptions: CallOptions? = nil
-  ) -> UnaryCall<Osmosis_Lockup_MsgUnlockTokens, Osmosis_Lockup_MsgUnlockTokensResponse> {
-    return self.makeUnaryCall(
-      path: "/osmosis.lockup.Msg/UnlockTokens",
-      request: request,
-      callOptions: callOptions ?? self.defaultCallOptions,
-      interceptors: self.interceptors?.makeUnlockTokensInterceptors() ?? []
     )
   }
 
@@ -128,52 +116,105 @@ extension Osmosis_Lockup_MsgClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Osmosis_Lockup_MsgBeginUnlocking, Osmosis_Lockup_MsgBeginUnlockingResponse> {
     return self.makeUnaryCall(
-      path: "/osmosis.lockup.Msg/BeginUnlocking",
+      path: Osmosis_Lockup_MsgClientMetadata.Methods.beginUnlocking.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeBeginUnlockingInterceptors() ?? []
     )
   }
 
-  /// UnlockPeriodLock unlock individual period lock by ID
+  /// MsgEditLockup edits the existing lockups by lock ID
   ///
   /// - Parameters:
-  ///   - request: Request to send to UnlockPeriodLock.
+  ///   - request: Request to send to ExtendLockup.
   ///   - callOptions: Call options.
   /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
-  internal func unlockPeriodLock(
-    _ request: Osmosis_Lockup_MsgUnlockPeriodLock,
+  internal func extendLockup(
+    _ request: Osmosis_Lockup_MsgExtendLockup,
     callOptions: CallOptions? = nil
-  ) -> UnaryCall<Osmosis_Lockup_MsgUnlockPeriodLock, Osmosis_Lockup_MsgUnlockPeriodLockResponse> {
+  ) -> UnaryCall<Osmosis_Lockup_MsgExtendLockup, Osmosis_Lockup_MsgExtendLockupResponse> {
     return self.makeUnaryCall(
-      path: "/osmosis.lockup.Msg/UnlockPeriodLock",
+      path: Osmosis_Lockup_MsgClientMetadata.Methods.extendLockup.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
-      interceptors: self.interceptors?.makeUnlockPeriodLockInterceptors() ?? []
+      interceptors: self.interceptors?.makeExtendLockupInterceptors() ?? []
+    )
+  }
+
+  /// Unary call to ForceUnlock
+  ///
+  /// - Parameters:
+  ///   - request: Request to send to ForceUnlock.
+  ///   - callOptions: Call options.
+  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
+  internal func forceUnlock(
+    _ request: Osmosis_Lockup_MsgForceUnlock,
+    callOptions: CallOptions? = nil
+  ) -> UnaryCall<Osmosis_Lockup_MsgForceUnlock, Osmosis_Lockup_MsgForceUnlockResponse> {
+    return self.makeUnaryCall(
+      path: Osmosis_Lockup_MsgClientMetadata.Methods.forceUnlock.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeForceUnlockInterceptors() ?? []
+    )
+  }
+
+  /// SetRewardReceiverAddress edits the reward receiver for the given lock ID
+  ///
+  /// - Parameters:
+  ///   - request: Request to send to SetRewardReceiverAddress.
+  ///   - callOptions: Call options.
+  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
+  internal func setRewardReceiverAddress(
+    _ request: Osmosis_Lockup_MsgSetRewardReceiverAddress,
+    callOptions: CallOptions? = nil
+  ) -> UnaryCall<Osmosis_Lockup_MsgSetRewardReceiverAddress, Osmosis_Lockup_MsgSetRewardReceiverAddressResponse> {
+    return self.makeUnaryCall(
+      path: Osmosis_Lockup_MsgClientMetadata.Methods.setRewardReceiverAddress.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeSetRewardReceiverAddressInterceptors() ?? []
     )
   }
 }
 
-internal protocol Osmosis_Lockup_MsgClientInterceptorFactoryProtocol {
+@available(*, deprecated)
+extension Osmosis_Lockup_MsgClient: @unchecked Sendable {}
 
-  /// - Returns: Interceptors to use when invoking 'lockTokens'.
-  func makeLockTokensInterceptors() -> [ClientInterceptor<Osmosis_Lockup_MsgLockTokens, Osmosis_Lockup_MsgLockTokensResponse>]
+@available(*, deprecated, renamed: "Osmosis_Lockup_MsgNIOClient")
+internal final class Osmosis_Lockup_MsgClient: Osmosis_Lockup_MsgClientProtocol {
+  private let lock = Lock()
+  private var _defaultCallOptions: CallOptions
+  private var _interceptors: Osmosis_Lockup_MsgClientInterceptorFactoryProtocol?
+  internal let channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions {
+    get { self.lock.withLock { return self._defaultCallOptions } }
+    set { self.lock.withLockVoid { self._defaultCallOptions = newValue } }
+  }
+  internal var interceptors: Osmosis_Lockup_MsgClientInterceptorFactoryProtocol? {
+    get { self.lock.withLock { return self._interceptors } }
+    set { self.lock.withLockVoid { self._interceptors = newValue } }
+  }
 
-  /// - Returns: Interceptors to use when invoking 'beginUnlockingAll'.
-  func makeBeginUnlockingAllInterceptors() -> [ClientInterceptor<Osmosis_Lockup_MsgBeginUnlockingAll, Osmosis_Lockup_MsgBeginUnlockingAllResponse>]
-
-  /// - Returns: Interceptors to use when invoking 'unlockTokens'.
-  func makeUnlockTokensInterceptors() -> [ClientInterceptor<Osmosis_Lockup_MsgUnlockTokens, Osmosis_Lockup_MsgUnlockTokensResponse>]
-
-  /// - Returns: Interceptors to use when invoking 'beginUnlocking'.
-  func makeBeginUnlockingInterceptors() -> [ClientInterceptor<Osmosis_Lockup_MsgBeginUnlocking, Osmosis_Lockup_MsgBeginUnlockingResponse>]
-
-  /// - Returns: Interceptors to use when invoking 'unlockPeriodLock'.
-  func makeUnlockPeriodLockInterceptors() -> [ClientInterceptor<Osmosis_Lockup_MsgUnlockPeriodLock, Osmosis_Lockup_MsgUnlockPeriodLockResponse>]
+  /// Creates a client for the osmosis.lockup.Msg service.
+  ///
+  /// - Parameters:
+  ///   - channel: `GRPCChannel` to the service host.
+  ///   - defaultCallOptions: Options to use for each service call if the user doesn't provide them.
+  ///   - interceptors: A factory providing interceptors for each RPC.
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Osmosis_Lockup_MsgClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self._defaultCallOptions = defaultCallOptions
+    self._interceptors = interceptors
+  }
 }
 
-internal final class Osmosis_Lockup_MsgClient: Osmosis_Lockup_MsgClientProtocol {
-  internal let channel: GRPCChannel
+internal struct Osmosis_Lockup_MsgNIOClient: Osmosis_Lockup_MsgClientProtocol {
+  internal var channel: GRPCChannel
   internal var defaultCallOptions: CallOptions
   internal var interceptors: Osmosis_Lockup_MsgClientInterceptorFactoryProtocol?
 
@@ -195,6 +236,292 @@ internal final class Osmosis_Lockup_MsgClient: Osmosis_Lockup_MsgClientProtocol 
 }
 
 /// Msg defines the Msg service.
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal protocol Osmosis_Lockup_MsgAsyncClientProtocol: GRPCClient {
+  static var serviceDescriptor: GRPCServiceDescriptor { get }
+  var interceptors: Osmosis_Lockup_MsgClientInterceptorFactoryProtocol? { get }
+
+  func makeLockTokensCall(
+    _ request: Osmosis_Lockup_MsgLockTokens,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Osmosis_Lockup_MsgLockTokens, Osmosis_Lockup_MsgLockTokensResponse>
+
+  func makeBeginUnlockingAllCall(
+    _ request: Osmosis_Lockup_MsgBeginUnlockingAll,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Osmosis_Lockup_MsgBeginUnlockingAll, Osmosis_Lockup_MsgBeginUnlockingAllResponse>
+
+  func makeBeginUnlockingCall(
+    _ request: Osmosis_Lockup_MsgBeginUnlocking,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Osmosis_Lockup_MsgBeginUnlocking, Osmosis_Lockup_MsgBeginUnlockingResponse>
+
+  func makeExtendLockupCall(
+    _ request: Osmosis_Lockup_MsgExtendLockup,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Osmosis_Lockup_MsgExtendLockup, Osmosis_Lockup_MsgExtendLockupResponse>
+
+  func makeForceUnlockCall(
+    _ request: Osmosis_Lockup_MsgForceUnlock,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Osmosis_Lockup_MsgForceUnlock, Osmosis_Lockup_MsgForceUnlockResponse>
+
+  func makeSetRewardReceiverAddressCall(
+    _ request: Osmosis_Lockup_MsgSetRewardReceiverAddress,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Osmosis_Lockup_MsgSetRewardReceiverAddress, Osmosis_Lockup_MsgSetRewardReceiverAddressResponse>
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Osmosis_Lockup_MsgAsyncClientProtocol {
+  internal static var serviceDescriptor: GRPCServiceDescriptor {
+    return Osmosis_Lockup_MsgClientMetadata.serviceDescriptor
+  }
+
+  internal var interceptors: Osmosis_Lockup_MsgClientInterceptorFactoryProtocol? {
+    return nil
+  }
+
+  internal func makeLockTokensCall(
+    _ request: Osmosis_Lockup_MsgLockTokens,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Osmosis_Lockup_MsgLockTokens, Osmosis_Lockup_MsgLockTokensResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Osmosis_Lockup_MsgClientMetadata.Methods.lockTokens.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeLockTokensInterceptors() ?? []
+    )
+  }
+
+  internal func makeBeginUnlockingAllCall(
+    _ request: Osmosis_Lockup_MsgBeginUnlockingAll,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Osmosis_Lockup_MsgBeginUnlockingAll, Osmosis_Lockup_MsgBeginUnlockingAllResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Osmosis_Lockup_MsgClientMetadata.Methods.beginUnlockingAll.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeBeginUnlockingAllInterceptors() ?? []
+    )
+  }
+
+  internal func makeBeginUnlockingCall(
+    _ request: Osmosis_Lockup_MsgBeginUnlocking,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Osmosis_Lockup_MsgBeginUnlocking, Osmosis_Lockup_MsgBeginUnlockingResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Osmosis_Lockup_MsgClientMetadata.Methods.beginUnlocking.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeBeginUnlockingInterceptors() ?? []
+    )
+  }
+
+  internal func makeExtendLockupCall(
+    _ request: Osmosis_Lockup_MsgExtendLockup,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Osmosis_Lockup_MsgExtendLockup, Osmosis_Lockup_MsgExtendLockupResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Osmosis_Lockup_MsgClientMetadata.Methods.extendLockup.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeExtendLockupInterceptors() ?? []
+    )
+  }
+
+  internal func makeForceUnlockCall(
+    _ request: Osmosis_Lockup_MsgForceUnlock,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Osmosis_Lockup_MsgForceUnlock, Osmosis_Lockup_MsgForceUnlockResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Osmosis_Lockup_MsgClientMetadata.Methods.forceUnlock.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeForceUnlockInterceptors() ?? []
+    )
+  }
+
+  internal func makeSetRewardReceiverAddressCall(
+    _ request: Osmosis_Lockup_MsgSetRewardReceiverAddress,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Osmosis_Lockup_MsgSetRewardReceiverAddress, Osmosis_Lockup_MsgSetRewardReceiverAddressResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Osmosis_Lockup_MsgClientMetadata.Methods.setRewardReceiverAddress.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeSetRewardReceiverAddressInterceptors() ?? []
+    )
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Osmosis_Lockup_MsgAsyncClientProtocol {
+  internal func lockTokens(
+    _ request: Osmosis_Lockup_MsgLockTokens,
+    callOptions: CallOptions? = nil
+  ) async throws -> Osmosis_Lockup_MsgLockTokensResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Osmosis_Lockup_MsgClientMetadata.Methods.lockTokens.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeLockTokensInterceptors() ?? []
+    )
+  }
+
+  internal func beginUnlockingAll(
+    _ request: Osmosis_Lockup_MsgBeginUnlockingAll,
+    callOptions: CallOptions? = nil
+  ) async throws -> Osmosis_Lockup_MsgBeginUnlockingAllResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Osmosis_Lockup_MsgClientMetadata.Methods.beginUnlockingAll.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeBeginUnlockingAllInterceptors() ?? []
+    )
+  }
+
+  internal func beginUnlocking(
+    _ request: Osmosis_Lockup_MsgBeginUnlocking,
+    callOptions: CallOptions? = nil
+  ) async throws -> Osmosis_Lockup_MsgBeginUnlockingResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Osmosis_Lockup_MsgClientMetadata.Methods.beginUnlocking.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeBeginUnlockingInterceptors() ?? []
+    )
+  }
+
+  internal func extendLockup(
+    _ request: Osmosis_Lockup_MsgExtendLockup,
+    callOptions: CallOptions? = nil
+  ) async throws -> Osmosis_Lockup_MsgExtendLockupResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Osmosis_Lockup_MsgClientMetadata.Methods.extendLockup.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeExtendLockupInterceptors() ?? []
+    )
+  }
+
+  internal func forceUnlock(
+    _ request: Osmosis_Lockup_MsgForceUnlock,
+    callOptions: CallOptions? = nil
+  ) async throws -> Osmosis_Lockup_MsgForceUnlockResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Osmosis_Lockup_MsgClientMetadata.Methods.forceUnlock.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeForceUnlockInterceptors() ?? []
+    )
+  }
+
+  internal func setRewardReceiverAddress(
+    _ request: Osmosis_Lockup_MsgSetRewardReceiverAddress,
+    callOptions: CallOptions? = nil
+  ) async throws -> Osmosis_Lockup_MsgSetRewardReceiverAddressResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Osmosis_Lockup_MsgClientMetadata.Methods.setRewardReceiverAddress.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeSetRewardReceiverAddressInterceptors() ?? []
+    )
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal struct Osmosis_Lockup_MsgAsyncClient: Osmosis_Lockup_MsgAsyncClientProtocol {
+  internal var channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions
+  internal var interceptors: Osmosis_Lockup_MsgClientInterceptorFactoryProtocol?
+
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Osmosis_Lockup_MsgClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self.defaultCallOptions = defaultCallOptions
+    self.interceptors = interceptors
+  }
+}
+
+internal protocol Osmosis_Lockup_MsgClientInterceptorFactoryProtocol: Sendable {
+
+  /// - Returns: Interceptors to use when invoking 'lockTokens'.
+  func makeLockTokensInterceptors() -> [ClientInterceptor<Osmosis_Lockup_MsgLockTokens, Osmosis_Lockup_MsgLockTokensResponse>]
+
+  /// - Returns: Interceptors to use when invoking 'beginUnlockingAll'.
+  func makeBeginUnlockingAllInterceptors() -> [ClientInterceptor<Osmosis_Lockup_MsgBeginUnlockingAll, Osmosis_Lockup_MsgBeginUnlockingAllResponse>]
+
+  /// - Returns: Interceptors to use when invoking 'beginUnlocking'.
+  func makeBeginUnlockingInterceptors() -> [ClientInterceptor<Osmosis_Lockup_MsgBeginUnlocking, Osmosis_Lockup_MsgBeginUnlockingResponse>]
+
+  /// - Returns: Interceptors to use when invoking 'extendLockup'.
+  func makeExtendLockupInterceptors() -> [ClientInterceptor<Osmosis_Lockup_MsgExtendLockup, Osmosis_Lockup_MsgExtendLockupResponse>]
+
+  /// - Returns: Interceptors to use when invoking 'forceUnlock'.
+  func makeForceUnlockInterceptors() -> [ClientInterceptor<Osmosis_Lockup_MsgForceUnlock, Osmosis_Lockup_MsgForceUnlockResponse>]
+
+  /// - Returns: Interceptors to use when invoking 'setRewardReceiverAddress'.
+  func makeSetRewardReceiverAddressInterceptors() -> [ClientInterceptor<Osmosis_Lockup_MsgSetRewardReceiverAddress, Osmosis_Lockup_MsgSetRewardReceiverAddressResponse>]
+}
+
+internal enum Osmosis_Lockup_MsgClientMetadata {
+  internal static let serviceDescriptor = GRPCServiceDescriptor(
+    name: "Msg",
+    fullName: "osmosis.lockup.Msg",
+    methods: [
+      Osmosis_Lockup_MsgClientMetadata.Methods.lockTokens,
+      Osmosis_Lockup_MsgClientMetadata.Methods.beginUnlockingAll,
+      Osmosis_Lockup_MsgClientMetadata.Methods.beginUnlocking,
+      Osmosis_Lockup_MsgClientMetadata.Methods.extendLockup,
+      Osmosis_Lockup_MsgClientMetadata.Methods.forceUnlock,
+      Osmosis_Lockup_MsgClientMetadata.Methods.setRewardReceiverAddress,
+    ]
+  )
+
+  internal enum Methods {
+    internal static let lockTokens = GRPCMethodDescriptor(
+      name: "LockTokens",
+      path: "/osmosis.lockup.Msg/LockTokens",
+      type: GRPCCallType.unary
+    )
+
+    internal static let beginUnlockingAll = GRPCMethodDescriptor(
+      name: "BeginUnlockingAll",
+      path: "/osmosis.lockup.Msg/BeginUnlockingAll",
+      type: GRPCCallType.unary
+    )
+
+    internal static let beginUnlocking = GRPCMethodDescriptor(
+      name: "BeginUnlocking",
+      path: "/osmosis.lockup.Msg/BeginUnlocking",
+      type: GRPCCallType.unary
+    )
+
+    internal static let extendLockup = GRPCMethodDescriptor(
+      name: "ExtendLockup",
+      path: "/osmosis.lockup.Msg/ExtendLockup",
+      type: GRPCCallType.unary
+    )
+
+    internal static let forceUnlock = GRPCMethodDescriptor(
+      name: "ForceUnlock",
+      path: "/osmosis.lockup.Msg/ForceUnlock",
+      type: GRPCCallType.unary
+    )
+
+    internal static let setRewardReceiverAddress = GRPCMethodDescriptor(
+      name: "SetRewardReceiverAddress",
+      path: "/osmosis.lockup.Msg/SetRewardReceiverAddress",
+      type: GRPCCallType.unary
+    )
+  }
+}
+
+/// Msg defines the Msg service.
 ///
 /// To build a server, implement a class that conforms to this protocol.
 internal protocol Osmosis_Lockup_MsgProvider: CallHandlerProvider {
@@ -206,18 +533,22 @@ internal protocol Osmosis_Lockup_MsgProvider: CallHandlerProvider {
   /// BeginUnlockingAll begin unlocking all tokens
   func beginUnlockingAll(request: Osmosis_Lockup_MsgBeginUnlockingAll, context: StatusOnlyCallContext) -> EventLoopFuture<Osmosis_Lockup_MsgBeginUnlockingAllResponse>
 
-  /// UnlockTokens unlock all unlockable tokens
-  func unlockTokens(request: Osmosis_Lockup_MsgUnlockTokens, context: StatusOnlyCallContext) -> EventLoopFuture<Osmosis_Lockup_MsgUnlockTokensResponse>
-
   /// MsgBeginUnlocking begins unlocking tokens by lock ID
   func beginUnlocking(request: Osmosis_Lockup_MsgBeginUnlocking, context: StatusOnlyCallContext) -> EventLoopFuture<Osmosis_Lockup_MsgBeginUnlockingResponse>
 
-  /// UnlockPeriodLock unlock individual period lock by ID
-  func unlockPeriodLock(request: Osmosis_Lockup_MsgUnlockPeriodLock, context: StatusOnlyCallContext) -> EventLoopFuture<Osmosis_Lockup_MsgUnlockPeriodLockResponse>
+  /// MsgEditLockup edits the existing lockups by lock ID
+  func extendLockup(request: Osmosis_Lockup_MsgExtendLockup, context: StatusOnlyCallContext) -> EventLoopFuture<Osmosis_Lockup_MsgExtendLockupResponse>
+
+  func forceUnlock(request: Osmosis_Lockup_MsgForceUnlock, context: StatusOnlyCallContext) -> EventLoopFuture<Osmosis_Lockup_MsgForceUnlockResponse>
+
+  /// SetRewardReceiverAddress edits the reward receiver for the given lock ID
+  func setRewardReceiverAddress(request: Osmosis_Lockup_MsgSetRewardReceiverAddress, context: StatusOnlyCallContext) -> EventLoopFuture<Osmosis_Lockup_MsgSetRewardReceiverAddressResponse>
 }
 
 extension Osmosis_Lockup_MsgProvider {
-  internal var serviceName: Substring { return "osmosis.lockup.Msg" }
+  internal var serviceName: Substring {
+    return Osmosis_Lockup_MsgServerMetadata.serviceDescriptor.fullName[...]
+  }
 
   /// Determines, calls and returns the appropriate request handler, depending on the request's method.
   /// Returns nil for methods not handled by this service.
@@ -244,15 +575,6 @@ extension Osmosis_Lockup_MsgProvider {
         userFunction: self.beginUnlockingAll(request:context:)
       )
 
-    case "UnlockTokens":
-      return UnaryServerHandler(
-        context: context,
-        requestDeserializer: ProtobufDeserializer<Osmosis_Lockup_MsgUnlockTokens>(),
-        responseSerializer: ProtobufSerializer<Osmosis_Lockup_MsgUnlockTokensResponse>(),
-        interceptors: self.interceptors?.makeUnlockTokensInterceptors() ?? [],
-        userFunction: self.unlockTokens(request:context:)
-      )
-
     case "BeginUnlocking":
       return UnaryServerHandler(
         context: context,
@@ -262,13 +584,154 @@ extension Osmosis_Lockup_MsgProvider {
         userFunction: self.beginUnlocking(request:context:)
       )
 
-    case "UnlockPeriodLock":
+    case "ExtendLockup":
       return UnaryServerHandler(
         context: context,
-        requestDeserializer: ProtobufDeserializer<Osmosis_Lockup_MsgUnlockPeriodLock>(),
-        responseSerializer: ProtobufSerializer<Osmosis_Lockup_MsgUnlockPeriodLockResponse>(),
-        interceptors: self.interceptors?.makeUnlockPeriodLockInterceptors() ?? [],
-        userFunction: self.unlockPeriodLock(request:context:)
+        requestDeserializer: ProtobufDeserializer<Osmosis_Lockup_MsgExtendLockup>(),
+        responseSerializer: ProtobufSerializer<Osmosis_Lockup_MsgExtendLockupResponse>(),
+        interceptors: self.interceptors?.makeExtendLockupInterceptors() ?? [],
+        userFunction: self.extendLockup(request:context:)
+      )
+
+    case "ForceUnlock":
+      return UnaryServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Osmosis_Lockup_MsgForceUnlock>(),
+        responseSerializer: ProtobufSerializer<Osmosis_Lockup_MsgForceUnlockResponse>(),
+        interceptors: self.interceptors?.makeForceUnlockInterceptors() ?? [],
+        userFunction: self.forceUnlock(request:context:)
+      )
+
+    case "SetRewardReceiverAddress":
+      return UnaryServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Osmosis_Lockup_MsgSetRewardReceiverAddress>(),
+        responseSerializer: ProtobufSerializer<Osmosis_Lockup_MsgSetRewardReceiverAddressResponse>(),
+        interceptors: self.interceptors?.makeSetRewardReceiverAddressInterceptors() ?? [],
+        userFunction: self.setRewardReceiverAddress(request:context:)
+      )
+
+    default:
+      return nil
+    }
+  }
+}
+
+/// Msg defines the Msg service.
+///
+/// To implement a server, implement an object which conforms to this protocol.
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal protocol Osmosis_Lockup_MsgAsyncProvider: CallHandlerProvider {
+  static var serviceDescriptor: GRPCServiceDescriptor { get }
+  var interceptors: Osmosis_Lockup_MsgServerInterceptorFactoryProtocol? { get }
+
+  /// LockTokens lock tokens
+  @Sendable func lockTokens(
+    request: Osmosis_Lockup_MsgLockTokens,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Osmosis_Lockup_MsgLockTokensResponse
+
+  /// BeginUnlockingAll begin unlocking all tokens
+  @Sendable func beginUnlockingAll(
+    request: Osmosis_Lockup_MsgBeginUnlockingAll,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Osmosis_Lockup_MsgBeginUnlockingAllResponse
+
+  /// MsgBeginUnlocking begins unlocking tokens by lock ID
+  @Sendable func beginUnlocking(
+    request: Osmosis_Lockup_MsgBeginUnlocking,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Osmosis_Lockup_MsgBeginUnlockingResponse
+
+  /// MsgEditLockup edits the existing lockups by lock ID
+  @Sendable func extendLockup(
+    request: Osmosis_Lockup_MsgExtendLockup,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Osmosis_Lockup_MsgExtendLockupResponse
+
+  @Sendable func forceUnlock(
+    request: Osmosis_Lockup_MsgForceUnlock,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Osmosis_Lockup_MsgForceUnlockResponse
+
+  /// SetRewardReceiverAddress edits the reward receiver for the given lock ID
+  @Sendable func setRewardReceiverAddress(
+    request: Osmosis_Lockup_MsgSetRewardReceiverAddress,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Osmosis_Lockup_MsgSetRewardReceiverAddressResponse
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Osmosis_Lockup_MsgAsyncProvider {
+  internal static var serviceDescriptor: GRPCServiceDescriptor {
+    return Osmosis_Lockup_MsgServerMetadata.serviceDescriptor
+  }
+
+  internal var serviceName: Substring {
+    return Osmosis_Lockup_MsgServerMetadata.serviceDescriptor.fullName[...]
+  }
+
+  internal var interceptors: Osmosis_Lockup_MsgServerInterceptorFactoryProtocol? {
+    return nil
+  }
+
+  internal func handle(
+    method name: Substring,
+    context: CallHandlerContext
+  ) -> GRPCServerHandlerProtocol? {
+    switch name {
+    case "LockTokens":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Osmosis_Lockup_MsgLockTokens>(),
+        responseSerializer: ProtobufSerializer<Osmosis_Lockup_MsgLockTokensResponse>(),
+        interceptors: self.interceptors?.makeLockTokensInterceptors() ?? [],
+        wrapping: self.lockTokens(request:context:)
+      )
+
+    case "BeginUnlockingAll":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Osmosis_Lockup_MsgBeginUnlockingAll>(),
+        responseSerializer: ProtobufSerializer<Osmosis_Lockup_MsgBeginUnlockingAllResponse>(),
+        interceptors: self.interceptors?.makeBeginUnlockingAllInterceptors() ?? [],
+        wrapping: self.beginUnlockingAll(request:context:)
+      )
+
+    case "BeginUnlocking":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Osmosis_Lockup_MsgBeginUnlocking>(),
+        responseSerializer: ProtobufSerializer<Osmosis_Lockup_MsgBeginUnlockingResponse>(),
+        interceptors: self.interceptors?.makeBeginUnlockingInterceptors() ?? [],
+        wrapping: self.beginUnlocking(request:context:)
+      )
+
+    case "ExtendLockup":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Osmosis_Lockup_MsgExtendLockup>(),
+        responseSerializer: ProtobufSerializer<Osmosis_Lockup_MsgExtendLockupResponse>(),
+        interceptors: self.interceptors?.makeExtendLockupInterceptors() ?? [],
+        wrapping: self.extendLockup(request:context:)
+      )
+
+    case "ForceUnlock":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Osmosis_Lockup_MsgForceUnlock>(),
+        responseSerializer: ProtobufSerializer<Osmosis_Lockup_MsgForceUnlockResponse>(),
+        interceptors: self.interceptors?.makeForceUnlockInterceptors() ?? [],
+        wrapping: self.forceUnlock(request:context:)
+      )
+
+    case "SetRewardReceiverAddress":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Osmosis_Lockup_MsgSetRewardReceiverAddress>(),
+        responseSerializer: ProtobufSerializer<Osmosis_Lockup_MsgSetRewardReceiverAddressResponse>(),
+        interceptors: self.interceptors?.makeSetRewardReceiverAddressInterceptors() ?? [],
+        wrapping: self.setRewardReceiverAddress(request:context:)
       )
 
     default:
@@ -287,15 +750,72 @@ internal protocol Osmosis_Lockup_MsgServerInterceptorFactoryProtocol {
   ///   Defaults to calling `self.makeInterceptors()`.
   func makeBeginUnlockingAllInterceptors() -> [ServerInterceptor<Osmosis_Lockup_MsgBeginUnlockingAll, Osmosis_Lockup_MsgBeginUnlockingAllResponse>]
 
-  /// - Returns: Interceptors to use when handling 'unlockTokens'.
-  ///   Defaults to calling `self.makeInterceptors()`.
-  func makeUnlockTokensInterceptors() -> [ServerInterceptor<Osmosis_Lockup_MsgUnlockTokens, Osmosis_Lockup_MsgUnlockTokensResponse>]
-
   /// - Returns: Interceptors to use when handling 'beginUnlocking'.
   ///   Defaults to calling `self.makeInterceptors()`.
   func makeBeginUnlockingInterceptors() -> [ServerInterceptor<Osmosis_Lockup_MsgBeginUnlocking, Osmosis_Lockup_MsgBeginUnlockingResponse>]
 
-  /// - Returns: Interceptors to use when handling 'unlockPeriodLock'.
+  /// - Returns: Interceptors to use when handling 'extendLockup'.
   ///   Defaults to calling `self.makeInterceptors()`.
-  func makeUnlockPeriodLockInterceptors() -> [ServerInterceptor<Osmosis_Lockup_MsgUnlockPeriodLock, Osmosis_Lockup_MsgUnlockPeriodLockResponse>]
+  func makeExtendLockupInterceptors() -> [ServerInterceptor<Osmosis_Lockup_MsgExtendLockup, Osmosis_Lockup_MsgExtendLockupResponse>]
+
+  /// - Returns: Interceptors to use when handling 'forceUnlock'.
+  ///   Defaults to calling `self.makeInterceptors()`.
+  func makeForceUnlockInterceptors() -> [ServerInterceptor<Osmosis_Lockup_MsgForceUnlock, Osmosis_Lockup_MsgForceUnlockResponse>]
+
+  /// - Returns: Interceptors to use when handling 'setRewardReceiverAddress'.
+  ///   Defaults to calling `self.makeInterceptors()`.
+  func makeSetRewardReceiverAddressInterceptors() -> [ServerInterceptor<Osmosis_Lockup_MsgSetRewardReceiverAddress, Osmosis_Lockup_MsgSetRewardReceiverAddressResponse>]
+}
+
+internal enum Osmosis_Lockup_MsgServerMetadata {
+  internal static let serviceDescriptor = GRPCServiceDescriptor(
+    name: "Msg",
+    fullName: "osmosis.lockup.Msg",
+    methods: [
+      Osmosis_Lockup_MsgServerMetadata.Methods.lockTokens,
+      Osmosis_Lockup_MsgServerMetadata.Methods.beginUnlockingAll,
+      Osmosis_Lockup_MsgServerMetadata.Methods.beginUnlocking,
+      Osmosis_Lockup_MsgServerMetadata.Methods.extendLockup,
+      Osmosis_Lockup_MsgServerMetadata.Methods.forceUnlock,
+      Osmosis_Lockup_MsgServerMetadata.Methods.setRewardReceiverAddress,
+    ]
+  )
+
+  internal enum Methods {
+    internal static let lockTokens = GRPCMethodDescriptor(
+      name: "LockTokens",
+      path: "/osmosis.lockup.Msg/LockTokens",
+      type: GRPCCallType.unary
+    )
+
+    internal static let beginUnlockingAll = GRPCMethodDescriptor(
+      name: "BeginUnlockingAll",
+      path: "/osmosis.lockup.Msg/BeginUnlockingAll",
+      type: GRPCCallType.unary
+    )
+
+    internal static let beginUnlocking = GRPCMethodDescriptor(
+      name: "BeginUnlocking",
+      path: "/osmosis.lockup.Msg/BeginUnlocking",
+      type: GRPCCallType.unary
+    )
+
+    internal static let extendLockup = GRPCMethodDescriptor(
+      name: "ExtendLockup",
+      path: "/osmosis.lockup.Msg/ExtendLockup",
+      type: GRPCCallType.unary
+    )
+
+    internal static let forceUnlock = GRPCMethodDescriptor(
+      name: "ForceUnlock",
+      path: "/osmosis.lockup.Msg/ForceUnlock",
+      type: GRPCCallType.unary
+    )
+
+    internal static let setRewardReceiverAddress = GRPCMethodDescriptor(
+      name: "SetRewardReceiverAddress",
+      path: "/osmosis.lockup.Msg/SetRewardReceiverAddress",
+      type: GRPCCallType.unary
+    )
+  }
 }

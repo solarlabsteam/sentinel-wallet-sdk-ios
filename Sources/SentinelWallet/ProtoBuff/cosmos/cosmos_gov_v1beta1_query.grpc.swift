@@ -22,6 +22,7 @@
 //
 import GRPC
 import NIO
+import NIOConcurrencyHelpers
 import SwiftProtobuf
 
 
@@ -89,7 +90,7 @@ extension Cosmos_Gov_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Gov_V1beta1_QueryProposalRequest, Cosmos_Gov_V1beta1_QueryProposalResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.gov.v1beta1.Query/Proposal",
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.proposal.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeProposalInterceptors() ?? []
@@ -107,7 +108,7 @@ extension Cosmos_Gov_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Gov_V1beta1_QueryProposalsRequest, Cosmos_Gov_V1beta1_QueryProposalsResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.gov.v1beta1.Query/Proposals",
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.proposals.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeProposalsInterceptors() ?? []
@@ -125,7 +126,7 @@ extension Cosmos_Gov_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Gov_V1beta1_QueryVoteRequest, Cosmos_Gov_V1beta1_QueryVoteResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.gov.v1beta1.Query/Vote",
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.vote.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeVoteInterceptors() ?? []
@@ -143,7 +144,7 @@ extension Cosmos_Gov_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Gov_V1beta1_QueryVotesRequest, Cosmos_Gov_V1beta1_QueryVotesResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.gov.v1beta1.Query/Votes",
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.votes.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeVotesInterceptors() ?? []
@@ -161,7 +162,7 @@ extension Cosmos_Gov_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Gov_V1beta1_QueryParamsRequest, Cosmos_Gov_V1beta1_QueryParamsResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.gov.v1beta1.Query/Params",
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.params.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeParamsInterceptors() ?? []
@@ -179,7 +180,7 @@ extension Cosmos_Gov_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Gov_V1beta1_QueryDepositRequest, Cosmos_Gov_V1beta1_QueryDepositResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.gov.v1beta1.Query/Deposit",
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.deposit.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeDepositInterceptors() ?? []
@@ -197,7 +198,7 @@ extension Cosmos_Gov_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Gov_V1beta1_QueryDepositsRequest, Cosmos_Gov_V1beta1_QueryDepositsResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.gov.v1beta1.Query/Deposits",
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.deposits.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeDepositsInterceptors() ?? []
@@ -215,7 +216,7 @@ extension Cosmos_Gov_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Gov_V1beta1_QueryTallyResultRequest, Cosmos_Gov_V1beta1_QueryTallyResultResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.gov.v1beta1.Query/TallyResult",
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.tallyResult.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeTallyResultInterceptors() ?? []
@@ -223,7 +224,334 @@ extension Cosmos_Gov_V1beta1_QueryClientProtocol {
   }
 }
 
-internal protocol Cosmos_Gov_V1beta1_QueryClientInterceptorFactoryProtocol {
+@available(*, deprecated)
+extension Cosmos_Gov_V1beta1_QueryClient: @unchecked Sendable {}
+
+@available(*, deprecated, renamed: "Cosmos_Gov_V1beta1_QueryNIOClient")
+internal final class Cosmos_Gov_V1beta1_QueryClient: Cosmos_Gov_V1beta1_QueryClientProtocol {
+  private let lock = Lock()
+  private var _defaultCallOptions: CallOptions
+  private var _interceptors: Cosmos_Gov_V1beta1_QueryClientInterceptorFactoryProtocol?
+  internal let channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions {
+    get { self.lock.withLock { return self._defaultCallOptions } }
+    set { self.lock.withLockVoid { self._defaultCallOptions = newValue } }
+  }
+  internal var interceptors: Cosmos_Gov_V1beta1_QueryClientInterceptorFactoryProtocol? {
+    get { self.lock.withLock { return self._interceptors } }
+    set { self.lock.withLockVoid { self._interceptors = newValue } }
+  }
+
+  /// Creates a client for the cosmos.gov.v1beta1.Query service.
+  ///
+  /// - Parameters:
+  ///   - channel: `GRPCChannel` to the service host.
+  ///   - defaultCallOptions: Options to use for each service call if the user doesn't provide them.
+  ///   - interceptors: A factory providing interceptors for each RPC.
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Cosmos_Gov_V1beta1_QueryClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self._defaultCallOptions = defaultCallOptions
+    self._interceptors = interceptors
+  }
+}
+
+internal struct Cosmos_Gov_V1beta1_QueryNIOClient: Cosmos_Gov_V1beta1_QueryClientProtocol {
+  internal var channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions
+  internal var interceptors: Cosmos_Gov_V1beta1_QueryClientInterceptorFactoryProtocol?
+
+  /// Creates a client for the cosmos.gov.v1beta1.Query service.
+  ///
+  /// - Parameters:
+  ///   - channel: `GRPCChannel` to the service host.
+  ///   - defaultCallOptions: Options to use for each service call if the user doesn't provide them.
+  ///   - interceptors: A factory providing interceptors for each RPC.
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Cosmos_Gov_V1beta1_QueryClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self.defaultCallOptions = defaultCallOptions
+    self.interceptors = interceptors
+  }
+}
+
+/// Query defines the gRPC querier service for gov module
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal protocol Cosmos_Gov_V1beta1_QueryAsyncClientProtocol: GRPCClient {
+  static var serviceDescriptor: GRPCServiceDescriptor { get }
+  var interceptors: Cosmos_Gov_V1beta1_QueryClientInterceptorFactoryProtocol? { get }
+
+  func makeProposalCall(
+    _ request: Cosmos_Gov_V1beta1_QueryProposalRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_QueryProposalRequest, Cosmos_Gov_V1beta1_QueryProposalResponse>
+
+  func makeProposalsCall(
+    _ request: Cosmos_Gov_V1beta1_QueryProposalsRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_QueryProposalsRequest, Cosmos_Gov_V1beta1_QueryProposalsResponse>
+
+  func makeVoteCall(
+    _ request: Cosmos_Gov_V1beta1_QueryVoteRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_QueryVoteRequest, Cosmos_Gov_V1beta1_QueryVoteResponse>
+
+  func makeVotesCall(
+    _ request: Cosmos_Gov_V1beta1_QueryVotesRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_QueryVotesRequest, Cosmos_Gov_V1beta1_QueryVotesResponse>
+
+  func makeParamsCall(
+    _ request: Cosmos_Gov_V1beta1_QueryParamsRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_QueryParamsRequest, Cosmos_Gov_V1beta1_QueryParamsResponse>
+
+  func makeDepositCall(
+    _ request: Cosmos_Gov_V1beta1_QueryDepositRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_QueryDepositRequest, Cosmos_Gov_V1beta1_QueryDepositResponse>
+
+  func makeDepositsCall(
+    _ request: Cosmos_Gov_V1beta1_QueryDepositsRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_QueryDepositsRequest, Cosmos_Gov_V1beta1_QueryDepositsResponse>
+
+  func makeTallyResultCall(
+    _ request: Cosmos_Gov_V1beta1_QueryTallyResultRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_QueryTallyResultRequest, Cosmos_Gov_V1beta1_QueryTallyResultResponse>
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Gov_V1beta1_QueryAsyncClientProtocol {
+  internal static var serviceDescriptor: GRPCServiceDescriptor {
+    return Cosmos_Gov_V1beta1_QueryClientMetadata.serviceDescriptor
+  }
+
+  internal var interceptors: Cosmos_Gov_V1beta1_QueryClientInterceptorFactoryProtocol? {
+    return nil
+  }
+
+  internal func makeProposalCall(
+    _ request: Cosmos_Gov_V1beta1_QueryProposalRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_QueryProposalRequest, Cosmos_Gov_V1beta1_QueryProposalResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.proposal.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeProposalInterceptors() ?? []
+    )
+  }
+
+  internal func makeProposalsCall(
+    _ request: Cosmos_Gov_V1beta1_QueryProposalsRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_QueryProposalsRequest, Cosmos_Gov_V1beta1_QueryProposalsResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.proposals.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeProposalsInterceptors() ?? []
+    )
+  }
+
+  internal func makeVoteCall(
+    _ request: Cosmos_Gov_V1beta1_QueryVoteRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_QueryVoteRequest, Cosmos_Gov_V1beta1_QueryVoteResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.vote.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeVoteInterceptors() ?? []
+    )
+  }
+
+  internal func makeVotesCall(
+    _ request: Cosmos_Gov_V1beta1_QueryVotesRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_QueryVotesRequest, Cosmos_Gov_V1beta1_QueryVotesResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.votes.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeVotesInterceptors() ?? []
+    )
+  }
+
+  internal func makeParamsCall(
+    _ request: Cosmos_Gov_V1beta1_QueryParamsRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_QueryParamsRequest, Cosmos_Gov_V1beta1_QueryParamsResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.params.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeParamsInterceptors() ?? []
+    )
+  }
+
+  internal func makeDepositCall(
+    _ request: Cosmos_Gov_V1beta1_QueryDepositRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_QueryDepositRequest, Cosmos_Gov_V1beta1_QueryDepositResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.deposit.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDepositInterceptors() ?? []
+    )
+  }
+
+  internal func makeDepositsCall(
+    _ request: Cosmos_Gov_V1beta1_QueryDepositsRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_QueryDepositsRequest, Cosmos_Gov_V1beta1_QueryDepositsResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.deposits.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDepositsInterceptors() ?? []
+    )
+  }
+
+  internal func makeTallyResultCall(
+    _ request: Cosmos_Gov_V1beta1_QueryTallyResultRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Gov_V1beta1_QueryTallyResultRequest, Cosmos_Gov_V1beta1_QueryTallyResultResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.tallyResult.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeTallyResultInterceptors() ?? []
+    )
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Gov_V1beta1_QueryAsyncClientProtocol {
+  internal func proposal(
+    _ request: Cosmos_Gov_V1beta1_QueryProposalRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Gov_V1beta1_QueryProposalResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.proposal.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeProposalInterceptors() ?? []
+    )
+  }
+
+  internal func proposals(
+    _ request: Cosmos_Gov_V1beta1_QueryProposalsRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Gov_V1beta1_QueryProposalsResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.proposals.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeProposalsInterceptors() ?? []
+    )
+  }
+
+  internal func vote(
+    _ request: Cosmos_Gov_V1beta1_QueryVoteRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Gov_V1beta1_QueryVoteResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.vote.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeVoteInterceptors() ?? []
+    )
+  }
+
+  internal func votes(
+    _ request: Cosmos_Gov_V1beta1_QueryVotesRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Gov_V1beta1_QueryVotesResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.votes.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeVotesInterceptors() ?? []
+    )
+  }
+
+  internal func params(
+    _ request: Cosmos_Gov_V1beta1_QueryParamsRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Gov_V1beta1_QueryParamsResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.params.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeParamsInterceptors() ?? []
+    )
+  }
+
+  internal func deposit(
+    _ request: Cosmos_Gov_V1beta1_QueryDepositRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Gov_V1beta1_QueryDepositResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.deposit.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDepositInterceptors() ?? []
+    )
+  }
+
+  internal func deposits(
+    _ request: Cosmos_Gov_V1beta1_QueryDepositsRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Gov_V1beta1_QueryDepositsResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.deposits.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDepositsInterceptors() ?? []
+    )
+  }
+
+  internal func tallyResult(
+    _ request: Cosmos_Gov_V1beta1_QueryTallyResultRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Gov_V1beta1_QueryTallyResultResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.tallyResult.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeTallyResultInterceptors() ?? []
+    )
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal struct Cosmos_Gov_V1beta1_QueryAsyncClient: Cosmos_Gov_V1beta1_QueryAsyncClientProtocol {
+  internal var channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions
+  internal var interceptors: Cosmos_Gov_V1beta1_QueryClientInterceptorFactoryProtocol?
+
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Cosmos_Gov_V1beta1_QueryClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self.defaultCallOptions = defaultCallOptions
+    self.interceptors = interceptors
+  }
+}
+
+internal protocol Cosmos_Gov_V1beta1_QueryClientInterceptorFactoryProtocol: Sendable {
 
   /// - Returns: Interceptors to use when invoking 'proposal'.
   func makeProposalInterceptors() -> [ClientInterceptor<Cosmos_Gov_V1beta1_QueryProposalRequest, Cosmos_Gov_V1beta1_QueryProposalResponse>]
@@ -250,25 +578,70 @@ internal protocol Cosmos_Gov_V1beta1_QueryClientInterceptorFactoryProtocol {
   func makeTallyResultInterceptors() -> [ClientInterceptor<Cosmos_Gov_V1beta1_QueryTallyResultRequest, Cosmos_Gov_V1beta1_QueryTallyResultResponse>]
 }
 
-internal final class Cosmos_Gov_V1beta1_QueryClient: Cosmos_Gov_V1beta1_QueryClientProtocol {
-  internal let channel: GRPCChannel
-  internal var defaultCallOptions: CallOptions
-  internal var interceptors: Cosmos_Gov_V1beta1_QueryClientInterceptorFactoryProtocol?
+internal enum Cosmos_Gov_V1beta1_QueryClientMetadata {
+  internal static let serviceDescriptor = GRPCServiceDescriptor(
+    name: "Query",
+    fullName: "cosmos.gov.v1beta1.Query",
+    methods: [
+      Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.proposal,
+      Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.proposals,
+      Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.vote,
+      Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.votes,
+      Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.params,
+      Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.deposit,
+      Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.deposits,
+      Cosmos_Gov_V1beta1_QueryClientMetadata.Methods.tallyResult,
+    ]
+  )
 
-  /// Creates a client for the cosmos.gov.v1beta1.Query service.
-  ///
-  /// - Parameters:
-  ///   - channel: `GRPCChannel` to the service host.
-  ///   - defaultCallOptions: Options to use for each service call if the user doesn't provide them.
-  ///   - interceptors: A factory providing interceptors for each RPC.
-  internal init(
-    channel: GRPCChannel,
-    defaultCallOptions: CallOptions = CallOptions(),
-    interceptors: Cosmos_Gov_V1beta1_QueryClientInterceptorFactoryProtocol? = nil
-  ) {
-    self.channel = channel
-    self.defaultCallOptions = defaultCallOptions
-    self.interceptors = interceptors
+  internal enum Methods {
+    internal static let proposal = GRPCMethodDescriptor(
+      name: "Proposal",
+      path: "/cosmos.gov.v1beta1.Query/Proposal",
+      type: GRPCCallType.unary
+    )
+
+    internal static let proposals = GRPCMethodDescriptor(
+      name: "Proposals",
+      path: "/cosmos.gov.v1beta1.Query/Proposals",
+      type: GRPCCallType.unary
+    )
+
+    internal static let vote = GRPCMethodDescriptor(
+      name: "Vote",
+      path: "/cosmos.gov.v1beta1.Query/Vote",
+      type: GRPCCallType.unary
+    )
+
+    internal static let votes = GRPCMethodDescriptor(
+      name: "Votes",
+      path: "/cosmos.gov.v1beta1.Query/Votes",
+      type: GRPCCallType.unary
+    )
+
+    internal static let params = GRPCMethodDescriptor(
+      name: "Params",
+      path: "/cosmos.gov.v1beta1.Query/Params",
+      type: GRPCCallType.unary
+    )
+
+    internal static let deposit = GRPCMethodDescriptor(
+      name: "Deposit",
+      path: "/cosmos.gov.v1beta1.Query/Deposit",
+      type: GRPCCallType.unary
+    )
+
+    internal static let deposits = GRPCMethodDescriptor(
+      name: "Deposits",
+      path: "/cosmos.gov.v1beta1.Query/Deposits",
+      type: GRPCCallType.unary
+    )
+
+    internal static let tallyResult = GRPCMethodDescriptor(
+      name: "TallyResult",
+      path: "/cosmos.gov.v1beta1.Query/TallyResult",
+      type: GRPCCallType.unary
+    )
   }
 }
 
@@ -304,7 +677,9 @@ internal protocol Cosmos_Gov_V1beta1_QueryProvider: CallHandlerProvider {
 }
 
 extension Cosmos_Gov_V1beta1_QueryProvider {
-  internal var serviceName: Substring { return "cosmos.gov.v1beta1.Query" }
+  internal var serviceName: Substring {
+    return Cosmos_Gov_V1beta1_QueryServerMetadata.serviceDescriptor.fullName[...]
+  }
 
   /// Determines, calls and returns the appropriate request handler, depending on the request's method.
   /// Returns nil for methods not handled by this service.
@@ -391,6 +766,160 @@ extension Cosmos_Gov_V1beta1_QueryProvider {
   }
 }
 
+/// Query defines the gRPC querier service for gov module
+///
+/// To implement a server, implement an object which conforms to this protocol.
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal protocol Cosmos_Gov_V1beta1_QueryAsyncProvider: CallHandlerProvider {
+  static var serviceDescriptor: GRPCServiceDescriptor { get }
+  var interceptors: Cosmos_Gov_V1beta1_QueryServerInterceptorFactoryProtocol? { get }
+
+  /// Proposal queries proposal details based on ProposalID.
+  @Sendable func proposal(
+    request: Cosmos_Gov_V1beta1_QueryProposalRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Gov_V1beta1_QueryProposalResponse
+
+  /// Proposals queries all proposals based on given status.
+  @Sendable func proposals(
+    request: Cosmos_Gov_V1beta1_QueryProposalsRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Gov_V1beta1_QueryProposalsResponse
+
+  /// Vote queries voted information based on proposalID, voterAddr.
+  @Sendable func vote(
+    request: Cosmos_Gov_V1beta1_QueryVoteRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Gov_V1beta1_QueryVoteResponse
+
+  /// Votes queries votes of a given proposal.
+  @Sendable func votes(
+    request: Cosmos_Gov_V1beta1_QueryVotesRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Gov_V1beta1_QueryVotesResponse
+
+  /// Params queries all parameters of the gov module.
+  @Sendable func params(
+    request: Cosmos_Gov_V1beta1_QueryParamsRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Gov_V1beta1_QueryParamsResponse
+
+  /// Deposit queries single deposit information based proposalID, depositAddr.
+  @Sendable func deposit(
+    request: Cosmos_Gov_V1beta1_QueryDepositRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Gov_V1beta1_QueryDepositResponse
+
+  /// Deposits queries all deposits of a single proposal.
+  @Sendable func deposits(
+    request: Cosmos_Gov_V1beta1_QueryDepositsRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Gov_V1beta1_QueryDepositsResponse
+
+  /// TallyResult queries the tally of a proposal vote.
+  @Sendable func tallyResult(
+    request: Cosmos_Gov_V1beta1_QueryTallyResultRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Gov_V1beta1_QueryTallyResultResponse
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Gov_V1beta1_QueryAsyncProvider {
+  internal static var serviceDescriptor: GRPCServiceDescriptor {
+    return Cosmos_Gov_V1beta1_QueryServerMetadata.serviceDescriptor
+  }
+
+  internal var serviceName: Substring {
+    return Cosmos_Gov_V1beta1_QueryServerMetadata.serviceDescriptor.fullName[...]
+  }
+
+  internal var interceptors: Cosmos_Gov_V1beta1_QueryServerInterceptorFactoryProtocol? {
+    return nil
+  }
+
+  internal func handle(
+    method name: Substring,
+    context: CallHandlerContext
+  ) -> GRPCServerHandlerProtocol? {
+    switch name {
+    case "Proposal":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Gov_V1beta1_QueryProposalRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Gov_V1beta1_QueryProposalResponse>(),
+        interceptors: self.interceptors?.makeProposalInterceptors() ?? [],
+        wrapping: self.proposal(request:context:)
+      )
+
+    case "Proposals":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Gov_V1beta1_QueryProposalsRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Gov_V1beta1_QueryProposalsResponse>(),
+        interceptors: self.interceptors?.makeProposalsInterceptors() ?? [],
+        wrapping: self.proposals(request:context:)
+      )
+
+    case "Vote":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Gov_V1beta1_QueryVoteRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Gov_V1beta1_QueryVoteResponse>(),
+        interceptors: self.interceptors?.makeVoteInterceptors() ?? [],
+        wrapping: self.vote(request:context:)
+      )
+
+    case "Votes":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Gov_V1beta1_QueryVotesRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Gov_V1beta1_QueryVotesResponse>(),
+        interceptors: self.interceptors?.makeVotesInterceptors() ?? [],
+        wrapping: self.votes(request:context:)
+      )
+
+    case "Params":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Gov_V1beta1_QueryParamsRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Gov_V1beta1_QueryParamsResponse>(),
+        interceptors: self.interceptors?.makeParamsInterceptors() ?? [],
+        wrapping: self.params(request:context:)
+      )
+
+    case "Deposit":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Gov_V1beta1_QueryDepositRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Gov_V1beta1_QueryDepositResponse>(),
+        interceptors: self.interceptors?.makeDepositInterceptors() ?? [],
+        wrapping: self.deposit(request:context:)
+      )
+
+    case "Deposits":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Gov_V1beta1_QueryDepositsRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Gov_V1beta1_QueryDepositsResponse>(),
+        interceptors: self.interceptors?.makeDepositsInterceptors() ?? [],
+        wrapping: self.deposits(request:context:)
+      )
+
+    case "TallyResult":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Gov_V1beta1_QueryTallyResultRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Gov_V1beta1_QueryTallyResultResponse>(),
+        interceptors: self.interceptors?.makeTallyResultInterceptors() ?? [],
+        wrapping: self.tallyResult(request:context:)
+      )
+
+    default:
+      return nil
+    }
+  }
+}
+
 internal protocol Cosmos_Gov_V1beta1_QueryServerInterceptorFactoryProtocol {
 
   /// - Returns: Interceptors to use when handling 'proposal'.
@@ -424,4 +953,71 @@ internal protocol Cosmos_Gov_V1beta1_QueryServerInterceptorFactoryProtocol {
   /// - Returns: Interceptors to use when handling 'tallyResult'.
   ///   Defaults to calling `self.makeInterceptors()`.
   func makeTallyResultInterceptors() -> [ServerInterceptor<Cosmos_Gov_V1beta1_QueryTallyResultRequest, Cosmos_Gov_V1beta1_QueryTallyResultResponse>]
+}
+
+internal enum Cosmos_Gov_V1beta1_QueryServerMetadata {
+  internal static let serviceDescriptor = GRPCServiceDescriptor(
+    name: "Query",
+    fullName: "cosmos.gov.v1beta1.Query",
+    methods: [
+      Cosmos_Gov_V1beta1_QueryServerMetadata.Methods.proposal,
+      Cosmos_Gov_V1beta1_QueryServerMetadata.Methods.proposals,
+      Cosmos_Gov_V1beta1_QueryServerMetadata.Methods.vote,
+      Cosmos_Gov_V1beta1_QueryServerMetadata.Methods.votes,
+      Cosmos_Gov_V1beta1_QueryServerMetadata.Methods.params,
+      Cosmos_Gov_V1beta1_QueryServerMetadata.Methods.deposit,
+      Cosmos_Gov_V1beta1_QueryServerMetadata.Methods.deposits,
+      Cosmos_Gov_V1beta1_QueryServerMetadata.Methods.tallyResult,
+    ]
+  )
+
+  internal enum Methods {
+    internal static let proposal = GRPCMethodDescriptor(
+      name: "Proposal",
+      path: "/cosmos.gov.v1beta1.Query/Proposal",
+      type: GRPCCallType.unary
+    )
+
+    internal static let proposals = GRPCMethodDescriptor(
+      name: "Proposals",
+      path: "/cosmos.gov.v1beta1.Query/Proposals",
+      type: GRPCCallType.unary
+    )
+
+    internal static let vote = GRPCMethodDescriptor(
+      name: "Vote",
+      path: "/cosmos.gov.v1beta1.Query/Vote",
+      type: GRPCCallType.unary
+    )
+
+    internal static let votes = GRPCMethodDescriptor(
+      name: "Votes",
+      path: "/cosmos.gov.v1beta1.Query/Votes",
+      type: GRPCCallType.unary
+    )
+
+    internal static let params = GRPCMethodDescriptor(
+      name: "Params",
+      path: "/cosmos.gov.v1beta1.Query/Params",
+      type: GRPCCallType.unary
+    )
+
+    internal static let deposit = GRPCMethodDescriptor(
+      name: "Deposit",
+      path: "/cosmos.gov.v1beta1.Query/Deposit",
+      type: GRPCCallType.unary
+    )
+
+    internal static let deposits = GRPCMethodDescriptor(
+      name: "Deposits",
+      path: "/cosmos.gov.v1beta1.Query/Deposits",
+      type: GRPCCallType.unary
+    )
+
+    internal static let tallyResult = GRPCMethodDescriptor(
+      name: "TallyResult",
+      path: "/cosmos.gov.v1beta1.Query/TallyResult",
+      type: GRPCCallType.unary
+    )
+  }
 }

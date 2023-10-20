@@ -22,6 +22,7 @@
 //
 import GRPC
 import NIO
+import NIOConcurrencyHelpers
 import SwiftProtobuf
 
 
@@ -51,6 +52,21 @@ internal protocol Cosmos_Distribution_V1beta1_MsgClientProtocol: GRPCClient {
     _ request: Cosmos_Distribution_V1beta1_MsgFundCommunityPool,
     callOptions: CallOptions?
   ) -> UnaryCall<Cosmos_Distribution_V1beta1_MsgFundCommunityPool, Cosmos_Distribution_V1beta1_MsgFundCommunityPoolResponse>
+
+  func updateParams(
+    _ request: Cosmos_Distribution_V1beta1_MsgUpdateParams,
+    callOptions: CallOptions?
+  ) -> UnaryCall<Cosmos_Distribution_V1beta1_MsgUpdateParams, Cosmos_Distribution_V1beta1_MsgUpdateParamsResponse>
+
+  func communityPoolSpend(
+    _ request: Cosmos_Distribution_V1beta1_MsgCommunityPoolSpend,
+    callOptions: CallOptions?
+  ) -> UnaryCall<Cosmos_Distribution_V1beta1_MsgCommunityPoolSpend, Cosmos_Distribution_V1beta1_MsgCommunityPoolSpendResponse>
+
+  func depositValidatorRewardsPool(
+    _ request: Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPool,
+    callOptions: CallOptions?
+  ) -> UnaryCall<Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPool, Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPoolResponse>
 }
 
 extension Cosmos_Distribution_V1beta1_MsgClientProtocol {
@@ -70,7 +86,7 @@ extension Cosmos_Distribution_V1beta1_MsgClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Distribution_V1beta1_MsgSetWithdrawAddress, Cosmos_Distribution_V1beta1_MsgSetWithdrawAddressResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.distribution.v1beta1.Msg/SetWithdrawAddress",
+      path: Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.setWithdrawAddress.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeSetWithdrawAddressInterceptors() ?? []
@@ -89,7 +105,7 @@ extension Cosmos_Distribution_V1beta1_MsgClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Distribution_V1beta1_MsgWithdrawDelegatorReward, Cosmos_Distribution_V1beta1_MsgWithdrawDelegatorRewardResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.distribution.v1beta1.Msg/WithdrawDelegatorReward",
+      path: Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.withdrawDelegatorReward.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeWithdrawDelegatorRewardInterceptors() ?? []
@@ -108,7 +124,7 @@ extension Cosmos_Distribution_V1beta1_MsgClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Distribution_V1beta1_MsgWithdrawValidatorCommission, Cosmos_Distribution_V1beta1_MsgWithdrawValidatorCommissionResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.distribution.v1beta1.Msg/WithdrawValidatorCommission",
+      path: Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.withdrawValidatorCommission.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeWithdrawValidatorCommissionInterceptors() ?? []
@@ -127,31 +143,116 @@ extension Cosmos_Distribution_V1beta1_MsgClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Distribution_V1beta1_MsgFundCommunityPool, Cosmos_Distribution_V1beta1_MsgFundCommunityPoolResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.distribution.v1beta1.Msg/FundCommunityPool",
+      path: Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.fundCommunityPool.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeFundCommunityPoolInterceptors() ?? []
     )
   }
+
+  /// UpdateParams defines a governance operation for updating the x/distribution
+  /// module parameters. The authority is defined in the keeper.
+  ///
+  /// Since: cosmos-sdk 0.47
+  ///
+  /// - Parameters:
+  ///   - request: Request to send to UpdateParams.
+  ///   - callOptions: Call options.
+  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
+  internal func updateParams(
+    _ request: Cosmos_Distribution_V1beta1_MsgUpdateParams,
+    callOptions: CallOptions? = nil
+  ) -> UnaryCall<Cosmos_Distribution_V1beta1_MsgUpdateParams, Cosmos_Distribution_V1beta1_MsgUpdateParamsResponse> {
+    return self.makeUnaryCall(
+      path: Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.updateParams.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeUpdateParamsInterceptors() ?? []
+    )
+  }
+
+  /// CommunityPoolSpend defines a governance operation for sending tokens from
+  /// the community pool in the x/distribution module to another account, which
+  /// could be the governance module itself. The authority is defined in the
+  /// keeper.
+  ///
+  /// Since: cosmos-sdk 0.47
+  ///
+  /// - Parameters:
+  ///   - request: Request to send to CommunityPoolSpend.
+  ///   - callOptions: Call options.
+  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
+  internal func communityPoolSpend(
+    _ request: Cosmos_Distribution_V1beta1_MsgCommunityPoolSpend,
+    callOptions: CallOptions? = nil
+  ) -> UnaryCall<Cosmos_Distribution_V1beta1_MsgCommunityPoolSpend, Cosmos_Distribution_V1beta1_MsgCommunityPoolSpendResponse> {
+    return self.makeUnaryCall(
+      path: Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.communityPoolSpend.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeCommunityPoolSpendInterceptors() ?? []
+    )
+  }
+
+  /// DepositValidatorRewardsPool defines a method to provide additional rewards
+  /// to delegators to a specific validator.
+  ///
+  /// Since: cosmos-sdk 0.50
+  ///
+  /// - Parameters:
+  ///   - request: Request to send to DepositValidatorRewardsPool.
+  ///   - callOptions: Call options.
+  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
+  internal func depositValidatorRewardsPool(
+    _ request: Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPool,
+    callOptions: CallOptions? = nil
+  ) -> UnaryCall<Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPool, Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPoolResponse> {
+    return self.makeUnaryCall(
+      path: Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.depositValidatorRewardsPool.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDepositValidatorRewardsPoolInterceptors() ?? []
+    )
+  }
 }
 
-internal protocol Cosmos_Distribution_V1beta1_MsgClientInterceptorFactoryProtocol {
+@available(*, deprecated)
+extension Cosmos_Distribution_V1beta1_MsgClient: @unchecked Sendable {}
 
-  /// - Returns: Interceptors to use when invoking 'setWithdrawAddress'.
-  func makeSetWithdrawAddressInterceptors() -> [ClientInterceptor<Cosmos_Distribution_V1beta1_MsgSetWithdrawAddress, Cosmos_Distribution_V1beta1_MsgSetWithdrawAddressResponse>]
-
-  /// - Returns: Interceptors to use when invoking 'withdrawDelegatorReward'.
-  func makeWithdrawDelegatorRewardInterceptors() -> [ClientInterceptor<Cosmos_Distribution_V1beta1_MsgWithdrawDelegatorReward, Cosmos_Distribution_V1beta1_MsgWithdrawDelegatorRewardResponse>]
-
-  /// - Returns: Interceptors to use when invoking 'withdrawValidatorCommission'.
-  func makeWithdrawValidatorCommissionInterceptors() -> [ClientInterceptor<Cosmos_Distribution_V1beta1_MsgWithdrawValidatorCommission, Cosmos_Distribution_V1beta1_MsgWithdrawValidatorCommissionResponse>]
-
-  /// - Returns: Interceptors to use when invoking 'fundCommunityPool'.
-  func makeFundCommunityPoolInterceptors() -> [ClientInterceptor<Cosmos_Distribution_V1beta1_MsgFundCommunityPool, Cosmos_Distribution_V1beta1_MsgFundCommunityPoolResponse>]
-}
-
+@available(*, deprecated, renamed: "Cosmos_Distribution_V1beta1_MsgNIOClient")
 internal final class Cosmos_Distribution_V1beta1_MsgClient: Cosmos_Distribution_V1beta1_MsgClientProtocol {
+  private let lock = Lock()
+  private var _defaultCallOptions: CallOptions
+  private var _interceptors: Cosmos_Distribution_V1beta1_MsgClientInterceptorFactoryProtocol?
   internal let channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions {
+    get { self.lock.withLock { return self._defaultCallOptions } }
+    set { self.lock.withLockVoid { self._defaultCallOptions = newValue } }
+  }
+  internal var interceptors: Cosmos_Distribution_V1beta1_MsgClientInterceptorFactoryProtocol? {
+    get { self.lock.withLock { return self._interceptors } }
+    set { self.lock.withLockVoid { self._interceptors = newValue } }
+  }
+
+  /// Creates a client for the cosmos.distribution.v1beta1.Msg service.
+  ///
+  /// - Parameters:
+  ///   - channel: `GRPCChannel` to the service host.
+  ///   - defaultCallOptions: Options to use for each service call if the user doesn't provide them.
+  ///   - interceptors: A factory providing interceptors for each RPC.
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Cosmos_Distribution_V1beta1_MsgClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self._defaultCallOptions = defaultCallOptions
+    self._interceptors = interceptors
+  }
+}
+
+internal struct Cosmos_Distribution_V1beta1_MsgNIOClient: Cosmos_Distribution_V1beta1_MsgClientProtocol {
+  internal var channel: GRPCChannel
   internal var defaultCallOptions: CallOptions
   internal var interceptors: Cosmos_Distribution_V1beta1_MsgClientInterceptorFactoryProtocol?
 
@@ -169,6 +270,331 @@ internal final class Cosmos_Distribution_V1beta1_MsgClient: Cosmos_Distribution_
     self.channel = channel
     self.defaultCallOptions = defaultCallOptions
     self.interceptors = interceptors
+  }
+}
+
+/// Msg defines the distribution Msg service.
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal protocol Cosmos_Distribution_V1beta1_MsgAsyncClientProtocol: GRPCClient {
+  static var serviceDescriptor: GRPCServiceDescriptor { get }
+  var interceptors: Cosmos_Distribution_V1beta1_MsgClientInterceptorFactoryProtocol? { get }
+
+  func makeSetWithdrawAddressCall(
+    _ request: Cosmos_Distribution_V1beta1_MsgSetWithdrawAddress,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_MsgSetWithdrawAddress, Cosmos_Distribution_V1beta1_MsgSetWithdrawAddressResponse>
+
+  func makeWithdrawDelegatorRewardCall(
+    _ request: Cosmos_Distribution_V1beta1_MsgWithdrawDelegatorReward,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_MsgWithdrawDelegatorReward, Cosmos_Distribution_V1beta1_MsgWithdrawDelegatorRewardResponse>
+
+  func makeWithdrawValidatorCommissionCall(
+    _ request: Cosmos_Distribution_V1beta1_MsgWithdrawValidatorCommission,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_MsgWithdrawValidatorCommission, Cosmos_Distribution_V1beta1_MsgWithdrawValidatorCommissionResponse>
+
+  func makeFundCommunityPoolCall(
+    _ request: Cosmos_Distribution_V1beta1_MsgFundCommunityPool,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_MsgFundCommunityPool, Cosmos_Distribution_V1beta1_MsgFundCommunityPoolResponse>
+
+  func makeUpdateParamsCall(
+    _ request: Cosmos_Distribution_V1beta1_MsgUpdateParams,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_MsgUpdateParams, Cosmos_Distribution_V1beta1_MsgUpdateParamsResponse>
+
+  func makeCommunityPoolSpendCall(
+    _ request: Cosmos_Distribution_V1beta1_MsgCommunityPoolSpend,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_MsgCommunityPoolSpend, Cosmos_Distribution_V1beta1_MsgCommunityPoolSpendResponse>
+
+  func makeDepositValidatorRewardsPoolCall(
+    _ request: Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPool,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPool, Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPoolResponse>
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Distribution_V1beta1_MsgAsyncClientProtocol {
+  internal static var serviceDescriptor: GRPCServiceDescriptor {
+    return Cosmos_Distribution_V1beta1_MsgClientMetadata.serviceDescriptor
+  }
+
+  internal var interceptors: Cosmos_Distribution_V1beta1_MsgClientInterceptorFactoryProtocol? {
+    return nil
+  }
+
+  internal func makeSetWithdrawAddressCall(
+    _ request: Cosmos_Distribution_V1beta1_MsgSetWithdrawAddress,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_MsgSetWithdrawAddress, Cosmos_Distribution_V1beta1_MsgSetWithdrawAddressResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.setWithdrawAddress.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeSetWithdrawAddressInterceptors() ?? []
+    )
+  }
+
+  internal func makeWithdrawDelegatorRewardCall(
+    _ request: Cosmos_Distribution_V1beta1_MsgWithdrawDelegatorReward,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_MsgWithdrawDelegatorReward, Cosmos_Distribution_V1beta1_MsgWithdrawDelegatorRewardResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.withdrawDelegatorReward.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeWithdrawDelegatorRewardInterceptors() ?? []
+    )
+  }
+
+  internal func makeWithdrawValidatorCommissionCall(
+    _ request: Cosmos_Distribution_V1beta1_MsgWithdrawValidatorCommission,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_MsgWithdrawValidatorCommission, Cosmos_Distribution_V1beta1_MsgWithdrawValidatorCommissionResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.withdrawValidatorCommission.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeWithdrawValidatorCommissionInterceptors() ?? []
+    )
+  }
+
+  internal func makeFundCommunityPoolCall(
+    _ request: Cosmos_Distribution_V1beta1_MsgFundCommunityPool,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_MsgFundCommunityPool, Cosmos_Distribution_V1beta1_MsgFundCommunityPoolResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.fundCommunityPool.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeFundCommunityPoolInterceptors() ?? []
+    )
+  }
+
+  internal func makeUpdateParamsCall(
+    _ request: Cosmos_Distribution_V1beta1_MsgUpdateParams,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_MsgUpdateParams, Cosmos_Distribution_V1beta1_MsgUpdateParamsResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.updateParams.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeUpdateParamsInterceptors() ?? []
+    )
+  }
+
+  internal func makeCommunityPoolSpendCall(
+    _ request: Cosmos_Distribution_V1beta1_MsgCommunityPoolSpend,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_MsgCommunityPoolSpend, Cosmos_Distribution_V1beta1_MsgCommunityPoolSpendResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.communityPoolSpend.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeCommunityPoolSpendInterceptors() ?? []
+    )
+  }
+
+  internal func makeDepositValidatorRewardsPoolCall(
+    _ request: Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPool,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPool, Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPoolResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.depositValidatorRewardsPool.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDepositValidatorRewardsPoolInterceptors() ?? []
+    )
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Distribution_V1beta1_MsgAsyncClientProtocol {
+  internal func setWithdrawAddress(
+    _ request: Cosmos_Distribution_V1beta1_MsgSetWithdrawAddress,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Distribution_V1beta1_MsgSetWithdrawAddressResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.setWithdrawAddress.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeSetWithdrawAddressInterceptors() ?? []
+    )
+  }
+
+  internal func withdrawDelegatorReward(
+    _ request: Cosmos_Distribution_V1beta1_MsgWithdrawDelegatorReward,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Distribution_V1beta1_MsgWithdrawDelegatorRewardResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.withdrawDelegatorReward.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeWithdrawDelegatorRewardInterceptors() ?? []
+    )
+  }
+
+  internal func withdrawValidatorCommission(
+    _ request: Cosmos_Distribution_V1beta1_MsgWithdrawValidatorCommission,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Distribution_V1beta1_MsgWithdrawValidatorCommissionResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.withdrawValidatorCommission.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeWithdrawValidatorCommissionInterceptors() ?? []
+    )
+  }
+
+  internal func fundCommunityPool(
+    _ request: Cosmos_Distribution_V1beta1_MsgFundCommunityPool,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Distribution_V1beta1_MsgFundCommunityPoolResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.fundCommunityPool.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeFundCommunityPoolInterceptors() ?? []
+    )
+  }
+
+  internal func updateParams(
+    _ request: Cosmos_Distribution_V1beta1_MsgUpdateParams,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Distribution_V1beta1_MsgUpdateParamsResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.updateParams.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeUpdateParamsInterceptors() ?? []
+    )
+  }
+
+  internal func communityPoolSpend(
+    _ request: Cosmos_Distribution_V1beta1_MsgCommunityPoolSpend,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Distribution_V1beta1_MsgCommunityPoolSpendResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.communityPoolSpend.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeCommunityPoolSpendInterceptors() ?? []
+    )
+  }
+
+  internal func depositValidatorRewardsPool(
+    _ request: Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPool,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPoolResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.depositValidatorRewardsPool.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDepositValidatorRewardsPoolInterceptors() ?? []
+    )
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal struct Cosmos_Distribution_V1beta1_MsgAsyncClient: Cosmos_Distribution_V1beta1_MsgAsyncClientProtocol {
+  internal var channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions
+  internal var interceptors: Cosmos_Distribution_V1beta1_MsgClientInterceptorFactoryProtocol?
+
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Cosmos_Distribution_V1beta1_MsgClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self.defaultCallOptions = defaultCallOptions
+    self.interceptors = interceptors
+  }
+}
+
+internal protocol Cosmos_Distribution_V1beta1_MsgClientInterceptorFactoryProtocol: Sendable {
+
+  /// - Returns: Interceptors to use when invoking 'setWithdrawAddress'.
+  func makeSetWithdrawAddressInterceptors() -> [ClientInterceptor<Cosmos_Distribution_V1beta1_MsgSetWithdrawAddress, Cosmos_Distribution_V1beta1_MsgSetWithdrawAddressResponse>]
+
+  /// - Returns: Interceptors to use when invoking 'withdrawDelegatorReward'.
+  func makeWithdrawDelegatorRewardInterceptors() -> [ClientInterceptor<Cosmos_Distribution_V1beta1_MsgWithdrawDelegatorReward, Cosmos_Distribution_V1beta1_MsgWithdrawDelegatorRewardResponse>]
+
+  /// - Returns: Interceptors to use when invoking 'withdrawValidatorCommission'.
+  func makeWithdrawValidatorCommissionInterceptors() -> [ClientInterceptor<Cosmos_Distribution_V1beta1_MsgWithdrawValidatorCommission, Cosmos_Distribution_V1beta1_MsgWithdrawValidatorCommissionResponse>]
+
+  /// - Returns: Interceptors to use when invoking 'fundCommunityPool'.
+  func makeFundCommunityPoolInterceptors() -> [ClientInterceptor<Cosmos_Distribution_V1beta1_MsgFundCommunityPool, Cosmos_Distribution_V1beta1_MsgFundCommunityPoolResponse>]
+
+  /// - Returns: Interceptors to use when invoking 'updateParams'.
+  func makeUpdateParamsInterceptors() -> [ClientInterceptor<Cosmos_Distribution_V1beta1_MsgUpdateParams, Cosmos_Distribution_V1beta1_MsgUpdateParamsResponse>]
+
+  /// - Returns: Interceptors to use when invoking 'communityPoolSpend'.
+  func makeCommunityPoolSpendInterceptors() -> [ClientInterceptor<Cosmos_Distribution_V1beta1_MsgCommunityPoolSpend, Cosmos_Distribution_V1beta1_MsgCommunityPoolSpendResponse>]
+
+  /// - Returns: Interceptors to use when invoking 'depositValidatorRewardsPool'.
+  func makeDepositValidatorRewardsPoolInterceptors() -> [ClientInterceptor<Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPool, Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPoolResponse>]
+}
+
+internal enum Cosmos_Distribution_V1beta1_MsgClientMetadata {
+  internal static let serviceDescriptor = GRPCServiceDescriptor(
+    name: "Msg",
+    fullName: "cosmos.distribution.v1beta1.Msg",
+    methods: [
+      Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.setWithdrawAddress,
+      Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.withdrawDelegatorReward,
+      Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.withdrawValidatorCommission,
+      Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.fundCommunityPool,
+      Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.updateParams,
+      Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.communityPoolSpend,
+      Cosmos_Distribution_V1beta1_MsgClientMetadata.Methods.depositValidatorRewardsPool,
+    ]
+  )
+
+  internal enum Methods {
+    internal static let setWithdrawAddress = GRPCMethodDescriptor(
+      name: "SetWithdrawAddress",
+      path: "/cosmos.distribution.v1beta1.Msg/SetWithdrawAddress",
+      type: GRPCCallType.unary
+    )
+
+    internal static let withdrawDelegatorReward = GRPCMethodDescriptor(
+      name: "WithdrawDelegatorReward",
+      path: "/cosmos.distribution.v1beta1.Msg/WithdrawDelegatorReward",
+      type: GRPCCallType.unary
+    )
+
+    internal static let withdrawValidatorCommission = GRPCMethodDescriptor(
+      name: "WithdrawValidatorCommission",
+      path: "/cosmos.distribution.v1beta1.Msg/WithdrawValidatorCommission",
+      type: GRPCCallType.unary
+    )
+
+    internal static let fundCommunityPool = GRPCMethodDescriptor(
+      name: "FundCommunityPool",
+      path: "/cosmos.distribution.v1beta1.Msg/FundCommunityPool",
+      type: GRPCCallType.unary
+    )
+
+    internal static let updateParams = GRPCMethodDescriptor(
+      name: "UpdateParams",
+      path: "/cosmos.distribution.v1beta1.Msg/UpdateParams",
+      type: GRPCCallType.unary
+    )
+
+    internal static let communityPoolSpend = GRPCMethodDescriptor(
+      name: "CommunityPoolSpend",
+      path: "/cosmos.distribution.v1beta1.Msg/CommunityPoolSpend",
+      type: GRPCCallType.unary
+    )
+
+    internal static let depositValidatorRewardsPool = GRPCMethodDescriptor(
+      name: "DepositValidatorRewardsPool",
+      path: "/cosmos.distribution.v1beta1.Msg/DepositValidatorRewardsPool",
+      type: GRPCCallType.unary
+    )
   }
 }
 
@@ -193,10 +619,32 @@ internal protocol Cosmos_Distribution_V1beta1_MsgProvider: CallHandlerProvider {
   /// FundCommunityPool defines a method to allow an account to directly
   /// fund the community pool.
   func fundCommunityPool(request: Cosmos_Distribution_V1beta1_MsgFundCommunityPool, context: StatusOnlyCallContext) -> EventLoopFuture<Cosmos_Distribution_V1beta1_MsgFundCommunityPoolResponse>
+
+  /// UpdateParams defines a governance operation for updating the x/distribution
+  /// module parameters. The authority is defined in the keeper.
+  ///
+  /// Since: cosmos-sdk 0.47
+  func updateParams(request: Cosmos_Distribution_V1beta1_MsgUpdateParams, context: StatusOnlyCallContext) -> EventLoopFuture<Cosmos_Distribution_V1beta1_MsgUpdateParamsResponse>
+
+  /// CommunityPoolSpend defines a governance operation for sending tokens from
+  /// the community pool in the x/distribution module to another account, which
+  /// could be the governance module itself. The authority is defined in the
+  /// keeper.
+  ///
+  /// Since: cosmos-sdk 0.47
+  func communityPoolSpend(request: Cosmos_Distribution_V1beta1_MsgCommunityPoolSpend, context: StatusOnlyCallContext) -> EventLoopFuture<Cosmos_Distribution_V1beta1_MsgCommunityPoolSpendResponse>
+
+  /// DepositValidatorRewardsPool defines a method to provide additional rewards
+  /// to delegators to a specific validator.
+  ///
+  /// Since: cosmos-sdk 0.50
+  func depositValidatorRewardsPool(request: Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPool, context: StatusOnlyCallContext) -> EventLoopFuture<Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPoolResponse>
 }
 
 extension Cosmos_Distribution_V1beta1_MsgProvider {
-  internal var serviceName: Substring { return "cosmos.distribution.v1beta1.Msg" }
+  internal var serviceName: Substring {
+    return Cosmos_Distribution_V1beta1_MsgServerMetadata.serviceDescriptor.fullName[...]
+  }
 
   /// Determines, calls and returns the appropriate request handler, depending on the request's method.
   /// Returns nil for methods not handled by this service.
@@ -241,6 +689,187 @@ extension Cosmos_Distribution_V1beta1_MsgProvider {
         userFunction: self.fundCommunityPool(request:context:)
       )
 
+    case "UpdateParams":
+      return UnaryServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Distribution_V1beta1_MsgUpdateParams>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Distribution_V1beta1_MsgUpdateParamsResponse>(),
+        interceptors: self.interceptors?.makeUpdateParamsInterceptors() ?? [],
+        userFunction: self.updateParams(request:context:)
+      )
+
+    case "CommunityPoolSpend":
+      return UnaryServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Distribution_V1beta1_MsgCommunityPoolSpend>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Distribution_V1beta1_MsgCommunityPoolSpendResponse>(),
+        interceptors: self.interceptors?.makeCommunityPoolSpendInterceptors() ?? [],
+        userFunction: self.communityPoolSpend(request:context:)
+      )
+
+    case "DepositValidatorRewardsPool":
+      return UnaryServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPool>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPoolResponse>(),
+        interceptors: self.interceptors?.makeDepositValidatorRewardsPoolInterceptors() ?? [],
+        userFunction: self.depositValidatorRewardsPool(request:context:)
+      )
+
+    default:
+      return nil
+    }
+  }
+}
+
+/// Msg defines the distribution Msg service.
+///
+/// To implement a server, implement an object which conforms to this protocol.
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal protocol Cosmos_Distribution_V1beta1_MsgAsyncProvider: CallHandlerProvider {
+  static var serviceDescriptor: GRPCServiceDescriptor { get }
+  var interceptors: Cosmos_Distribution_V1beta1_MsgServerInterceptorFactoryProtocol? { get }
+
+  /// SetWithdrawAddress defines a method to change the withdraw address
+  /// for a delegator (or validator self-delegation).
+  @Sendable func setWithdrawAddress(
+    request: Cosmos_Distribution_V1beta1_MsgSetWithdrawAddress,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Distribution_V1beta1_MsgSetWithdrawAddressResponse
+
+  /// WithdrawDelegatorReward defines a method to withdraw rewards of delegator
+  /// from a single validator.
+  @Sendable func withdrawDelegatorReward(
+    request: Cosmos_Distribution_V1beta1_MsgWithdrawDelegatorReward,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Distribution_V1beta1_MsgWithdrawDelegatorRewardResponse
+
+  /// WithdrawValidatorCommission defines a method to withdraw the
+  /// full commission to the validator address.
+  @Sendable func withdrawValidatorCommission(
+    request: Cosmos_Distribution_V1beta1_MsgWithdrawValidatorCommission,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Distribution_V1beta1_MsgWithdrawValidatorCommissionResponse
+
+  /// FundCommunityPool defines a method to allow an account to directly
+  /// fund the community pool.
+  @Sendable func fundCommunityPool(
+    request: Cosmos_Distribution_V1beta1_MsgFundCommunityPool,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Distribution_V1beta1_MsgFundCommunityPoolResponse
+
+  /// UpdateParams defines a governance operation for updating the x/distribution
+  /// module parameters. The authority is defined in the keeper.
+  ///
+  /// Since: cosmos-sdk 0.47
+  @Sendable func updateParams(
+    request: Cosmos_Distribution_V1beta1_MsgUpdateParams,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Distribution_V1beta1_MsgUpdateParamsResponse
+
+  /// CommunityPoolSpend defines a governance operation for sending tokens from
+  /// the community pool in the x/distribution module to another account, which
+  /// could be the governance module itself. The authority is defined in the
+  /// keeper.
+  ///
+  /// Since: cosmos-sdk 0.47
+  @Sendable func communityPoolSpend(
+    request: Cosmos_Distribution_V1beta1_MsgCommunityPoolSpend,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Distribution_V1beta1_MsgCommunityPoolSpendResponse
+
+  /// DepositValidatorRewardsPool defines a method to provide additional rewards
+  /// to delegators to a specific validator.
+  ///
+  /// Since: cosmos-sdk 0.50
+  @Sendable func depositValidatorRewardsPool(
+    request: Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPool,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPoolResponse
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Distribution_V1beta1_MsgAsyncProvider {
+  internal static var serviceDescriptor: GRPCServiceDescriptor {
+    return Cosmos_Distribution_V1beta1_MsgServerMetadata.serviceDescriptor
+  }
+
+  internal var serviceName: Substring {
+    return Cosmos_Distribution_V1beta1_MsgServerMetadata.serviceDescriptor.fullName[...]
+  }
+
+  internal var interceptors: Cosmos_Distribution_V1beta1_MsgServerInterceptorFactoryProtocol? {
+    return nil
+  }
+
+  internal func handle(
+    method name: Substring,
+    context: CallHandlerContext
+  ) -> GRPCServerHandlerProtocol? {
+    switch name {
+    case "SetWithdrawAddress":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Distribution_V1beta1_MsgSetWithdrawAddress>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Distribution_V1beta1_MsgSetWithdrawAddressResponse>(),
+        interceptors: self.interceptors?.makeSetWithdrawAddressInterceptors() ?? [],
+        wrapping: self.setWithdrawAddress(request:context:)
+      )
+
+    case "WithdrawDelegatorReward":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Distribution_V1beta1_MsgWithdrawDelegatorReward>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Distribution_V1beta1_MsgWithdrawDelegatorRewardResponse>(),
+        interceptors: self.interceptors?.makeWithdrawDelegatorRewardInterceptors() ?? [],
+        wrapping: self.withdrawDelegatorReward(request:context:)
+      )
+
+    case "WithdrawValidatorCommission":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Distribution_V1beta1_MsgWithdrawValidatorCommission>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Distribution_V1beta1_MsgWithdrawValidatorCommissionResponse>(),
+        interceptors: self.interceptors?.makeWithdrawValidatorCommissionInterceptors() ?? [],
+        wrapping: self.withdrawValidatorCommission(request:context:)
+      )
+
+    case "FundCommunityPool":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Distribution_V1beta1_MsgFundCommunityPool>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Distribution_V1beta1_MsgFundCommunityPoolResponse>(),
+        interceptors: self.interceptors?.makeFundCommunityPoolInterceptors() ?? [],
+        wrapping: self.fundCommunityPool(request:context:)
+      )
+
+    case "UpdateParams":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Distribution_V1beta1_MsgUpdateParams>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Distribution_V1beta1_MsgUpdateParamsResponse>(),
+        interceptors: self.interceptors?.makeUpdateParamsInterceptors() ?? [],
+        wrapping: self.updateParams(request:context:)
+      )
+
+    case "CommunityPoolSpend":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Distribution_V1beta1_MsgCommunityPoolSpend>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Distribution_V1beta1_MsgCommunityPoolSpendResponse>(),
+        interceptors: self.interceptors?.makeCommunityPoolSpendInterceptors() ?? [],
+        wrapping: self.communityPoolSpend(request:context:)
+      )
+
+    case "DepositValidatorRewardsPool":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPool>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPoolResponse>(),
+        interceptors: self.interceptors?.makeDepositValidatorRewardsPoolInterceptors() ?? [],
+        wrapping: self.depositValidatorRewardsPool(request:context:)
+      )
+
     default:
       return nil
     }
@@ -264,4 +893,76 @@ internal protocol Cosmos_Distribution_V1beta1_MsgServerInterceptorFactoryProtoco
   /// - Returns: Interceptors to use when handling 'fundCommunityPool'.
   ///   Defaults to calling `self.makeInterceptors()`.
   func makeFundCommunityPoolInterceptors() -> [ServerInterceptor<Cosmos_Distribution_V1beta1_MsgFundCommunityPool, Cosmos_Distribution_V1beta1_MsgFundCommunityPoolResponse>]
+
+  /// - Returns: Interceptors to use when handling 'updateParams'.
+  ///   Defaults to calling `self.makeInterceptors()`.
+  func makeUpdateParamsInterceptors() -> [ServerInterceptor<Cosmos_Distribution_V1beta1_MsgUpdateParams, Cosmos_Distribution_V1beta1_MsgUpdateParamsResponse>]
+
+  /// - Returns: Interceptors to use when handling 'communityPoolSpend'.
+  ///   Defaults to calling `self.makeInterceptors()`.
+  func makeCommunityPoolSpendInterceptors() -> [ServerInterceptor<Cosmos_Distribution_V1beta1_MsgCommunityPoolSpend, Cosmos_Distribution_V1beta1_MsgCommunityPoolSpendResponse>]
+
+  /// - Returns: Interceptors to use when handling 'depositValidatorRewardsPool'.
+  ///   Defaults to calling `self.makeInterceptors()`.
+  func makeDepositValidatorRewardsPoolInterceptors() -> [ServerInterceptor<Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPool, Cosmos_Distribution_V1beta1_MsgDepositValidatorRewardsPoolResponse>]
+}
+
+internal enum Cosmos_Distribution_V1beta1_MsgServerMetadata {
+  internal static let serviceDescriptor = GRPCServiceDescriptor(
+    name: "Msg",
+    fullName: "cosmos.distribution.v1beta1.Msg",
+    methods: [
+      Cosmos_Distribution_V1beta1_MsgServerMetadata.Methods.setWithdrawAddress,
+      Cosmos_Distribution_V1beta1_MsgServerMetadata.Methods.withdrawDelegatorReward,
+      Cosmos_Distribution_V1beta1_MsgServerMetadata.Methods.withdrawValidatorCommission,
+      Cosmos_Distribution_V1beta1_MsgServerMetadata.Methods.fundCommunityPool,
+      Cosmos_Distribution_V1beta1_MsgServerMetadata.Methods.updateParams,
+      Cosmos_Distribution_V1beta1_MsgServerMetadata.Methods.communityPoolSpend,
+      Cosmos_Distribution_V1beta1_MsgServerMetadata.Methods.depositValidatorRewardsPool,
+    ]
+  )
+
+  internal enum Methods {
+    internal static let setWithdrawAddress = GRPCMethodDescriptor(
+      name: "SetWithdrawAddress",
+      path: "/cosmos.distribution.v1beta1.Msg/SetWithdrawAddress",
+      type: GRPCCallType.unary
+    )
+
+    internal static let withdrawDelegatorReward = GRPCMethodDescriptor(
+      name: "WithdrawDelegatorReward",
+      path: "/cosmos.distribution.v1beta1.Msg/WithdrawDelegatorReward",
+      type: GRPCCallType.unary
+    )
+
+    internal static let withdrawValidatorCommission = GRPCMethodDescriptor(
+      name: "WithdrawValidatorCommission",
+      path: "/cosmos.distribution.v1beta1.Msg/WithdrawValidatorCommission",
+      type: GRPCCallType.unary
+    )
+
+    internal static let fundCommunityPool = GRPCMethodDescriptor(
+      name: "FundCommunityPool",
+      path: "/cosmos.distribution.v1beta1.Msg/FundCommunityPool",
+      type: GRPCCallType.unary
+    )
+
+    internal static let updateParams = GRPCMethodDescriptor(
+      name: "UpdateParams",
+      path: "/cosmos.distribution.v1beta1.Msg/UpdateParams",
+      type: GRPCCallType.unary
+    )
+
+    internal static let communityPoolSpend = GRPCMethodDescriptor(
+      name: "CommunityPoolSpend",
+      path: "/cosmos.distribution.v1beta1.Msg/CommunityPoolSpend",
+      type: GRPCCallType.unary
+    )
+
+    internal static let depositValidatorRewardsPool = GRPCMethodDescriptor(
+      name: "DepositValidatorRewardsPool",
+      path: "/cosmos.distribution.v1beta1.Msg/DepositValidatorRewardsPool",
+      type: GRPCCallType.unary
+    )
+  }
 }

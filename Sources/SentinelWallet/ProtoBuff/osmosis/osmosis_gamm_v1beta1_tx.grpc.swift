@@ -22,6 +22,7 @@
 //
 import GRPC
 import NIO
+import NIOConcurrencyHelpers
 import SwiftProtobuf
 
 
@@ -29,11 +30,6 @@ import SwiftProtobuf
 internal protocol Osmosis_Gamm_V1beta1_MsgClientProtocol: GRPCClient {
   var serviceName: String { get }
   var interceptors: Osmosis_Gamm_V1beta1_MsgClientInterceptorFactoryProtocol? { get }
-
-  func createPool(
-    _ request: Osmosis_Gamm_V1beta1_MsgCreatePool,
-    callOptions: CallOptions?
-  ) -> UnaryCall<Osmosis_Gamm_V1beta1_MsgCreatePool, Osmosis_Gamm_V1beta1_MsgCreatePoolResponse>
 
   func joinPool(
     _ request: Osmosis_Gamm_V1beta1_MsgJoinPool,
@@ -81,24 +77,6 @@ extension Osmosis_Gamm_V1beta1_MsgClientProtocol {
     return "osmosis.gamm.v1beta1.Msg"
   }
 
-  /// Unary call to CreatePool
-  ///
-  /// - Parameters:
-  ///   - request: Request to send to CreatePool.
-  ///   - callOptions: Call options.
-  /// - Returns: A `UnaryCall` with futures for the metadata, status and response.
-  internal func createPool(
-    _ request: Osmosis_Gamm_V1beta1_MsgCreatePool,
-    callOptions: CallOptions? = nil
-  ) -> UnaryCall<Osmosis_Gamm_V1beta1_MsgCreatePool, Osmosis_Gamm_V1beta1_MsgCreatePoolResponse> {
-    return self.makeUnaryCall(
-      path: "/osmosis.gamm.v1beta1.Msg/CreatePool",
-      request: request,
-      callOptions: callOptions ?? self.defaultCallOptions,
-      interceptors: self.interceptors?.makeCreatePoolInterceptors() ?? []
-    )
-  }
-
   /// Unary call to JoinPool
   ///
   /// - Parameters:
@@ -110,7 +88,7 @@ extension Osmosis_Gamm_V1beta1_MsgClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Osmosis_Gamm_V1beta1_MsgJoinPool, Osmosis_Gamm_V1beta1_MsgJoinPoolResponse> {
     return self.makeUnaryCall(
-      path: "/osmosis.gamm.v1beta1.Msg/JoinPool",
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.joinPool.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeJoinPoolInterceptors() ?? []
@@ -128,7 +106,7 @@ extension Osmosis_Gamm_V1beta1_MsgClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Osmosis_Gamm_V1beta1_MsgExitPool, Osmosis_Gamm_V1beta1_MsgExitPoolResponse> {
     return self.makeUnaryCall(
-      path: "/osmosis.gamm.v1beta1.Msg/ExitPool",
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.exitPool.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeExitPoolInterceptors() ?? []
@@ -146,7 +124,7 @@ extension Osmosis_Gamm_V1beta1_MsgClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Osmosis_Gamm_V1beta1_MsgSwapExactAmountIn, Osmosis_Gamm_V1beta1_MsgSwapExactAmountInResponse> {
     return self.makeUnaryCall(
-      path: "/osmosis.gamm.v1beta1.Msg/SwapExactAmountIn",
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.swapExactAmountIn.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeSwapExactAmountInInterceptors() ?? []
@@ -164,7 +142,7 @@ extension Osmosis_Gamm_V1beta1_MsgClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Osmosis_Gamm_V1beta1_MsgSwapExactAmountOut, Osmosis_Gamm_V1beta1_MsgSwapExactAmountOutResponse> {
     return self.makeUnaryCall(
-      path: "/osmosis.gamm.v1beta1.Msg/SwapExactAmountOut",
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.swapExactAmountOut.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeSwapExactAmountOutInterceptors() ?? []
@@ -182,7 +160,7 @@ extension Osmosis_Gamm_V1beta1_MsgClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Osmosis_Gamm_V1beta1_MsgJoinSwapExternAmountIn, Osmosis_Gamm_V1beta1_MsgJoinSwapExternAmountInResponse> {
     return self.makeUnaryCall(
-      path: "/osmosis.gamm.v1beta1.Msg/JoinSwapExternAmountIn",
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.joinSwapExternAmountIn.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeJoinSwapExternAmountInInterceptors() ?? []
@@ -200,7 +178,7 @@ extension Osmosis_Gamm_V1beta1_MsgClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Osmosis_Gamm_V1beta1_MsgJoinSwapShareAmountOut, Osmosis_Gamm_V1beta1_MsgJoinSwapShareAmountOutResponse> {
     return self.makeUnaryCall(
-      path: "/osmosis.gamm.v1beta1.Msg/JoinSwapShareAmountOut",
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.joinSwapShareAmountOut.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeJoinSwapShareAmountOutInterceptors() ?? []
@@ -218,7 +196,7 @@ extension Osmosis_Gamm_V1beta1_MsgClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Osmosis_Gamm_V1beta1_MsgExitSwapExternAmountOut, Osmosis_Gamm_V1beta1_MsgExitSwapExternAmountOutResponse> {
     return self.makeUnaryCall(
-      path: "/osmosis.gamm.v1beta1.Msg/ExitSwapExternAmountOut",
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.exitSwapExternAmountOut.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeExitSwapExternAmountOutInterceptors() ?? []
@@ -236,7 +214,7 @@ extension Osmosis_Gamm_V1beta1_MsgClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Osmosis_Gamm_V1beta1_MsgExitSwapShareAmountIn, Osmosis_Gamm_V1beta1_MsgExitSwapShareAmountInResponse> {
     return self.makeUnaryCall(
-      path: "/osmosis.gamm.v1beta1.Msg/ExitSwapShareAmountIn",
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.exitSwapShareAmountIn.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeExitSwapShareAmountInInterceptors() ?? []
@@ -244,10 +222,333 @@ extension Osmosis_Gamm_V1beta1_MsgClientProtocol {
   }
 }
 
-internal protocol Osmosis_Gamm_V1beta1_MsgClientInterceptorFactoryProtocol {
+@available(*, deprecated)
+extension Osmosis_Gamm_V1beta1_MsgClient: @unchecked Sendable {}
 
-  /// - Returns: Interceptors to use when invoking 'createPool'.
-  func makeCreatePoolInterceptors() -> [ClientInterceptor<Osmosis_Gamm_V1beta1_MsgCreatePool, Osmosis_Gamm_V1beta1_MsgCreatePoolResponse>]
+@available(*, deprecated, renamed: "Osmosis_Gamm_V1beta1_MsgNIOClient")
+internal final class Osmosis_Gamm_V1beta1_MsgClient: Osmosis_Gamm_V1beta1_MsgClientProtocol {
+  private let lock = Lock()
+  private var _defaultCallOptions: CallOptions
+  private var _interceptors: Osmosis_Gamm_V1beta1_MsgClientInterceptorFactoryProtocol?
+  internal let channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions {
+    get { self.lock.withLock { return self._defaultCallOptions } }
+    set { self.lock.withLockVoid { self._defaultCallOptions = newValue } }
+  }
+  internal var interceptors: Osmosis_Gamm_V1beta1_MsgClientInterceptorFactoryProtocol? {
+    get { self.lock.withLock { return self._interceptors } }
+    set { self.lock.withLockVoid { self._interceptors = newValue } }
+  }
+
+  /// Creates a client for the osmosis.gamm.v1beta1.Msg service.
+  ///
+  /// - Parameters:
+  ///   - channel: `GRPCChannel` to the service host.
+  ///   - defaultCallOptions: Options to use for each service call if the user doesn't provide them.
+  ///   - interceptors: A factory providing interceptors for each RPC.
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Osmosis_Gamm_V1beta1_MsgClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self._defaultCallOptions = defaultCallOptions
+    self._interceptors = interceptors
+  }
+}
+
+internal struct Osmosis_Gamm_V1beta1_MsgNIOClient: Osmosis_Gamm_V1beta1_MsgClientProtocol {
+  internal var channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions
+  internal var interceptors: Osmosis_Gamm_V1beta1_MsgClientInterceptorFactoryProtocol?
+
+  /// Creates a client for the osmosis.gamm.v1beta1.Msg service.
+  ///
+  /// - Parameters:
+  ///   - channel: `GRPCChannel` to the service host.
+  ///   - defaultCallOptions: Options to use for each service call if the user doesn't provide them.
+  ///   - interceptors: A factory providing interceptors for each RPC.
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Osmosis_Gamm_V1beta1_MsgClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self.defaultCallOptions = defaultCallOptions
+    self.interceptors = interceptors
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal protocol Osmosis_Gamm_V1beta1_MsgAsyncClientProtocol: GRPCClient {
+  static var serviceDescriptor: GRPCServiceDescriptor { get }
+  var interceptors: Osmosis_Gamm_V1beta1_MsgClientInterceptorFactoryProtocol? { get }
+
+  func makeJoinPoolCall(
+    _ request: Osmosis_Gamm_V1beta1_MsgJoinPool,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Osmosis_Gamm_V1beta1_MsgJoinPool, Osmosis_Gamm_V1beta1_MsgJoinPoolResponse>
+
+  func makeExitPoolCall(
+    _ request: Osmosis_Gamm_V1beta1_MsgExitPool,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Osmosis_Gamm_V1beta1_MsgExitPool, Osmosis_Gamm_V1beta1_MsgExitPoolResponse>
+
+  func makeSwapExactAmountInCall(
+    _ request: Osmosis_Gamm_V1beta1_MsgSwapExactAmountIn,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Osmosis_Gamm_V1beta1_MsgSwapExactAmountIn, Osmosis_Gamm_V1beta1_MsgSwapExactAmountInResponse>
+
+  func makeSwapExactAmountOutCall(
+    _ request: Osmosis_Gamm_V1beta1_MsgSwapExactAmountOut,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Osmosis_Gamm_V1beta1_MsgSwapExactAmountOut, Osmosis_Gamm_V1beta1_MsgSwapExactAmountOutResponse>
+
+  func makeJoinSwapExternAmountInCall(
+    _ request: Osmosis_Gamm_V1beta1_MsgJoinSwapExternAmountIn,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Osmosis_Gamm_V1beta1_MsgJoinSwapExternAmountIn, Osmosis_Gamm_V1beta1_MsgJoinSwapExternAmountInResponse>
+
+  func makeJoinSwapShareAmountOutCall(
+    _ request: Osmosis_Gamm_V1beta1_MsgJoinSwapShareAmountOut,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Osmosis_Gamm_V1beta1_MsgJoinSwapShareAmountOut, Osmosis_Gamm_V1beta1_MsgJoinSwapShareAmountOutResponse>
+
+  func makeExitSwapExternAmountOutCall(
+    _ request: Osmosis_Gamm_V1beta1_MsgExitSwapExternAmountOut,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Osmosis_Gamm_V1beta1_MsgExitSwapExternAmountOut, Osmosis_Gamm_V1beta1_MsgExitSwapExternAmountOutResponse>
+
+  func makeExitSwapShareAmountInCall(
+    _ request: Osmosis_Gamm_V1beta1_MsgExitSwapShareAmountIn,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Osmosis_Gamm_V1beta1_MsgExitSwapShareAmountIn, Osmosis_Gamm_V1beta1_MsgExitSwapShareAmountInResponse>
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Osmosis_Gamm_V1beta1_MsgAsyncClientProtocol {
+  internal static var serviceDescriptor: GRPCServiceDescriptor {
+    return Osmosis_Gamm_V1beta1_MsgClientMetadata.serviceDescriptor
+  }
+
+  internal var interceptors: Osmosis_Gamm_V1beta1_MsgClientInterceptorFactoryProtocol? {
+    return nil
+  }
+
+  internal func makeJoinPoolCall(
+    _ request: Osmosis_Gamm_V1beta1_MsgJoinPool,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Osmosis_Gamm_V1beta1_MsgJoinPool, Osmosis_Gamm_V1beta1_MsgJoinPoolResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.joinPool.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeJoinPoolInterceptors() ?? []
+    )
+  }
+
+  internal func makeExitPoolCall(
+    _ request: Osmosis_Gamm_V1beta1_MsgExitPool,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Osmosis_Gamm_V1beta1_MsgExitPool, Osmosis_Gamm_V1beta1_MsgExitPoolResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.exitPool.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeExitPoolInterceptors() ?? []
+    )
+  }
+
+  internal func makeSwapExactAmountInCall(
+    _ request: Osmosis_Gamm_V1beta1_MsgSwapExactAmountIn,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Osmosis_Gamm_V1beta1_MsgSwapExactAmountIn, Osmosis_Gamm_V1beta1_MsgSwapExactAmountInResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.swapExactAmountIn.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeSwapExactAmountInInterceptors() ?? []
+    )
+  }
+
+  internal func makeSwapExactAmountOutCall(
+    _ request: Osmosis_Gamm_V1beta1_MsgSwapExactAmountOut,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Osmosis_Gamm_V1beta1_MsgSwapExactAmountOut, Osmosis_Gamm_V1beta1_MsgSwapExactAmountOutResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.swapExactAmountOut.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeSwapExactAmountOutInterceptors() ?? []
+    )
+  }
+
+  internal func makeJoinSwapExternAmountInCall(
+    _ request: Osmosis_Gamm_V1beta1_MsgJoinSwapExternAmountIn,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Osmosis_Gamm_V1beta1_MsgJoinSwapExternAmountIn, Osmosis_Gamm_V1beta1_MsgJoinSwapExternAmountInResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.joinSwapExternAmountIn.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeJoinSwapExternAmountInInterceptors() ?? []
+    )
+  }
+
+  internal func makeJoinSwapShareAmountOutCall(
+    _ request: Osmosis_Gamm_V1beta1_MsgJoinSwapShareAmountOut,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Osmosis_Gamm_V1beta1_MsgJoinSwapShareAmountOut, Osmosis_Gamm_V1beta1_MsgJoinSwapShareAmountOutResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.joinSwapShareAmountOut.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeJoinSwapShareAmountOutInterceptors() ?? []
+    )
+  }
+
+  internal func makeExitSwapExternAmountOutCall(
+    _ request: Osmosis_Gamm_V1beta1_MsgExitSwapExternAmountOut,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Osmosis_Gamm_V1beta1_MsgExitSwapExternAmountOut, Osmosis_Gamm_V1beta1_MsgExitSwapExternAmountOutResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.exitSwapExternAmountOut.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeExitSwapExternAmountOutInterceptors() ?? []
+    )
+  }
+
+  internal func makeExitSwapShareAmountInCall(
+    _ request: Osmosis_Gamm_V1beta1_MsgExitSwapShareAmountIn,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Osmosis_Gamm_V1beta1_MsgExitSwapShareAmountIn, Osmosis_Gamm_V1beta1_MsgExitSwapShareAmountInResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.exitSwapShareAmountIn.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeExitSwapShareAmountInInterceptors() ?? []
+    )
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Osmosis_Gamm_V1beta1_MsgAsyncClientProtocol {
+  internal func joinPool(
+    _ request: Osmosis_Gamm_V1beta1_MsgJoinPool,
+    callOptions: CallOptions? = nil
+  ) async throws -> Osmosis_Gamm_V1beta1_MsgJoinPoolResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.joinPool.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeJoinPoolInterceptors() ?? []
+    )
+  }
+
+  internal func exitPool(
+    _ request: Osmosis_Gamm_V1beta1_MsgExitPool,
+    callOptions: CallOptions? = nil
+  ) async throws -> Osmosis_Gamm_V1beta1_MsgExitPoolResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.exitPool.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeExitPoolInterceptors() ?? []
+    )
+  }
+
+  internal func swapExactAmountIn(
+    _ request: Osmosis_Gamm_V1beta1_MsgSwapExactAmountIn,
+    callOptions: CallOptions? = nil
+  ) async throws -> Osmosis_Gamm_V1beta1_MsgSwapExactAmountInResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.swapExactAmountIn.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeSwapExactAmountInInterceptors() ?? []
+    )
+  }
+
+  internal func swapExactAmountOut(
+    _ request: Osmosis_Gamm_V1beta1_MsgSwapExactAmountOut,
+    callOptions: CallOptions? = nil
+  ) async throws -> Osmosis_Gamm_V1beta1_MsgSwapExactAmountOutResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.swapExactAmountOut.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeSwapExactAmountOutInterceptors() ?? []
+    )
+  }
+
+  internal func joinSwapExternAmountIn(
+    _ request: Osmosis_Gamm_V1beta1_MsgJoinSwapExternAmountIn,
+    callOptions: CallOptions? = nil
+  ) async throws -> Osmosis_Gamm_V1beta1_MsgJoinSwapExternAmountInResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.joinSwapExternAmountIn.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeJoinSwapExternAmountInInterceptors() ?? []
+    )
+  }
+
+  internal func joinSwapShareAmountOut(
+    _ request: Osmosis_Gamm_V1beta1_MsgJoinSwapShareAmountOut,
+    callOptions: CallOptions? = nil
+  ) async throws -> Osmosis_Gamm_V1beta1_MsgJoinSwapShareAmountOutResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.joinSwapShareAmountOut.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeJoinSwapShareAmountOutInterceptors() ?? []
+    )
+  }
+
+  internal func exitSwapExternAmountOut(
+    _ request: Osmosis_Gamm_V1beta1_MsgExitSwapExternAmountOut,
+    callOptions: CallOptions? = nil
+  ) async throws -> Osmosis_Gamm_V1beta1_MsgExitSwapExternAmountOutResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.exitSwapExternAmountOut.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeExitSwapExternAmountOutInterceptors() ?? []
+    )
+  }
+
+  internal func exitSwapShareAmountIn(
+    _ request: Osmosis_Gamm_V1beta1_MsgExitSwapShareAmountIn,
+    callOptions: CallOptions? = nil
+  ) async throws -> Osmosis_Gamm_V1beta1_MsgExitSwapShareAmountInResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.exitSwapShareAmountIn.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeExitSwapShareAmountInInterceptors() ?? []
+    )
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal struct Osmosis_Gamm_V1beta1_MsgAsyncClient: Osmosis_Gamm_V1beta1_MsgAsyncClientProtocol {
+  internal var channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions
+  internal var interceptors: Osmosis_Gamm_V1beta1_MsgClientInterceptorFactoryProtocol?
+
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Osmosis_Gamm_V1beta1_MsgClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self.defaultCallOptions = defaultCallOptions
+    self.interceptors = interceptors
+  }
+}
+
+internal protocol Osmosis_Gamm_V1beta1_MsgClientInterceptorFactoryProtocol: Sendable {
 
   /// - Returns: Interceptors to use when invoking 'joinPool'.
   func makeJoinPoolInterceptors() -> [ClientInterceptor<Osmosis_Gamm_V1beta1_MsgJoinPool, Osmosis_Gamm_V1beta1_MsgJoinPoolResponse>]
@@ -274,33 +575,76 @@ internal protocol Osmosis_Gamm_V1beta1_MsgClientInterceptorFactoryProtocol {
   func makeExitSwapShareAmountInInterceptors() -> [ClientInterceptor<Osmosis_Gamm_V1beta1_MsgExitSwapShareAmountIn, Osmosis_Gamm_V1beta1_MsgExitSwapShareAmountInResponse>]
 }
 
-internal final class Osmosis_Gamm_V1beta1_MsgClient: Osmosis_Gamm_V1beta1_MsgClientProtocol {
-  internal let channel: GRPCChannel
-  internal var defaultCallOptions: CallOptions
-  internal var interceptors: Osmosis_Gamm_V1beta1_MsgClientInterceptorFactoryProtocol?
+internal enum Osmosis_Gamm_V1beta1_MsgClientMetadata {
+  internal static let serviceDescriptor = GRPCServiceDescriptor(
+    name: "Msg",
+    fullName: "osmosis.gamm.v1beta1.Msg",
+    methods: [
+      Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.joinPool,
+      Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.exitPool,
+      Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.swapExactAmountIn,
+      Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.swapExactAmountOut,
+      Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.joinSwapExternAmountIn,
+      Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.joinSwapShareAmountOut,
+      Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.exitSwapExternAmountOut,
+      Osmosis_Gamm_V1beta1_MsgClientMetadata.Methods.exitSwapShareAmountIn,
+    ]
+  )
 
-  /// Creates a client for the osmosis.gamm.v1beta1.Msg service.
-  ///
-  /// - Parameters:
-  ///   - channel: `GRPCChannel` to the service host.
-  ///   - defaultCallOptions: Options to use for each service call if the user doesn't provide them.
-  ///   - interceptors: A factory providing interceptors for each RPC.
-  internal init(
-    channel: GRPCChannel,
-    defaultCallOptions: CallOptions = CallOptions(),
-    interceptors: Osmosis_Gamm_V1beta1_MsgClientInterceptorFactoryProtocol? = nil
-  ) {
-    self.channel = channel
-    self.defaultCallOptions = defaultCallOptions
-    self.interceptors = interceptors
+  internal enum Methods {
+    internal static let joinPool = GRPCMethodDescriptor(
+      name: "JoinPool",
+      path: "/osmosis.gamm.v1beta1.Msg/JoinPool",
+      type: GRPCCallType.unary
+    )
+
+    internal static let exitPool = GRPCMethodDescriptor(
+      name: "ExitPool",
+      path: "/osmosis.gamm.v1beta1.Msg/ExitPool",
+      type: GRPCCallType.unary
+    )
+
+    internal static let swapExactAmountIn = GRPCMethodDescriptor(
+      name: "SwapExactAmountIn",
+      path: "/osmosis.gamm.v1beta1.Msg/SwapExactAmountIn",
+      type: GRPCCallType.unary
+    )
+
+    internal static let swapExactAmountOut = GRPCMethodDescriptor(
+      name: "SwapExactAmountOut",
+      path: "/osmosis.gamm.v1beta1.Msg/SwapExactAmountOut",
+      type: GRPCCallType.unary
+    )
+
+    internal static let joinSwapExternAmountIn = GRPCMethodDescriptor(
+      name: "JoinSwapExternAmountIn",
+      path: "/osmosis.gamm.v1beta1.Msg/JoinSwapExternAmountIn",
+      type: GRPCCallType.unary
+    )
+
+    internal static let joinSwapShareAmountOut = GRPCMethodDescriptor(
+      name: "JoinSwapShareAmountOut",
+      path: "/osmosis.gamm.v1beta1.Msg/JoinSwapShareAmountOut",
+      type: GRPCCallType.unary
+    )
+
+    internal static let exitSwapExternAmountOut = GRPCMethodDescriptor(
+      name: "ExitSwapExternAmountOut",
+      path: "/osmosis.gamm.v1beta1.Msg/ExitSwapExternAmountOut",
+      type: GRPCCallType.unary
+    )
+
+    internal static let exitSwapShareAmountIn = GRPCMethodDescriptor(
+      name: "ExitSwapShareAmountIn",
+      path: "/osmosis.gamm.v1beta1.Msg/ExitSwapShareAmountIn",
+      type: GRPCCallType.unary
+    )
   }
 }
 
 /// To build a server, implement a class that conforms to this protocol.
 internal protocol Osmosis_Gamm_V1beta1_MsgProvider: CallHandlerProvider {
   var interceptors: Osmosis_Gamm_V1beta1_MsgServerInterceptorFactoryProtocol? { get }
-
-  func createPool(request: Osmosis_Gamm_V1beta1_MsgCreatePool, context: StatusOnlyCallContext) -> EventLoopFuture<Osmosis_Gamm_V1beta1_MsgCreatePoolResponse>
 
   func joinPool(request: Osmosis_Gamm_V1beta1_MsgJoinPool, context: StatusOnlyCallContext) -> EventLoopFuture<Osmosis_Gamm_V1beta1_MsgJoinPoolResponse>
 
@@ -320,7 +664,9 @@ internal protocol Osmosis_Gamm_V1beta1_MsgProvider: CallHandlerProvider {
 }
 
 extension Osmosis_Gamm_V1beta1_MsgProvider {
-  internal var serviceName: Substring { return "osmosis.gamm.v1beta1.Msg" }
+  internal var serviceName: Substring {
+    return Osmosis_Gamm_V1beta1_MsgServerMetadata.serviceDescriptor.fullName[...]
+  }
 
   /// Determines, calls and returns the appropriate request handler, depending on the request's method.
   /// Returns nil for methods not handled by this service.
@@ -329,15 +675,6 @@ extension Osmosis_Gamm_V1beta1_MsgProvider {
     context: CallHandlerContext
   ) -> GRPCServerHandlerProtocol? {
     switch name {
-    case "CreatePool":
-      return UnaryServerHandler(
-        context: context,
-        requestDeserializer: ProtobufDeserializer<Osmosis_Gamm_V1beta1_MsgCreatePool>(),
-        responseSerializer: ProtobufSerializer<Osmosis_Gamm_V1beta1_MsgCreatePoolResponse>(),
-        interceptors: self.interceptors?.makeCreatePoolInterceptors() ?? [],
-        userFunction: self.createPool(request:context:)
-      )
-
     case "JoinPool":
       return UnaryServerHandler(
         context: context,
@@ -416,11 +753,151 @@ extension Osmosis_Gamm_V1beta1_MsgProvider {
   }
 }
 
-internal protocol Osmosis_Gamm_V1beta1_MsgServerInterceptorFactoryProtocol {
+/// To implement a server, implement an object which conforms to this protocol.
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal protocol Osmosis_Gamm_V1beta1_MsgAsyncProvider: CallHandlerProvider {
+  static var serviceDescriptor: GRPCServiceDescriptor { get }
+  var interceptors: Osmosis_Gamm_V1beta1_MsgServerInterceptorFactoryProtocol? { get }
 
-  /// - Returns: Interceptors to use when handling 'createPool'.
-  ///   Defaults to calling `self.makeInterceptors()`.
-  func makeCreatePoolInterceptors() -> [ServerInterceptor<Osmosis_Gamm_V1beta1_MsgCreatePool, Osmosis_Gamm_V1beta1_MsgCreatePoolResponse>]
+  @Sendable func joinPool(
+    request: Osmosis_Gamm_V1beta1_MsgJoinPool,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Osmosis_Gamm_V1beta1_MsgJoinPoolResponse
+
+  @Sendable func exitPool(
+    request: Osmosis_Gamm_V1beta1_MsgExitPool,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Osmosis_Gamm_V1beta1_MsgExitPoolResponse
+
+  @Sendable func swapExactAmountIn(
+    request: Osmosis_Gamm_V1beta1_MsgSwapExactAmountIn,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Osmosis_Gamm_V1beta1_MsgSwapExactAmountInResponse
+
+  @Sendable func swapExactAmountOut(
+    request: Osmosis_Gamm_V1beta1_MsgSwapExactAmountOut,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Osmosis_Gamm_V1beta1_MsgSwapExactAmountOutResponse
+
+  @Sendable func joinSwapExternAmountIn(
+    request: Osmosis_Gamm_V1beta1_MsgJoinSwapExternAmountIn,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Osmosis_Gamm_V1beta1_MsgJoinSwapExternAmountInResponse
+
+  @Sendable func joinSwapShareAmountOut(
+    request: Osmosis_Gamm_V1beta1_MsgJoinSwapShareAmountOut,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Osmosis_Gamm_V1beta1_MsgJoinSwapShareAmountOutResponse
+
+  @Sendable func exitSwapExternAmountOut(
+    request: Osmosis_Gamm_V1beta1_MsgExitSwapExternAmountOut,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Osmosis_Gamm_V1beta1_MsgExitSwapExternAmountOutResponse
+
+  @Sendable func exitSwapShareAmountIn(
+    request: Osmosis_Gamm_V1beta1_MsgExitSwapShareAmountIn,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Osmosis_Gamm_V1beta1_MsgExitSwapShareAmountInResponse
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Osmosis_Gamm_V1beta1_MsgAsyncProvider {
+  internal static var serviceDescriptor: GRPCServiceDescriptor {
+    return Osmosis_Gamm_V1beta1_MsgServerMetadata.serviceDescriptor
+  }
+
+  internal var serviceName: Substring {
+    return Osmosis_Gamm_V1beta1_MsgServerMetadata.serviceDescriptor.fullName[...]
+  }
+
+  internal var interceptors: Osmosis_Gamm_V1beta1_MsgServerInterceptorFactoryProtocol? {
+    return nil
+  }
+
+  internal func handle(
+    method name: Substring,
+    context: CallHandlerContext
+  ) -> GRPCServerHandlerProtocol? {
+    switch name {
+    case "JoinPool":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Osmosis_Gamm_V1beta1_MsgJoinPool>(),
+        responseSerializer: ProtobufSerializer<Osmosis_Gamm_V1beta1_MsgJoinPoolResponse>(),
+        interceptors: self.interceptors?.makeJoinPoolInterceptors() ?? [],
+        wrapping: self.joinPool(request:context:)
+      )
+
+    case "ExitPool":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Osmosis_Gamm_V1beta1_MsgExitPool>(),
+        responseSerializer: ProtobufSerializer<Osmosis_Gamm_V1beta1_MsgExitPoolResponse>(),
+        interceptors: self.interceptors?.makeExitPoolInterceptors() ?? [],
+        wrapping: self.exitPool(request:context:)
+      )
+
+    case "SwapExactAmountIn":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Osmosis_Gamm_V1beta1_MsgSwapExactAmountIn>(),
+        responseSerializer: ProtobufSerializer<Osmosis_Gamm_V1beta1_MsgSwapExactAmountInResponse>(),
+        interceptors: self.interceptors?.makeSwapExactAmountInInterceptors() ?? [],
+        wrapping: self.swapExactAmountIn(request:context:)
+      )
+
+    case "SwapExactAmountOut":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Osmosis_Gamm_V1beta1_MsgSwapExactAmountOut>(),
+        responseSerializer: ProtobufSerializer<Osmosis_Gamm_V1beta1_MsgSwapExactAmountOutResponse>(),
+        interceptors: self.interceptors?.makeSwapExactAmountOutInterceptors() ?? [],
+        wrapping: self.swapExactAmountOut(request:context:)
+      )
+
+    case "JoinSwapExternAmountIn":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Osmosis_Gamm_V1beta1_MsgJoinSwapExternAmountIn>(),
+        responseSerializer: ProtobufSerializer<Osmosis_Gamm_V1beta1_MsgJoinSwapExternAmountInResponse>(),
+        interceptors: self.interceptors?.makeJoinSwapExternAmountInInterceptors() ?? [],
+        wrapping: self.joinSwapExternAmountIn(request:context:)
+      )
+
+    case "JoinSwapShareAmountOut":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Osmosis_Gamm_V1beta1_MsgJoinSwapShareAmountOut>(),
+        responseSerializer: ProtobufSerializer<Osmosis_Gamm_V1beta1_MsgJoinSwapShareAmountOutResponse>(),
+        interceptors: self.interceptors?.makeJoinSwapShareAmountOutInterceptors() ?? [],
+        wrapping: self.joinSwapShareAmountOut(request:context:)
+      )
+
+    case "ExitSwapExternAmountOut":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Osmosis_Gamm_V1beta1_MsgExitSwapExternAmountOut>(),
+        responseSerializer: ProtobufSerializer<Osmosis_Gamm_V1beta1_MsgExitSwapExternAmountOutResponse>(),
+        interceptors: self.interceptors?.makeExitSwapExternAmountOutInterceptors() ?? [],
+        wrapping: self.exitSwapExternAmountOut(request:context:)
+      )
+
+    case "ExitSwapShareAmountIn":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Osmosis_Gamm_V1beta1_MsgExitSwapShareAmountIn>(),
+        responseSerializer: ProtobufSerializer<Osmosis_Gamm_V1beta1_MsgExitSwapShareAmountInResponse>(),
+        interceptors: self.interceptors?.makeExitSwapShareAmountInInterceptors() ?? [],
+        wrapping: self.exitSwapShareAmountIn(request:context:)
+      )
+
+    default:
+      return nil
+    }
+  }
+}
+
+internal protocol Osmosis_Gamm_V1beta1_MsgServerInterceptorFactoryProtocol {
 
   /// - Returns: Interceptors to use when handling 'joinPool'.
   ///   Defaults to calling `self.makeInterceptors()`.
@@ -453,4 +930,71 @@ internal protocol Osmosis_Gamm_V1beta1_MsgServerInterceptorFactoryProtocol {
   /// - Returns: Interceptors to use when handling 'exitSwapShareAmountIn'.
   ///   Defaults to calling `self.makeInterceptors()`.
   func makeExitSwapShareAmountInInterceptors() -> [ServerInterceptor<Osmosis_Gamm_V1beta1_MsgExitSwapShareAmountIn, Osmosis_Gamm_V1beta1_MsgExitSwapShareAmountInResponse>]
+}
+
+internal enum Osmosis_Gamm_V1beta1_MsgServerMetadata {
+  internal static let serviceDescriptor = GRPCServiceDescriptor(
+    name: "Msg",
+    fullName: "osmosis.gamm.v1beta1.Msg",
+    methods: [
+      Osmosis_Gamm_V1beta1_MsgServerMetadata.Methods.joinPool,
+      Osmosis_Gamm_V1beta1_MsgServerMetadata.Methods.exitPool,
+      Osmosis_Gamm_V1beta1_MsgServerMetadata.Methods.swapExactAmountIn,
+      Osmosis_Gamm_V1beta1_MsgServerMetadata.Methods.swapExactAmountOut,
+      Osmosis_Gamm_V1beta1_MsgServerMetadata.Methods.joinSwapExternAmountIn,
+      Osmosis_Gamm_V1beta1_MsgServerMetadata.Methods.joinSwapShareAmountOut,
+      Osmosis_Gamm_V1beta1_MsgServerMetadata.Methods.exitSwapExternAmountOut,
+      Osmosis_Gamm_V1beta1_MsgServerMetadata.Methods.exitSwapShareAmountIn,
+    ]
+  )
+
+  internal enum Methods {
+    internal static let joinPool = GRPCMethodDescriptor(
+      name: "JoinPool",
+      path: "/osmosis.gamm.v1beta1.Msg/JoinPool",
+      type: GRPCCallType.unary
+    )
+
+    internal static let exitPool = GRPCMethodDescriptor(
+      name: "ExitPool",
+      path: "/osmosis.gamm.v1beta1.Msg/ExitPool",
+      type: GRPCCallType.unary
+    )
+
+    internal static let swapExactAmountIn = GRPCMethodDescriptor(
+      name: "SwapExactAmountIn",
+      path: "/osmosis.gamm.v1beta1.Msg/SwapExactAmountIn",
+      type: GRPCCallType.unary
+    )
+
+    internal static let swapExactAmountOut = GRPCMethodDescriptor(
+      name: "SwapExactAmountOut",
+      path: "/osmosis.gamm.v1beta1.Msg/SwapExactAmountOut",
+      type: GRPCCallType.unary
+    )
+
+    internal static let joinSwapExternAmountIn = GRPCMethodDescriptor(
+      name: "JoinSwapExternAmountIn",
+      path: "/osmosis.gamm.v1beta1.Msg/JoinSwapExternAmountIn",
+      type: GRPCCallType.unary
+    )
+
+    internal static let joinSwapShareAmountOut = GRPCMethodDescriptor(
+      name: "JoinSwapShareAmountOut",
+      path: "/osmosis.gamm.v1beta1.Msg/JoinSwapShareAmountOut",
+      type: GRPCCallType.unary
+    )
+
+    internal static let exitSwapExternAmountOut = GRPCMethodDescriptor(
+      name: "ExitSwapExternAmountOut",
+      path: "/osmosis.gamm.v1beta1.Msg/ExitSwapExternAmountOut",
+      type: GRPCCallType.unary
+    )
+
+    internal static let exitSwapShareAmountIn = GRPCMethodDescriptor(
+      name: "ExitSwapShareAmountIn",
+      path: "/osmosis.gamm.v1beta1.Msg/ExitSwapShareAmountIn",
+      type: GRPCCallType.unary
+    )
+  }
 }

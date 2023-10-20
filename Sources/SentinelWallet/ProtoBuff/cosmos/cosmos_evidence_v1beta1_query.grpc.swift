@@ -22,6 +22,7 @@
 //
 import GRPC
 import NIO
+import NIOConcurrencyHelpers
 import SwiftProtobuf
 
 
@@ -59,7 +60,7 @@ extension Cosmos_Evidence_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Evidence_V1beta1_QueryEvidenceRequest, Cosmos_Evidence_V1beta1_QueryEvidenceResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.evidence.v1beta1.Query/Evidence",
+      path: Cosmos_Evidence_V1beta1_QueryClientMetadata.Methods.evidence.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeEvidenceInterceptors() ?? []
@@ -77,7 +78,7 @@ extension Cosmos_Evidence_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Evidence_V1beta1_QueryAllEvidenceRequest, Cosmos_Evidence_V1beta1_QueryAllEvidenceResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.evidence.v1beta1.Query/AllEvidence",
+      path: Cosmos_Evidence_V1beta1_QueryClientMetadata.Methods.allEvidence.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeAllEvidenceInterceptors() ?? []
@@ -85,17 +86,43 @@ extension Cosmos_Evidence_V1beta1_QueryClientProtocol {
   }
 }
 
-internal protocol Cosmos_Evidence_V1beta1_QueryClientInterceptorFactoryProtocol {
+@available(*, deprecated)
+extension Cosmos_Evidence_V1beta1_QueryClient: @unchecked Sendable {}
 
-  /// - Returns: Interceptors to use when invoking 'evidence'.
-  func makeEvidenceInterceptors() -> [ClientInterceptor<Cosmos_Evidence_V1beta1_QueryEvidenceRequest, Cosmos_Evidence_V1beta1_QueryEvidenceResponse>]
+@available(*, deprecated, renamed: "Cosmos_Evidence_V1beta1_QueryNIOClient")
+internal final class Cosmos_Evidence_V1beta1_QueryClient: Cosmos_Evidence_V1beta1_QueryClientProtocol {
+  private let lock = Lock()
+  private var _defaultCallOptions: CallOptions
+  private var _interceptors: Cosmos_Evidence_V1beta1_QueryClientInterceptorFactoryProtocol?
+  internal let channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions {
+    get { self.lock.withLock { return self._defaultCallOptions } }
+    set { self.lock.withLockVoid { self._defaultCallOptions = newValue } }
+  }
+  internal var interceptors: Cosmos_Evidence_V1beta1_QueryClientInterceptorFactoryProtocol? {
+    get { self.lock.withLock { return self._interceptors } }
+    set { self.lock.withLockVoid { self._interceptors = newValue } }
+  }
 
-  /// - Returns: Interceptors to use when invoking 'allEvidence'.
-  func makeAllEvidenceInterceptors() -> [ClientInterceptor<Cosmos_Evidence_V1beta1_QueryAllEvidenceRequest, Cosmos_Evidence_V1beta1_QueryAllEvidenceResponse>]
+  /// Creates a client for the cosmos.evidence.v1beta1.Query service.
+  ///
+  /// - Parameters:
+  ///   - channel: `GRPCChannel` to the service host.
+  ///   - defaultCallOptions: Options to use for each service call if the user doesn't provide them.
+  ///   - interceptors: A factory providing interceptors for each RPC.
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Cosmos_Evidence_V1beta1_QueryClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self._defaultCallOptions = defaultCallOptions
+    self._interceptors = interceptors
+  }
 }
 
-internal final class Cosmos_Evidence_V1beta1_QueryClient: Cosmos_Evidence_V1beta1_QueryClientProtocol {
-  internal let channel: GRPCChannel
+internal struct Cosmos_Evidence_V1beta1_QueryNIOClient: Cosmos_Evidence_V1beta1_QueryClientProtocol {
+  internal var channel: GRPCChannel
   internal var defaultCallOptions: CallOptions
   internal var interceptors: Cosmos_Evidence_V1beta1_QueryClientInterceptorFactoryProtocol?
 
@@ -117,6 +144,136 @@ internal final class Cosmos_Evidence_V1beta1_QueryClient: Cosmos_Evidence_V1beta
 }
 
 /// Query defines the gRPC querier service.
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal protocol Cosmos_Evidence_V1beta1_QueryAsyncClientProtocol: GRPCClient {
+  static var serviceDescriptor: GRPCServiceDescriptor { get }
+  var interceptors: Cosmos_Evidence_V1beta1_QueryClientInterceptorFactoryProtocol? { get }
+
+  func makeEvidenceCall(
+    _ request: Cosmos_Evidence_V1beta1_QueryEvidenceRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Evidence_V1beta1_QueryEvidenceRequest, Cosmos_Evidence_V1beta1_QueryEvidenceResponse>
+
+  func makeAllEvidenceCall(
+    _ request: Cosmos_Evidence_V1beta1_QueryAllEvidenceRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Evidence_V1beta1_QueryAllEvidenceRequest, Cosmos_Evidence_V1beta1_QueryAllEvidenceResponse>
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Evidence_V1beta1_QueryAsyncClientProtocol {
+  internal static var serviceDescriptor: GRPCServiceDescriptor {
+    return Cosmos_Evidence_V1beta1_QueryClientMetadata.serviceDescriptor
+  }
+
+  internal var interceptors: Cosmos_Evidence_V1beta1_QueryClientInterceptorFactoryProtocol? {
+    return nil
+  }
+
+  internal func makeEvidenceCall(
+    _ request: Cosmos_Evidence_V1beta1_QueryEvidenceRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Evidence_V1beta1_QueryEvidenceRequest, Cosmos_Evidence_V1beta1_QueryEvidenceResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Evidence_V1beta1_QueryClientMetadata.Methods.evidence.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeEvidenceInterceptors() ?? []
+    )
+  }
+
+  internal func makeAllEvidenceCall(
+    _ request: Cosmos_Evidence_V1beta1_QueryAllEvidenceRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Evidence_V1beta1_QueryAllEvidenceRequest, Cosmos_Evidence_V1beta1_QueryAllEvidenceResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Evidence_V1beta1_QueryClientMetadata.Methods.allEvidence.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeAllEvidenceInterceptors() ?? []
+    )
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Evidence_V1beta1_QueryAsyncClientProtocol {
+  internal func evidence(
+    _ request: Cosmos_Evidence_V1beta1_QueryEvidenceRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Evidence_V1beta1_QueryEvidenceResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Evidence_V1beta1_QueryClientMetadata.Methods.evidence.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeEvidenceInterceptors() ?? []
+    )
+  }
+
+  internal func allEvidence(
+    _ request: Cosmos_Evidence_V1beta1_QueryAllEvidenceRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Evidence_V1beta1_QueryAllEvidenceResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Evidence_V1beta1_QueryClientMetadata.Methods.allEvidence.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeAllEvidenceInterceptors() ?? []
+    )
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal struct Cosmos_Evidence_V1beta1_QueryAsyncClient: Cosmos_Evidence_V1beta1_QueryAsyncClientProtocol {
+  internal var channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions
+  internal var interceptors: Cosmos_Evidence_V1beta1_QueryClientInterceptorFactoryProtocol?
+
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Cosmos_Evidence_V1beta1_QueryClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self.defaultCallOptions = defaultCallOptions
+    self.interceptors = interceptors
+  }
+}
+
+internal protocol Cosmos_Evidence_V1beta1_QueryClientInterceptorFactoryProtocol: Sendable {
+
+  /// - Returns: Interceptors to use when invoking 'evidence'.
+  func makeEvidenceInterceptors() -> [ClientInterceptor<Cosmos_Evidence_V1beta1_QueryEvidenceRequest, Cosmos_Evidence_V1beta1_QueryEvidenceResponse>]
+
+  /// - Returns: Interceptors to use when invoking 'allEvidence'.
+  func makeAllEvidenceInterceptors() -> [ClientInterceptor<Cosmos_Evidence_V1beta1_QueryAllEvidenceRequest, Cosmos_Evidence_V1beta1_QueryAllEvidenceResponse>]
+}
+
+internal enum Cosmos_Evidence_V1beta1_QueryClientMetadata {
+  internal static let serviceDescriptor = GRPCServiceDescriptor(
+    name: "Query",
+    fullName: "cosmos.evidence.v1beta1.Query",
+    methods: [
+      Cosmos_Evidence_V1beta1_QueryClientMetadata.Methods.evidence,
+      Cosmos_Evidence_V1beta1_QueryClientMetadata.Methods.allEvidence,
+    ]
+  )
+
+  internal enum Methods {
+    internal static let evidence = GRPCMethodDescriptor(
+      name: "Evidence",
+      path: "/cosmos.evidence.v1beta1.Query/Evidence",
+      type: GRPCCallType.unary
+    )
+
+    internal static let allEvidence = GRPCMethodDescriptor(
+      name: "AllEvidence",
+      path: "/cosmos.evidence.v1beta1.Query/AllEvidence",
+      type: GRPCCallType.unary
+    )
+  }
+}
+
+/// Query defines the gRPC querier service.
 ///
 /// To build a server, implement a class that conforms to this protocol.
 internal protocol Cosmos_Evidence_V1beta1_QueryProvider: CallHandlerProvider {
@@ -130,7 +287,9 @@ internal protocol Cosmos_Evidence_V1beta1_QueryProvider: CallHandlerProvider {
 }
 
 extension Cosmos_Evidence_V1beta1_QueryProvider {
-  internal var serviceName: Substring { return "cosmos.evidence.v1beta1.Query" }
+  internal var serviceName: Substring {
+    return Cosmos_Evidence_V1beta1_QueryServerMetadata.serviceDescriptor.fullName[...]
+  }
 
   /// Determines, calls and returns the appropriate request handler, depending on the request's method.
   /// Returns nil for methods not handled by this service.
@@ -163,6 +322,70 @@ extension Cosmos_Evidence_V1beta1_QueryProvider {
   }
 }
 
+/// Query defines the gRPC querier service.
+///
+/// To implement a server, implement an object which conforms to this protocol.
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal protocol Cosmos_Evidence_V1beta1_QueryAsyncProvider: CallHandlerProvider {
+  static var serviceDescriptor: GRPCServiceDescriptor { get }
+  var interceptors: Cosmos_Evidence_V1beta1_QueryServerInterceptorFactoryProtocol? { get }
+
+  /// Evidence queries evidence based on evidence hash.
+  @Sendable func evidence(
+    request: Cosmos_Evidence_V1beta1_QueryEvidenceRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Evidence_V1beta1_QueryEvidenceResponse
+
+  /// AllEvidence queries all evidence.
+  @Sendable func allEvidence(
+    request: Cosmos_Evidence_V1beta1_QueryAllEvidenceRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Evidence_V1beta1_QueryAllEvidenceResponse
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Evidence_V1beta1_QueryAsyncProvider {
+  internal static var serviceDescriptor: GRPCServiceDescriptor {
+    return Cosmos_Evidence_V1beta1_QueryServerMetadata.serviceDescriptor
+  }
+
+  internal var serviceName: Substring {
+    return Cosmos_Evidence_V1beta1_QueryServerMetadata.serviceDescriptor.fullName[...]
+  }
+
+  internal var interceptors: Cosmos_Evidence_V1beta1_QueryServerInterceptorFactoryProtocol? {
+    return nil
+  }
+
+  internal func handle(
+    method name: Substring,
+    context: CallHandlerContext
+  ) -> GRPCServerHandlerProtocol? {
+    switch name {
+    case "Evidence":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Evidence_V1beta1_QueryEvidenceRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Evidence_V1beta1_QueryEvidenceResponse>(),
+        interceptors: self.interceptors?.makeEvidenceInterceptors() ?? [],
+        wrapping: self.evidence(request:context:)
+      )
+
+    case "AllEvidence":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Evidence_V1beta1_QueryAllEvidenceRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Evidence_V1beta1_QueryAllEvidenceResponse>(),
+        interceptors: self.interceptors?.makeAllEvidenceInterceptors() ?? [],
+        wrapping: self.allEvidence(request:context:)
+      )
+
+    default:
+      return nil
+    }
+  }
+}
+
 internal protocol Cosmos_Evidence_V1beta1_QueryServerInterceptorFactoryProtocol {
 
   /// - Returns: Interceptors to use when handling 'evidence'.
@@ -172,4 +395,29 @@ internal protocol Cosmos_Evidence_V1beta1_QueryServerInterceptorFactoryProtocol 
   /// - Returns: Interceptors to use when handling 'allEvidence'.
   ///   Defaults to calling `self.makeInterceptors()`.
   func makeAllEvidenceInterceptors() -> [ServerInterceptor<Cosmos_Evidence_V1beta1_QueryAllEvidenceRequest, Cosmos_Evidence_V1beta1_QueryAllEvidenceResponse>]
+}
+
+internal enum Cosmos_Evidence_V1beta1_QueryServerMetadata {
+  internal static let serviceDescriptor = GRPCServiceDescriptor(
+    name: "Query",
+    fullName: "cosmos.evidence.v1beta1.Query",
+    methods: [
+      Cosmos_Evidence_V1beta1_QueryServerMetadata.Methods.evidence,
+      Cosmos_Evidence_V1beta1_QueryServerMetadata.Methods.allEvidence,
+    ]
+  )
+
+  internal enum Methods {
+    internal static let evidence = GRPCMethodDescriptor(
+      name: "Evidence",
+      path: "/cosmos.evidence.v1beta1.Query/Evidence",
+      type: GRPCCallType.unary
+    )
+
+    internal static let allEvidence = GRPCMethodDescriptor(
+      name: "AllEvidence",
+      path: "/cosmos.evidence.v1beta1.Query/AllEvidence",
+      type: GRPCCallType.unary
+    )
+  }
 }

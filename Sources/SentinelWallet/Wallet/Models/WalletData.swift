@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftProtobuf
 
 final class WalletData {
     var exchangeRates = [ExchangeRates]()
@@ -14,7 +15,7 @@ final class WalletData {
 
     // For ProtoBuf and gRPC
     var nodeInfo: Tendermint_P2p_DefaultNodeInfo?
-    var accountGRPC: Google_Protobuf2_Any?
+    var accountGRPC: Google_Protobuf_Any?
 
     var myBalances = [CoinToken]()
     var myVestings = [CoinToken]()

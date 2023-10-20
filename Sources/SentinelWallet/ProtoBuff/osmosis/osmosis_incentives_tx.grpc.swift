@@ -22,6 +22,7 @@
 //
 import GRPC
 import NIO
+import NIOConcurrencyHelpers
 import SwiftProtobuf
 
 
@@ -57,7 +58,7 @@ extension Osmosis_Incentives_MsgClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Osmosis_Incentives_MsgCreateGauge, Osmosis_Incentives_MsgCreateGaugeResponse> {
     return self.makeUnaryCall(
-      path: "/osmosis.incentives.Msg/CreateGauge",
+      path: Osmosis_Incentives_MsgClientMetadata.Methods.createGauge.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeCreateGaugeInterceptors() ?? []
@@ -75,7 +76,7 @@ extension Osmosis_Incentives_MsgClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Osmosis_Incentives_MsgAddToGauge, Osmosis_Incentives_MsgAddToGaugeResponse> {
     return self.makeUnaryCall(
-      path: "/osmosis.incentives.Msg/AddToGauge",
+      path: Osmosis_Incentives_MsgClientMetadata.Methods.addToGauge.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeAddToGaugeInterceptors() ?? []
@@ -83,17 +84,43 @@ extension Osmosis_Incentives_MsgClientProtocol {
   }
 }
 
-internal protocol Osmosis_Incentives_MsgClientInterceptorFactoryProtocol {
+@available(*, deprecated)
+extension Osmosis_Incentives_MsgClient: @unchecked Sendable {}
 
-  /// - Returns: Interceptors to use when invoking 'createGauge'.
-  func makeCreateGaugeInterceptors() -> [ClientInterceptor<Osmosis_Incentives_MsgCreateGauge, Osmosis_Incentives_MsgCreateGaugeResponse>]
+@available(*, deprecated, renamed: "Osmosis_Incentives_MsgNIOClient")
+internal final class Osmosis_Incentives_MsgClient: Osmosis_Incentives_MsgClientProtocol {
+  private let lock = Lock()
+  private var _defaultCallOptions: CallOptions
+  private var _interceptors: Osmosis_Incentives_MsgClientInterceptorFactoryProtocol?
+  internal let channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions {
+    get { self.lock.withLock { return self._defaultCallOptions } }
+    set { self.lock.withLockVoid { self._defaultCallOptions = newValue } }
+  }
+  internal var interceptors: Osmosis_Incentives_MsgClientInterceptorFactoryProtocol? {
+    get { self.lock.withLock { return self._interceptors } }
+    set { self.lock.withLockVoid { self._interceptors = newValue } }
+  }
 
-  /// - Returns: Interceptors to use when invoking 'addToGauge'.
-  func makeAddToGaugeInterceptors() -> [ClientInterceptor<Osmosis_Incentives_MsgAddToGauge, Osmosis_Incentives_MsgAddToGaugeResponse>]
+  /// Creates a client for the osmosis.incentives.Msg service.
+  ///
+  /// - Parameters:
+  ///   - channel: `GRPCChannel` to the service host.
+  ///   - defaultCallOptions: Options to use for each service call if the user doesn't provide them.
+  ///   - interceptors: A factory providing interceptors for each RPC.
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Osmosis_Incentives_MsgClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self._defaultCallOptions = defaultCallOptions
+    self._interceptors = interceptors
+  }
 }
 
-internal final class Osmosis_Incentives_MsgClient: Osmosis_Incentives_MsgClientProtocol {
-  internal let channel: GRPCChannel
+internal struct Osmosis_Incentives_MsgNIOClient: Osmosis_Incentives_MsgClientProtocol {
+  internal var channel: GRPCChannel
   internal var defaultCallOptions: CallOptions
   internal var interceptors: Osmosis_Incentives_MsgClientInterceptorFactoryProtocol?
 
@@ -114,6 +141,135 @@ internal final class Osmosis_Incentives_MsgClient: Osmosis_Incentives_MsgClientP
   }
 }
 
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal protocol Osmosis_Incentives_MsgAsyncClientProtocol: GRPCClient {
+  static var serviceDescriptor: GRPCServiceDescriptor { get }
+  var interceptors: Osmosis_Incentives_MsgClientInterceptorFactoryProtocol? { get }
+
+  func makeCreateGaugeCall(
+    _ request: Osmosis_Incentives_MsgCreateGauge,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Osmosis_Incentives_MsgCreateGauge, Osmosis_Incentives_MsgCreateGaugeResponse>
+
+  func makeAddToGaugeCall(
+    _ request: Osmosis_Incentives_MsgAddToGauge,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Osmosis_Incentives_MsgAddToGauge, Osmosis_Incentives_MsgAddToGaugeResponse>
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Osmosis_Incentives_MsgAsyncClientProtocol {
+  internal static var serviceDescriptor: GRPCServiceDescriptor {
+    return Osmosis_Incentives_MsgClientMetadata.serviceDescriptor
+  }
+
+  internal var interceptors: Osmosis_Incentives_MsgClientInterceptorFactoryProtocol? {
+    return nil
+  }
+
+  internal func makeCreateGaugeCall(
+    _ request: Osmosis_Incentives_MsgCreateGauge,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Osmosis_Incentives_MsgCreateGauge, Osmosis_Incentives_MsgCreateGaugeResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Osmosis_Incentives_MsgClientMetadata.Methods.createGauge.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeCreateGaugeInterceptors() ?? []
+    )
+  }
+
+  internal func makeAddToGaugeCall(
+    _ request: Osmosis_Incentives_MsgAddToGauge,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Osmosis_Incentives_MsgAddToGauge, Osmosis_Incentives_MsgAddToGaugeResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Osmosis_Incentives_MsgClientMetadata.Methods.addToGauge.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeAddToGaugeInterceptors() ?? []
+    )
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Osmosis_Incentives_MsgAsyncClientProtocol {
+  internal func createGauge(
+    _ request: Osmosis_Incentives_MsgCreateGauge,
+    callOptions: CallOptions? = nil
+  ) async throws -> Osmosis_Incentives_MsgCreateGaugeResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Osmosis_Incentives_MsgClientMetadata.Methods.createGauge.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeCreateGaugeInterceptors() ?? []
+    )
+  }
+
+  internal func addToGauge(
+    _ request: Osmosis_Incentives_MsgAddToGauge,
+    callOptions: CallOptions? = nil
+  ) async throws -> Osmosis_Incentives_MsgAddToGaugeResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Osmosis_Incentives_MsgClientMetadata.Methods.addToGauge.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeAddToGaugeInterceptors() ?? []
+    )
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal struct Osmosis_Incentives_MsgAsyncClient: Osmosis_Incentives_MsgAsyncClientProtocol {
+  internal var channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions
+  internal var interceptors: Osmosis_Incentives_MsgClientInterceptorFactoryProtocol?
+
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Osmosis_Incentives_MsgClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self.defaultCallOptions = defaultCallOptions
+    self.interceptors = interceptors
+  }
+}
+
+internal protocol Osmosis_Incentives_MsgClientInterceptorFactoryProtocol: Sendable {
+
+  /// - Returns: Interceptors to use when invoking 'createGauge'.
+  func makeCreateGaugeInterceptors() -> [ClientInterceptor<Osmosis_Incentives_MsgCreateGauge, Osmosis_Incentives_MsgCreateGaugeResponse>]
+
+  /// - Returns: Interceptors to use when invoking 'addToGauge'.
+  func makeAddToGaugeInterceptors() -> [ClientInterceptor<Osmosis_Incentives_MsgAddToGauge, Osmosis_Incentives_MsgAddToGaugeResponse>]
+}
+
+internal enum Osmosis_Incentives_MsgClientMetadata {
+  internal static let serviceDescriptor = GRPCServiceDescriptor(
+    name: "Msg",
+    fullName: "osmosis.incentives.Msg",
+    methods: [
+      Osmosis_Incentives_MsgClientMetadata.Methods.createGauge,
+      Osmosis_Incentives_MsgClientMetadata.Methods.addToGauge,
+    ]
+  )
+
+  internal enum Methods {
+    internal static let createGauge = GRPCMethodDescriptor(
+      name: "CreateGauge",
+      path: "/osmosis.incentives.Msg/CreateGauge",
+      type: GRPCCallType.unary
+    )
+
+    internal static let addToGauge = GRPCMethodDescriptor(
+      name: "AddToGauge",
+      path: "/osmosis.incentives.Msg/AddToGauge",
+      type: GRPCCallType.unary
+    )
+  }
+}
+
 /// To build a server, implement a class that conforms to this protocol.
 internal protocol Osmosis_Incentives_MsgProvider: CallHandlerProvider {
   var interceptors: Osmosis_Incentives_MsgServerInterceptorFactoryProtocol? { get }
@@ -124,7 +280,9 @@ internal protocol Osmosis_Incentives_MsgProvider: CallHandlerProvider {
 }
 
 extension Osmosis_Incentives_MsgProvider {
-  internal var serviceName: Substring { return "osmosis.incentives.Msg" }
+  internal var serviceName: Substring {
+    return Osmosis_Incentives_MsgServerMetadata.serviceDescriptor.fullName[...]
+  }
 
   /// Determines, calls and returns the appropriate request handler, depending on the request's method.
   /// Returns nil for methods not handled by this service.
@@ -157,6 +315,66 @@ extension Osmosis_Incentives_MsgProvider {
   }
 }
 
+/// To implement a server, implement an object which conforms to this protocol.
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal protocol Osmosis_Incentives_MsgAsyncProvider: CallHandlerProvider {
+  static var serviceDescriptor: GRPCServiceDescriptor { get }
+  var interceptors: Osmosis_Incentives_MsgServerInterceptorFactoryProtocol? { get }
+
+  @Sendable func createGauge(
+    request: Osmosis_Incentives_MsgCreateGauge,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Osmosis_Incentives_MsgCreateGaugeResponse
+
+  @Sendable func addToGauge(
+    request: Osmosis_Incentives_MsgAddToGauge,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Osmosis_Incentives_MsgAddToGaugeResponse
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Osmosis_Incentives_MsgAsyncProvider {
+  internal static var serviceDescriptor: GRPCServiceDescriptor {
+    return Osmosis_Incentives_MsgServerMetadata.serviceDescriptor
+  }
+
+  internal var serviceName: Substring {
+    return Osmosis_Incentives_MsgServerMetadata.serviceDescriptor.fullName[...]
+  }
+
+  internal var interceptors: Osmosis_Incentives_MsgServerInterceptorFactoryProtocol? {
+    return nil
+  }
+
+  internal func handle(
+    method name: Substring,
+    context: CallHandlerContext
+  ) -> GRPCServerHandlerProtocol? {
+    switch name {
+    case "CreateGauge":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Osmosis_Incentives_MsgCreateGauge>(),
+        responseSerializer: ProtobufSerializer<Osmosis_Incentives_MsgCreateGaugeResponse>(),
+        interceptors: self.interceptors?.makeCreateGaugeInterceptors() ?? [],
+        wrapping: self.createGauge(request:context:)
+      )
+
+    case "AddToGauge":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Osmosis_Incentives_MsgAddToGauge>(),
+        responseSerializer: ProtobufSerializer<Osmosis_Incentives_MsgAddToGaugeResponse>(),
+        interceptors: self.interceptors?.makeAddToGaugeInterceptors() ?? [],
+        wrapping: self.addToGauge(request:context:)
+      )
+
+    default:
+      return nil
+    }
+  }
+}
+
 internal protocol Osmosis_Incentives_MsgServerInterceptorFactoryProtocol {
 
   /// - Returns: Interceptors to use when handling 'createGauge'.
@@ -166,4 +384,29 @@ internal protocol Osmosis_Incentives_MsgServerInterceptorFactoryProtocol {
   /// - Returns: Interceptors to use when handling 'addToGauge'.
   ///   Defaults to calling `self.makeInterceptors()`.
   func makeAddToGaugeInterceptors() -> [ServerInterceptor<Osmosis_Incentives_MsgAddToGauge, Osmosis_Incentives_MsgAddToGaugeResponse>]
+}
+
+internal enum Osmosis_Incentives_MsgServerMetadata {
+  internal static let serviceDescriptor = GRPCServiceDescriptor(
+    name: "Msg",
+    fullName: "osmosis.incentives.Msg",
+    methods: [
+      Osmosis_Incentives_MsgServerMetadata.Methods.createGauge,
+      Osmosis_Incentives_MsgServerMetadata.Methods.addToGauge,
+    ]
+  )
+
+  internal enum Methods {
+    internal static let createGauge = GRPCMethodDescriptor(
+      name: "CreateGauge",
+      path: "/osmosis.incentives.Msg/CreateGauge",
+      type: GRPCCallType.unary
+    )
+
+    internal static let addToGauge = GRPCMethodDescriptor(
+      name: "AddToGauge",
+      path: "/osmosis.incentives.Msg/AddToGauge",
+      type: GRPCCallType.unary
+    )
+  }
 }

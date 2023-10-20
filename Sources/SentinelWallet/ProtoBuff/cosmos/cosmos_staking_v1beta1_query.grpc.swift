@@ -22,6 +22,7 @@
 //
 import GRPC
 import NIO
+import NIOConcurrencyHelpers
 import SwiftProtobuf
 
 
@@ -110,6 +111,9 @@ extension Cosmos_Staking_V1beta1_QueryClientProtocol {
 
   /// Validators queries all validators that match the given status.
   ///
+  /// When called from another module, this query might consume a high amount of
+  /// gas if the pagination field is incorrectly set.
+  ///
   /// - Parameters:
   ///   - request: Request to send to Validators.
   ///   - callOptions: Call options.
@@ -119,7 +123,7 @@ extension Cosmos_Staking_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Staking_V1beta1_QueryValidatorsRequest, Cosmos_Staking_V1beta1_QueryValidatorsResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.staking.v1beta1.Query/Validators",
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.validators.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeValidatorsInterceptors() ?? []
@@ -137,7 +141,7 @@ extension Cosmos_Staking_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Staking_V1beta1_QueryValidatorRequest, Cosmos_Staking_V1beta1_QueryValidatorResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.staking.v1beta1.Query/Validator",
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.validator.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeValidatorInterceptors() ?? []
@@ -145,6 +149,9 @@ extension Cosmos_Staking_V1beta1_QueryClientProtocol {
   }
 
   /// ValidatorDelegations queries delegate info for given validator.
+  ///
+  /// When called from another module, this query might consume a high amount of
+  /// gas if the pagination field is incorrectly set.
   ///
   /// - Parameters:
   ///   - request: Request to send to ValidatorDelegations.
@@ -155,7 +162,7 @@ extension Cosmos_Staking_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Staking_V1beta1_QueryValidatorDelegationsRequest, Cosmos_Staking_V1beta1_QueryValidatorDelegationsResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.staking.v1beta1.Query/ValidatorDelegations",
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.validatorDelegations.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeValidatorDelegationsInterceptors() ?? []
@@ -163,6 +170,9 @@ extension Cosmos_Staking_V1beta1_QueryClientProtocol {
   }
 
   /// ValidatorUnbondingDelegations queries unbonding delegations of a validator.
+  ///
+  /// When called from another module, this query might consume a high amount of
+  /// gas if the pagination field is incorrectly set.
   ///
   /// - Parameters:
   ///   - request: Request to send to ValidatorUnbondingDelegations.
@@ -173,7 +183,7 @@ extension Cosmos_Staking_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Staking_V1beta1_QueryValidatorUnbondingDelegationsRequest, Cosmos_Staking_V1beta1_QueryValidatorUnbondingDelegationsResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.staking.v1beta1.Query/ValidatorUnbondingDelegations",
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.validatorUnbondingDelegations.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeValidatorUnbondingDelegationsInterceptors() ?? []
@@ -191,7 +201,7 @@ extension Cosmos_Staking_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Staking_V1beta1_QueryDelegationRequest, Cosmos_Staking_V1beta1_QueryDelegationResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.staking.v1beta1.Query/Delegation",
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.delegation.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeDelegationInterceptors() ?? []
@@ -210,7 +220,7 @@ extension Cosmos_Staking_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Staking_V1beta1_QueryUnbondingDelegationRequest, Cosmos_Staking_V1beta1_QueryUnbondingDelegationResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.staking.v1beta1.Query/UnbondingDelegation",
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.unbondingDelegation.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeUnbondingDelegationInterceptors() ?? []
@@ -218,6 +228,9 @@ extension Cosmos_Staking_V1beta1_QueryClientProtocol {
   }
 
   /// DelegatorDelegations queries all delegations of a given delegator address.
+  ///
+  /// When called from another module, this query might consume a high amount of
+  /// gas if the pagination field is incorrectly set.
   ///
   /// - Parameters:
   ///   - request: Request to send to DelegatorDelegations.
@@ -228,7 +241,7 @@ extension Cosmos_Staking_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Staking_V1beta1_QueryDelegatorDelegationsRequest, Cosmos_Staking_V1beta1_QueryDelegatorDelegationsResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.staking.v1beta1.Query/DelegatorDelegations",
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.delegatorDelegations.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeDelegatorDelegationsInterceptors() ?? []
@@ -237,6 +250,9 @@ extension Cosmos_Staking_V1beta1_QueryClientProtocol {
 
   /// DelegatorUnbondingDelegations queries all unbonding delegations of a given
   /// delegator address.
+  ///
+  /// When called from another module, this query might consume a high amount of
+  /// gas if the pagination field is incorrectly set.
   ///
   /// - Parameters:
   ///   - request: Request to send to DelegatorUnbondingDelegations.
@@ -247,7 +263,7 @@ extension Cosmos_Staking_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Staking_V1beta1_QueryDelegatorUnbondingDelegationsRequest, Cosmos_Staking_V1beta1_QueryDelegatorUnbondingDelegationsResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.staking.v1beta1.Query/DelegatorUnbondingDelegations",
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.delegatorUnbondingDelegations.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeDelegatorUnbondingDelegationsInterceptors() ?? []
@@ -255,6 +271,9 @@ extension Cosmos_Staking_V1beta1_QueryClientProtocol {
   }
 
   /// Redelegations queries redelegations of given address.
+  ///
+  /// When called from another module, this query might consume a high amount of
+  /// gas if the pagination field is incorrectly set.
   ///
   /// - Parameters:
   ///   - request: Request to send to Redelegations.
@@ -265,7 +284,7 @@ extension Cosmos_Staking_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Staking_V1beta1_QueryRedelegationsRequest, Cosmos_Staking_V1beta1_QueryRedelegationsResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.staking.v1beta1.Query/Redelegations",
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.redelegations.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeRedelegationsInterceptors() ?? []
@@ -274,6 +293,9 @@ extension Cosmos_Staking_V1beta1_QueryClientProtocol {
 
   /// DelegatorValidators queries all validators info for given delegator
   /// address.
+  ///
+  /// When called from another module, this query might consume a high amount of
+  /// gas if the pagination field is incorrectly set.
   ///
   /// - Parameters:
   ///   - request: Request to send to DelegatorValidators.
@@ -284,7 +306,7 @@ extension Cosmos_Staking_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Staking_V1beta1_QueryDelegatorValidatorsRequest, Cosmos_Staking_V1beta1_QueryDelegatorValidatorsResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.staking.v1beta1.Query/DelegatorValidators",
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.delegatorValidators.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeDelegatorValidatorsInterceptors() ?? []
@@ -303,7 +325,7 @@ extension Cosmos_Staking_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Staking_V1beta1_QueryDelegatorValidatorRequest, Cosmos_Staking_V1beta1_QueryDelegatorValidatorResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.staking.v1beta1.Query/DelegatorValidator",
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.delegatorValidator.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeDelegatorValidatorInterceptors() ?? []
@@ -321,7 +343,7 @@ extension Cosmos_Staking_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Staking_V1beta1_QueryHistoricalInfoRequest, Cosmos_Staking_V1beta1_QueryHistoricalInfoResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.staking.v1beta1.Query/HistoricalInfo",
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.historicalInfo.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeHistoricalInfoInterceptors() ?? []
@@ -339,7 +361,7 @@ extension Cosmos_Staking_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Staking_V1beta1_QueryPoolRequest, Cosmos_Staking_V1beta1_QueryPoolResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.staking.v1beta1.Query/Pool",
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.pool.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makePoolInterceptors() ?? []
@@ -357,7 +379,7 @@ extension Cosmos_Staking_V1beta1_QueryClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Staking_V1beta1_QueryParamsRequest, Cosmos_Staking_V1beta1_QueryParamsResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.staking.v1beta1.Query/Params",
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.params.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeParamsInterceptors() ?? []
@@ -365,7 +387,508 @@ extension Cosmos_Staking_V1beta1_QueryClientProtocol {
   }
 }
 
-internal protocol Cosmos_Staking_V1beta1_QueryClientInterceptorFactoryProtocol {
+@available(*, deprecated)
+extension Cosmos_Staking_V1beta1_QueryClient: @unchecked Sendable {}
+
+@available(*, deprecated, renamed: "Cosmos_Staking_V1beta1_QueryNIOClient")
+internal final class Cosmos_Staking_V1beta1_QueryClient: Cosmos_Staking_V1beta1_QueryClientProtocol {
+  private let lock = Lock()
+  private var _defaultCallOptions: CallOptions
+  private var _interceptors: Cosmos_Staking_V1beta1_QueryClientInterceptorFactoryProtocol?
+  internal let channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions {
+    get { self.lock.withLock { return self._defaultCallOptions } }
+    set { self.lock.withLockVoid { self._defaultCallOptions = newValue } }
+  }
+  internal var interceptors: Cosmos_Staking_V1beta1_QueryClientInterceptorFactoryProtocol? {
+    get { self.lock.withLock { return self._interceptors } }
+    set { self.lock.withLockVoid { self._interceptors = newValue } }
+  }
+
+  /// Creates a client for the cosmos.staking.v1beta1.Query service.
+  ///
+  /// - Parameters:
+  ///   - channel: `GRPCChannel` to the service host.
+  ///   - defaultCallOptions: Options to use for each service call if the user doesn't provide them.
+  ///   - interceptors: A factory providing interceptors for each RPC.
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Cosmos_Staking_V1beta1_QueryClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self._defaultCallOptions = defaultCallOptions
+    self._interceptors = interceptors
+  }
+}
+
+internal struct Cosmos_Staking_V1beta1_QueryNIOClient: Cosmos_Staking_V1beta1_QueryClientProtocol {
+  internal var channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions
+  internal var interceptors: Cosmos_Staking_V1beta1_QueryClientInterceptorFactoryProtocol?
+
+  /// Creates a client for the cosmos.staking.v1beta1.Query service.
+  ///
+  /// - Parameters:
+  ///   - channel: `GRPCChannel` to the service host.
+  ///   - defaultCallOptions: Options to use for each service call if the user doesn't provide them.
+  ///   - interceptors: A factory providing interceptors for each RPC.
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Cosmos_Staking_V1beta1_QueryClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self.defaultCallOptions = defaultCallOptions
+    self.interceptors = interceptors
+  }
+}
+
+/// Query defines the gRPC querier service.
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal protocol Cosmos_Staking_V1beta1_QueryAsyncClientProtocol: GRPCClient {
+  static var serviceDescriptor: GRPCServiceDescriptor { get }
+  var interceptors: Cosmos_Staking_V1beta1_QueryClientInterceptorFactoryProtocol? { get }
+
+  func makeValidatorsCall(
+    _ request: Cosmos_Staking_V1beta1_QueryValidatorsRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryValidatorsRequest, Cosmos_Staking_V1beta1_QueryValidatorsResponse>
+
+  func makeValidatorCall(
+    _ request: Cosmos_Staking_V1beta1_QueryValidatorRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryValidatorRequest, Cosmos_Staking_V1beta1_QueryValidatorResponse>
+
+  func makeValidatorDelegationsCall(
+    _ request: Cosmos_Staking_V1beta1_QueryValidatorDelegationsRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryValidatorDelegationsRequest, Cosmos_Staking_V1beta1_QueryValidatorDelegationsResponse>
+
+  func makeValidatorUnbondingDelegationsCall(
+    _ request: Cosmos_Staking_V1beta1_QueryValidatorUnbondingDelegationsRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryValidatorUnbondingDelegationsRequest, Cosmos_Staking_V1beta1_QueryValidatorUnbondingDelegationsResponse>
+
+  func makeDelegationCall(
+    _ request: Cosmos_Staking_V1beta1_QueryDelegationRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryDelegationRequest, Cosmos_Staking_V1beta1_QueryDelegationResponse>
+
+  func makeUnbondingDelegationCall(
+    _ request: Cosmos_Staking_V1beta1_QueryUnbondingDelegationRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryUnbondingDelegationRequest, Cosmos_Staking_V1beta1_QueryUnbondingDelegationResponse>
+
+  func makeDelegatorDelegationsCall(
+    _ request: Cosmos_Staking_V1beta1_QueryDelegatorDelegationsRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryDelegatorDelegationsRequest, Cosmos_Staking_V1beta1_QueryDelegatorDelegationsResponse>
+
+  func makeDelegatorUnbondingDelegationsCall(
+    _ request: Cosmos_Staking_V1beta1_QueryDelegatorUnbondingDelegationsRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryDelegatorUnbondingDelegationsRequest, Cosmos_Staking_V1beta1_QueryDelegatorUnbondingDelegationsResponse>
+
+  func makeRedelegationsCall(
+    _ request: Cosmos_Staking_V1beta1_QueryRedelegationsRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryRedelegationsRequest, Cosmos_Staking_V1beta1_QueryRedelegationsResponse>
+
+  func makeDelegatorValidatorsCall(
+    _ request: Cosmos_Staking_V1beta1_QueryDelegatorValidatorsRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryDelegatorValidatorsRequest, Cosmos_Staking_V1beta1_QueryDelegatorValidatorsResponse>
+
+  func makeDelegatorValidatorCall(
+    _ request: Cosmos_Staking_V1beta1_QueryDelegatorValidatorRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryDelegatorValidatorRequest, Cosmos_Staking_V1beta1_QueryDelegatorValidatorResponse>
+
+  func makeHistoricalInfoCall(
+    _ request: Cosmos_Staking_V1beta1_QueryHistoricalInfoRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryHistoricalInfoRequest, Cosmos_Staking_V1beta1_QueryHistoricalInfoResponse>
+
+  func makePoolCall(
+    _ request: Cosmos_Staking_V1beta1_QueryPoolRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryPoolRequest, Cosmos_Staking_V1beta1_QueryPoolResponse>
+
+  func makeParamsCall(
+    _ request: Cosmos_Staking_V1beta1_QueryParamsRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryParamsRequest, Cosmos_Staking_V1beta1_QueryParamsResponse>
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Staking_V1beta1_QueryAsyncClientProtocol {
+  internal static var serviceDescriptor: GRPCServiceDescriptor {
+    return Cosmos_Staking_V1beta1_QueryClientMetadata.serviceDescriptor
+  }
+
+  internal var interceptors: Cosmos_Staking_V1beta1_QueryClientInterceptorFactoryProtocol? {
+    return nil
+  }
+
+  internal func makeValidatorsCall(
+    _ request: Cosmos_Staking_V1beta1_QueryValidatorsRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryValidatorsRequest, Cosmos_Staking_V1beta1_QueryValidatorsResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.validators.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeValidatorsInterceptors() ?? []
+    )
+  }
+
+  internal func makeValidatorCall(
+    _ request: Cosmos_Staking_V1beta1_QueryValidatorRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryValidatorRequest, Cosmos_Staking_V1beta1_QueryValidatorResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.validator.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeValidatorInterceptors() ?? []
+    )
+  }
+
+  internal func makeValidatorDelegationsCall(
+    _ request: Cosmos_Staking_V1beta1_QueryValidatorDelegationsRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryValidatorDelegationsRequest, Cosmos_Staking_V1beta1_QueryValidatorDelegationsResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.validatorDelegations.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeValidatorDelegationsInterceptors() ?? []
+    )
+  }
+
+  internal func makeValidatorUnbondingDelegationsCall(
+    _ request: Cosmos_Staking_V1beta1_QueryValidatorUnbondingDelegationsRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryValidatorUnbondingDelegationsRequest, Cosmos_Staking_V1beta1_QueryValidatorUnbondingDelegationsResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.validatorUnbondingDelegations.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeValidatorUnbondingDelegationsInterceptors() ?? []
+    )
+  }
+
+  internal func makeDelegationCall(
+    _ request: Cosmos_Staking_V1beta1_QueryDelegationRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryDelegationRequest, Cosmos_Staking_V1beta1_QueryDelegationResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.delegation.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDelegationInterceptors() ?? []
+    )
+  }
+
+  internal func makeUnbondingDelegationCall(
+    _ request: Cosmos_Staking_V1beta1_QueryUnbondingDelegationRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryUnbondingDelegationRequest, Cosmos_Staking_V1beta1_QueryUnbondingDelegationResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.unbondingDelegation.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeUnbondingDelegationInterceptors() ?? []
+    )
+  }
+
+  internal func makeDelegatorDelegationsCall(
+    _ request: Cosmos_Staking_V1beta1_QueryDelegatorDelegationsRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryDelegatorDelegationsRequest, Cosmos_Staking_V1beta1_QueryDelegatorDelegationsResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.delegatorDelegations.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDelegatorDelegationsInterceptors() ?? []
+    )
+  }
+
+  internal func makeDelegatorUnbondingDelegationsCall(
+    _ request: Cosmos_Staking_V1beta1_QueryDelegatorUnbondingDelegationsRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryDelegatorUnbondingDelegationsRequest, Cosmos_Staking_V1beta1_QueryDelegatorUnbondingDelegationsResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.delegatorUnbondingDelegations.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDelegatorUnbondingDelegationsInterceptors() ?? []
+    )
+  }
+
+  internal func makeRedelegationsCall(
+    _ request: Cosmos_Staking_V1beta1_QueryRedelegationsRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryRedelegationsRequest, Cosmos_Staking_V1beta1_QueryRedelegationsResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.redelegations.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeRedelegationsInterceptors() ?? []
+    )
+  }
+
+  internal func makeDelegatorValidatorsCall(
+    _ request: Cosmos_Staking_V1beta1_QueryDelegatorValidatorsRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryDelegatorValidatorsRequest, Cosmos_Staking_V1beta1_QueryDelegatorValidatorsResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.delegatorValidators.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDelegatorValidatorsInterceptors() ?? []
+    )
+  }
+
+  internal func makeDelegatorValidatorCall(
+    _ request: Cosmos_Staking_V1beta1_QueryDelegatorValidatorRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryDelegatorValidatorRequest, Cosmos_Staking_V1beta1_QueryDelegatorValidatorResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.delegatorValidator.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDelegatorValidatorInterceptors() ?? []
+    )
+  }
+
+  internal func makeHistoricalInfoCall(
+    _ request: Cosmos_Staking_V1beta1_QueryHistoricalInfoRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryHistoricalInfoRequest, Cosmos_Staking_V1beta1_QueryHistoricalInfoResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.historicalInfo.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeHistoricalInfoInterceptors() ?? []
+    )
+  }
+
+  internal func makePoolCall(
+    _ request: Cosmos_Staking_V1beta1_QueryPoolRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryPoolRequest, Cosmos_Staking_V1beta1_QueryPoolResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.pool.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makePoolInterceptors() ?? []
+    )
+  }
+
+  internal func makeParamsCall(
+    _ request: Cosmos_Staking_V1beta1_QueryParamsRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Staking_V1beta1_QueryParamsRequest, Cosmos_Staking_V1beta1_QueryParamsResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.params.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeParamsInterceptors() ?? []
+    )
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Staking_V1beta1_QueryAsyncClientProtocol {
+  internal func validators(
+    _ request: Cosmos_Staking_V1beta1_QueryValidatorsRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Staking_V1beta1_QueryValidatorsResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.validators.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeValidatorsInterceptors() ?? []
+    )
+  }
+
+  internal func validator(
+    _ request: Cosmos_Staking_V1beta1_QueryValidatorRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Staking_V1beta1_QueryValidatorResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.validator.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeValidatorInterceptors() ?? []
+    )
+  }
+
+  internal func validatorDelegations(
+    _ request: Cosmos_Staking_V1beta1_QueryValidatorDelegationsRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Staking_V1beta1_QueryValidatorDelegationsResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.validatorDelegations.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeValidatorDelegationsInterceptors() ?? []
+    )
+  }
+
+  internal func validatorUnbondingDelegations(
+    _ request: Cosmos_Staking_V1beta1_QueryValidatorUnbondingDelegationsRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Staking_V1beta1_QueryValidatorUnbondingDelegationsResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.validatorUnbondingDelegations.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeValidatorUnbondingDelegationsInterceptors() ?? []
+    )
+  }
+
+  internal func delegation(
+    _ request: Cosmos_Staking_V1beta1_QueryDelegationRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Staking_V1beta1_QueryDelegationResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.delegation.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDelegationInterceptors() ?? []
+    )
+  }
+
+  internal func unbondingDelegation(
+    _ request: Cosmos_Staking_V1beta1_QueryUnbondingDelegationRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Staking_V1beta1_QueryUnbondingDelegationResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.unbondingDelegation.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeUnbondingDelegationInterceptors() ?? []
+    )
+  }
+
+  internal func delegatorDelegations(
+    _ request: Cosmos_Staking_V1beta1_QueryDelegatorDelegationsRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Staking_V1beta1_QueryDelegatorDelegationsResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.delegatorDelegations.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDelegatorDelegationsInterceptors() ?? []
+    )
+  }
+
+  internal func delegatorUnbondingDelegations(
+    _ request: Cosmos_Staking_V1beta1_QueryDelegatorUnbondingDelegationsRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Staking_V1beta1_QueryDelegatorUnbondingDelegationsResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.delegatorUnbondingDelegations.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDelegatorUnbondingDelegationsInterceptors() ?? []
+    )
+  }
+
+  internal func redelegations(
+    _ request: Cosmos_Staking_V1beta1_QueryRedelegationsRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Staking_V1beta1_QueryRedelegationsResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.redelegations.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeRedelegationsInterceptors() ?? []
+    )
+  }
+
+  internal func delegatorValidators(
+    _ request: Cosmos_Staking_V1beta1_QueryDelegatorValidatorsRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Staking_V1beta1_QueryDelegatorValidatorsResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.delegatorValidators.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDelegatorValidatorsInterceptors() ?? []
+    )
+  }
+
+  internal func delegatorValidator(
+    _ request: Cosmos_Staking_V1beta1_QueryDelegatorValidatorRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Staking_V1beta1_QueryDelegatorValidatorResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.delegatorValidator.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeDelegatorValidatorInterceptors() ?? []
+    )
+  }
+
+  internal func historicalInfo(
+    _ request: Cosmos_Staking_V1beta1_QueryHistoricalInfoRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Staking_V1beta1_QueryHistoricalInfoResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.historicalInfo.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeHistoricalInfoInterceptors() ?? []
+    )
+  }
+
+  internal func pool(
+    _ request: Cosmos_Staking_V1beta1_QueryPoolRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Staking_V1beta1_QueryPoolResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.pool.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makePoolInterceptors() ?? []
+    )
+  }
+
+  internal func params(
+    _ request: Cosmos_Staking_V1beta1_QueryParamsRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Staking_V1beta1_QueryParamsResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.params.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeParamsInterceptors() ?? []
+    )
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal struct Cosmos_Staking_V1beta1_QueryAsyncClient: Cosmos_Staking_V1beta1_QueryAsyncClientProtocol {
+  internal var channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions
+  internal var interceptors: Cosmos_Staking_V1beta1_QueryClientInterceptorFactoryProtocol?
+
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Cosmos_Staking_V1beta1_QueryClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self.defaultCallOptions = defaultCallOptions
+    self.interceptors = interceptors
+  }
+}
+
+internal protocol Cosmos_Staking_V1beta1_QueryClientInterceptorFactoryProtocol: Sendable {
 
   /// - Returns: Interceptors to use when invoking 'validators'.
   func makeValidatorsInterceptors() -> [ClientInterceptor<Cosmos_Staking_V1beta1_QueryValidatorsRequest, Cosmos_Staking_V1beta1_QueryValidatorsResponse>]
@@ -410,25 +933,112 @@ internal protocol Cosmos_Staking_V1beta1_QueryClientInterceptorFactoryProtocol {
   func makeParamsInterceptors() -> [ClientInterceptor<Cosmos_Staking_V1beta1_QueryParamsRequest, Cosmos_Staking_V1beta1_QueryParamsResponse>]
 }
 
-internal final class Cosmos_Staking_V1beta1_QueryClient: Cosmos_Staking_V1beta1_QueryClientProtocol {
-  internal let channel: GRPCChannel
-  internal var defaultCallOptions: CallOptions
-  internal var interceptors: Cosmos_Staking_V1beta1_QueryClientInterceptorFactoryProtocol?
+internal enum Cosmos_Staking_V1beta1_QueryClientMetadata {
+  internal static let serviceDescriptor = GRPCServiceDescriptor(
+    name: "Query",
+    fullName: "cosmos.staking.v1beta1.Query",
+    methods: [
+      Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.validators,
+      Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.validator,
+      Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.validatorDelegations,
+      Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.validatorUnbondingDelegations,
+      Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.delegation,
+      Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.unbondingDelegation,
+      Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.delegatorDelegations,
+      Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.delegatorUnbondingDelegations,
+      Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.redelegations,
+      Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.delegatorValidators,
+      Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.delegatorValidator,
+      Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.historicalInfo,
+      Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.pool,
+      Cosmos_Staking_V1beta1_QueryClientMetadata.Methods.params,
+    ]
+  )
 
-  /// Creates a client for the cosmos.staking.v1beta1.Query service.
-  ///
-  /// - Parameters:
-  ///   - channel: `GRPCChannel` to the service host.
-  ///   - defaultCallOptions: Options to use for each service call if the user doesn't provide them.
-  ///   - interceptors: A factory providing interceptors for each RPC.
-  internal init(
-    channel: GRPCChannel,
-    defaultCallOptions: CallOptions = CallOptions(),
-    interceptors: Cosmos_Staking_V1beta1_QueryClientInterceptorFactoryProtocol? = nil
-  ) {
-    self.channel = channel
-    self.defaultCallOptions = defaultCallOptions
-    self.interceptors = interceptors
+  internal enum Methods {
+    internal static let validators = GRPCMethodDescriptor(
+      name: "Validators",
+      path: "/cosmos.staking.v1beta1.Query/Validators",
+      type: GRPCCallType.unary
+    )
+
+    internal static let validator = GRPCMethodDescriptor(
+      name: "Validator",
+      path: "/cosmos.staking.v1beta1.Query/Validator",
+      type: GRPCCallType.unary
+    )
+
+    internal static let validatorDelegations = GRPCMethodDescriptor(
+      name: "ValidatorDelegations",
+      path: "/cosmos.staking.v1beta1.Query/ValidatorDelegations",
+      type: GRPCCallType.unary
+    )
+
+    internal static let validatorUnbondingDelegations = GRPCMethodDescriptor(
+      name: "ValidatorUnbondingDelegations",
+      path: "/cosmos.staking.v1beta1.Query/ValidatorUnbondingDelegations",
+      type: GRPCCallType.unary
+    )
+
+    internal static let delegation = GRPCMethodDescriptor(
+      name: "Delegation",
+      path: "/cosmos.staking.v1beta1.Query/Delegation",
+      type: GRPCCallType.unary
+    )
+
+    internal static let unbondingDelegation = GRPCMethodDescriptor(
+      name: "UnbondingDelegation",
+      path: "/cosmos.staking.v1beta1.Query/UnbondingDelegation",
+      type: GRPCCallType.unary
+    )
+
+    internal static let delegatorDelegations = GRPCMethodDescriptor(
+      name: "DelegatorDelegations",
+      path: "/cosmos.staking.v1beta1.Query/DelegatorDelegations",
+      type: GRPCCallType.unary
+    )
+
+    internal static let delegatorUnbondingDelegations = GRPCMethodDescriptor(
+      name: "DelegatorUnbondingDelegations",
+      path: "/cosmos.staking.v1beta1.Query/DelegatorUnbondingDelegations",
+      type: GRPCCallType.unary
+    )
+
+    internal static let redelegations = GRPCMethodDescriptor(
+      name: "Redelegations",
+      path: "/cosmos.staking.v1beta1.Query/Redelegations",
+      type: GRPCCallType.unary
+    )
+
+    internal static let delegatorValidators = GRPCMethodDescriptor(
+      name: "DelegatorValidators",
+      path: "/cosmos.staking.v1beta1.Query/DelegatorValidators",
+      type: GRPCCallType.unary
+    )
+
+    internal static let delegatorValidator = GRPCMethodDescriptor(
+      name: "DelegatorValidator",
+      path: "/cosmos.staking.v1beta1.Query/DelegatorValidator",
+      type: GRPCCallType.unary
+    )
+
+    internal static let historicalInfo = GRPCMethodDescriptor(
+      name: "HistoricalInfo",
+      path: "/cosmos.staking.v1beta1.Query/HistoricalInfo",
+      type: GRPCCallType.unary
+    )
+
+    internal static let pool = GRPCMethodDescriptor(
+      name: "Pool",
+      path: "/cosmos.staking.v1beta1.Query/Pool",
+      type: GRPCCallType.unary
+    )
+
+    internal static let params = GRPCMethodDescriptor(
+      name: "Params",
+      path: "/cosmos.staking.v1beta1.Query/Params",
+      type: GRPCCallType.unary
+    )
   }
 }
 
@@ -439,15 +1049,24 @@ internal protocol Cosmos_Staking_V1beta1_QueryProvider: CallHandlerProvider {
   var interceptors: Cosmos_Staking_V1beta1_QueryServerInterceptorFactoryProtocol? { get }
 
   /// Validators queries all validators that match the given status.
+  ///
+  /// When called from another module, this query might consume a high amount of
+  /// gas if the pagination field is incorrectly set.
   func validators(request: Cosmos_Staking_V1beta1_QueryValidatorsRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Cosmos_Staking_V1beta1_QueryValidatorsResponse>
 
   /// Validator queries validator info for given validator address.
   func validator(request: Cosmos_Staking_V1beta1_QueryValidatorRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Cosmos_Staking_V1beta1_QueryValidatorResponse>
 
   /// ValidatorDelegations queries delegate info for given validator.
+  ///
+  /// When called from another module, this query might consume a high amount of
+  /// gas if the pagination field is incorrectly set.
   func validatorDelegations(request: Cosmos_Staking_V1beta1_QueryValidatorDelegationsRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Cosmos_Staking_V1beta1_QueryValidatorDelegationsResponse>
 
   /// ValidatorUnbondingDelegations queries unbonding delegations of a validator.
+  ///
+  /// When called from another module, this query might consume a high amount of
+  /// gas if the pagination field is incorrectly set.
   func validatorUnbondingDelegations(request: Cosmos_Staking_V1beta1_QueryValidatorUnbondingDelegationsRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Cosmos_Staking_V1beta1_QueryValidatorUnbondingDelegationsResponse>
 
   /// Delegation queries delegate info for given validator delegator pair.
@@ -458,17 +1077,29 @@ internal protocol Cosmos_Staking_V1beta1_QueryProvider: CallHandlerProvider {
   func unbondingDelegation(request: Cosmos_Staking_V1beta1_QueryUnbondingDelegationRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Cosmos_Staking_V1beta1_QueryUnbondingDelegationResponse>
 
   /// DelegatorDelegations queries all delegations of a given delegator address.
+  ///
+  /// When called from another module, this query might consume a high amount of
+  /// gas if the pagination field is incorrectly set.
   func delegatorDelegations(request: Cosmos_Staking_V1beta1_QueryDelegatorDelegationsRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Cosmos_Staking_V1beta1_QueryDelegatorDelegationsResponse>
 
   /// DelegatorUnbondingDelegations queries all unbonding delegations of a given
   /// delegator address.
+  ///
+  /// When called from another module, this query might consume a high amount of
+  /// gas if the pagination field is incorrectly set.
   func delegatorUnbondingDelegations(request: Cosmos_Staking_V1beta1_QueryDelegatorUnbondingDelegationsRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Cosmos_Staking_V1beta1_QueryDelegatorUnbondingDelegationsResponse>
 
   /// Redelegations queries redelegations of given address.
+  ///
+  /// When called from another module, this query might consume a high amount of
+  /// gas if the pagination field is incorrectly set.
   func redelegations(request: Cosmos_Staking_V1beta1_QueryRedelegationsRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Cosmos_Staking_V1beta1_QueryRedelegationsResponse>
 
   /// DelegatorValidators queries all validators info for given delegator
   /// address.
+  ///
+  /// When called from another module, this query might consume a high amount of
+  /// gas if the pagination field is incorrectly set.
   func delegatorValidators(request: Cosmos_Staking_V1beta1_QueryDelegatorValidatorsRequest, context: StatusOnlyCallContext) -> EventLoopFuture<Cosmos_Staking_V1beta1_QueryDelegatorValidatorsResponse>
 
   /// DelegatorValidator queries validator info for given delegator validator
@@ -486,7 +1117,9 @@ internal protocol Cosmos_Staking_V1beta1_QueryProvider: CallHandlerProvider {
 }
 
 extension Cosmos_Staking_V1beta1_QueryProvider {
-  internal var serviceName: Substring { return "cosmos.staking.v1beta1.Query" }
+  internal var serviceName: Substring {
+    return Cosmos_Staking_V1beta1_QueryServerMetadata.serviceDescriptor.fullName[...]
+  }
 
   /// Determines, calls and returns the appropriate request handler, depending on the request's method.
   /// Returns nil for methods not handled by this service.
@@ -627,6 +1260,275 @@ extension Cosmos_Staking_V1beta1_QueryProvider {
   }
 }
 
+/// Query defines the gRPC querier service.
+///
+/// To implement a server, implement an object which conforms to this protocol.
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal protocol Cosmos_Staking_V1beta1_QueryAsyncProvider: CallHandlerProvider {
+  static var serviceDescriptor: GRPCServiceDescriptor { get }
+  var interceptors: Cosmos_Staking_V1beta1_QueryServerInterceptorFactoryProtocol? { get }
+
+  /// Validators queries all validators that match the given status.
+  ///
+  /// When called from another module, this query might consume a high amount of
+  /// gas if the pagination field is incorrectly set.
+  @Sendable func validators(
+    request: Cosmos_Staking_V1beta1_QueryValidatorsRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Staking_V1beta1_QueryValidatorsResponse
+
+  /// Validator queries validator info for given validator address.
+  @Sendable func validator(
+    request: Cosmos_Staking_V1beta1_QueryValidatorRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Staking_V1beta1_QueryValidatorResponse
+
+  /// ValidatorDelegations queries delegate info for given validator.
+  ///
+  /// When called from another module, this query might consume a high amount of
+  /// gas if the pagination field is incorrectly set.
+  @Sendable func validatorDelegations(
+    request: Cosmos_Staking_V1beta1_QueryValidatorDelegationsRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Staking_V1beta1_QueryValidatorDelegationsResponse
+
+  /// ValidatorUnbondingDelegations queries unbonding delegations of a validator.
+  ///
+  /// When called from another module, this query might consume a high amount of
+  /// gas if the pagination field is incorrectly set.
+  @Sendable func validatorUnbondingDelegations(
+    request: Cosmos_Staking_V1beta1_QueryValidatorUnbondingDelegationsRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Staking_V1beta1_QueryValidatorUnbondingDelegationsResponse
+
+  /// Delegation queries delegate info for given validator delegator pair.
+  @Sendable func delegation(
+    request: Cosmos_Staking_V1beta1_QueryDelegationRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Staking_V1beta1_QueryDelegationResponse
+
+  /// UnbondingDelegation queries unbonding info for given validator delegator
+  /// pair.
+  @Sendable func unbondingDelegation(
+    request: Cosmos_Staking_V1beta1_QueryUnbondingDelegationRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Staking_V1beta1_QueryUnbondingDelegationResponse
+
+  /// DelegatorDelegations queries all delegations of a given delegator address.
+  ///
+  /// When called from another module, this query might consume a high amount of
+  /// gas if the pagination field is incorrectly set.
+  @Sendable func delegatorDelegations(
+    request: Cosmos_Staking_V1beta1_QueryDelegatorDelegationsRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Staking_V1beta1_QueryDelegatorDelegationsResponse
+
+  /// DelegatorUnbondingDelegations queries all unbonding delegations of a given
+  /// delegator address.
+  ///
+  /// When called from another module, this query might consume a high amount of
+  /// gas if the pagination field is incorrectly set.
+  @Sendable func delegatorUnbondingDelegations(
+    request: Cosmos_Staking_V1beta1_QueryDelegatorUnbondingDelegationsRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Staking_V1beta1_QueryDelegatorUnbondingDelegationsResponse
+
+  /// Redelegations queries redelegations of given address.
+  ///
+  /// When called from another module, this query might consume a high amount of
+  /// gas if the pagination field is incorrectly set.
+  @Sendable func redelegations(
+    request: Cosmos_Staking_V1beta1_QueryRedelegationsRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Staking_V1beta1_QueryRedelegationsResponse
+
+  /// DelegatorValidators queries all validators info for given delegator
+  /// address.
+  ///
+  /// When called from another module, this query might consume a high amount of
+  /// gas if the pagination field is incorrectly set.
+  @Sendable func delegatorValidators(
+    request: Cosmos_Staking_V1beta1_QueryDelegatorValidatorsRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Staking_V1beta1_QueryDelegatorValidatorsResponse
+
+  /// DelegatorValidator queries validator info for given delegator validator
+  /// pair.
+  @Sendable func delegatorValidator(
+    request: Cosmos_Staking_V1beta1_QueryDelegatorValidatorRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Staking_V1beta1_QueryDelegatorValidatorResponse
+
+  /// HistoricalInfo queries the historical info for given height.
+  @Sendable func historicalInfo(
+    request: Cosmos_Staking_V1beta1_QueryHistoricalInfoRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Staking_V1beta1_QueryHistoricalInfoResponse
+
+  /// Pool queries the pool info.
+  @Sendable func pool(
+    request: Cosmos_Staking_V1beta1_QueryPoolRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Staking_V1beta1_QueryPoolResponse
+
+  /// Parameters queries the staking parameters.
+  @Sendable func params(
+    request: Cosmos_Staking_V1beta1_QueryParamsRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Staking_V1beta1_QueryParamsResponse
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Staking_V1beta1_QueryAsyncProvider {
+  internal static var serviceDescriptor: GRPCServiceDescriptor {
+    return Cosmos_Staking_V1beta1_QueryServerMetadata.serviceDescriptor
+  }
+
+  internal var serviceName: Substring {
+    return Cosmos_Staking_V1beta1_QueryServerMetadata.serviceDescriptor.fullName[...]
+  }
+
+  internal var interceptors: Cosmos_Staking_V1beta1_QueryServerInterceptorFactoryProtocol? {
+    return nil
+  }
+
+  internal func handle(
+    method name: Substring,
+    context: CallHandlerContext
+  ) -> GRPCServerHandlerProtocol? {
+    switch name {
+    case "Validators":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Staking_V1beta1_QueryValidatorsRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Staking_V1beta1_QueryValidatorsResponse>(),
+        interceptors: self.interceptors?.makeValidatorsInterceptors() ?? [],
+        wrapping: self.validators(request:context:)
+      )
+
+    case "Validator":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Staking_V1beta1_QueryValidatorRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Staking_V1beta1_QueryValidatorResponse>(),
+        interceptors: self.interceptors?.makeValidatorInterceptors() ?? [],
+        wrapping: self.validator(request:context:)
+      )
+
+    case "ValidatorDelegations":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Staking_V1beta1_QueryValidatorDelegationsRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Staking_V1beta1_QueryValidatorDelegationsResponse>(),
+        interceptors: self.interceptors?.makeValidatorDelegationsInterceptors() ?? [],
+        wrapping: self.validatorDelegations(request:context:)
+      )
+
+    case "ValidatorUnbondingDelegations":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Staking_V1beta1_QueryValidatorUnbondingDelegationsRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Staking_V1beta1_QueryValidatorUnbondingDelegationsResponse>(),
+        interceptors: self.interceptors?.makeValidatorUnbondingDelegationsInterceptors() ?? [],
+        wrapping: self.validatorUnbondingDelegations(request:context:)
+      )
+
+    case "Delegation":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Staking_V1beta1_QueryDelegationRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Staking_V1beta1_QueryDelegationResponse>(),
+        interceptors: self.interceptors?.makeDelegationInterceptors() ?? [],
+        wrapping: self.delegation(request:context:)
+      )
+
+    case "UnbondingDelegation":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Staking_V1beta1_QueryUnbondingDelegationRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Staking_V1beta1_QueryUnbondingDelegationResponse>(),
+        interceptors: self.interceptors?.makeUnbondingDelegationInterceptors() ?? [],
+        wrapping: self.unbondingDelegation(request:context:)
+      )
+
+    case "DelegatorDelegations":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Staking_V1beta1_QueryDelegatorDelegationsRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Staking_V1beta1_QueryDelegatorDelegationsResponse>(),
+        interceptors: self.interceptors?.makeDelegatorDelegationsInterceptors() ?? [],
+        wrapping: self.delegatorDelegations(request:context:)
+      )
+
+    case "DelegatorUnbondingDelegations":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Staking_V1beta1_QueryDelegatorUnbondingDelegationsRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Staking_V1beta1_QueryDelegatorUnbondingDelegationsResponse>(),
+        interceptors: self.interceptors?.makeDelegatorUnbondingDelegationsInterceptors() ?? [],
+        wrapping: self.delegatorUnbondingDelegations(request:context:)
+      )
+
+    case "Redelegations":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Staking_V1beta1_QueryRedelegationsRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Staking_V1beta1_QueryRedelegationsResponse>(),
+        interceptors: self.interceptors?.makeRedelegationsInterceptors() ?? [],
+        wrapping: self.redelegations(request:context:)
+      )
+
+    case "DelegatorValidators":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Staking_V1beta1_QueryDelegatorValidatorsRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Staking_V1beta1_QueryDelegatorValidatorsResponse>(),
+        interceptors: self.interceptors?.makeDelegatorValidatorsInterceptors() ?? [],
+        wrapping: self.delegatorValidators(request:context:)
+      )
+
+    case "DelegatorValidator":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Staking_V1beta1_QueryDelegatorValidatorRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Staking_V1beta1_QueryDelegatorValidatorResponse>(),
+        interceptors: self.interceptors?.makeDelegatorValidatorInterceptors() ?? [],
+        wrapping: self.delegatorValidator(request:context:)
+      )
+
+    case "HistoricalInfo":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Staking_V1beta1_QueryHistoricalInfoRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Staking_V1beta1_QueryHistoricalInfoResponse>(),
+        interceptors: self.interceptors?.makeHistoricalInfoInterceptors() ?? [],
+        wrapping: self.historicalInfo(request:context:)
+      )
+
+    case "Pool":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Staking_V1beta1_QueryPoolRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Staking_V1beta1_QueryPoolResponse>(),
+        interceptors: self.interceptors?.makePoolInterceptors() ?? [],
+        wrapping: self.pool(request:context:)
+      )
+
+    case "Params":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Staking_V1beta1_QueryParamsRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Staking_V1beta1_QueryParamsResponse>(),
+        interceptors: self.interceptors?.makeParamsInterceptors() ?? [],
+        wrapping: self.params(request:context:)
+      )
+
+    default:
+      return nil
+    }
+  }
+}
+
 internal protocol Cosmos_Staking_V1beta1_QueryServerInterceptorFactoryProtocol {
 
   /// - Returns: Interceptors to use when handling 'validators'.
@@ -684,4 +1586,113 @@ internal protocol Cosmos_Staking_V1beta1_QueryServerInterceptorFactoryProtocol {
   /// - Returns: Interceptors to use when handling 'params'.
   ///   Defaults to calling `self.makeInterceptors()`.
   func makeParamsInterceptors() -> [ServerInterceptor<Cosmos_Staking_V1beta1_QueryParamsRequest, Cosmos_Staking_V1beta1_QueryParamsResponse>]
+}
+
+internal enum Cosmos_Staking_V1beta1_QueryServerMetadata {
+  internal static let serviceDescriptor = GRPCServiceDescriptor(
+    name: "Query",
+    fullName: "cosmos.staking.v1beta1.Query",
+    methods: [
+      Cosmos_Staking_V1beta1_QueryServerMetadata.Methods.validators,
+      Cosmos_Staking_V1beta1_QueryServerMetadata.Methods.validator,
+      Cosmos_Staking_V1beta1_QueryServerMetadata.Methods.validatorDelegations,
+      Cosmos_Staking_V1beta1_QueryServerMetadata.Methods.validatorUnbondingDelegations,
+      Cosmos_Staking_V1beta1_QueryServerMetadata.Methods.delegation,
+      Cosmos_Staking_V1beta1_QueryServerMetadata.Methods.unbondingDelegation,
+      Cosmos_Staking_V1beta1_QueryServerMetadata.Methods.delegatorDelegations,
+      Cosmos_Staking_V1beta1_QueryServerMetadata.Methods.delegatorUnbondingDelegations,
+      Cosmos_Staking_V1beta1_QueryServerMetadata.Methods.redelegations,
+      Cosmos_Staking_V1beta1_QueryServerMetadata.Methods.delegatorValidators,
+      Cosmos_Staking_V1beta1_QueryServerMetadata.Methods.delegatorValidator,
+      Cosmos_Staking_V1beta1_QueryServerMetadata.Methods.historicalInfo,
+      Cosmos_Staking_V1beta1_QueryServerMetadata.Methods.pool,
+      Cosmos_Staking_V1beta1_QueryServerMetadata.Methods.params,
+    ]
+  )
+
+  internal enum Methods {
+    internal static let validators = GRPCMethodDescriptor(
+      name: "Validators",
+      path: "/cosmos.staking.v1beta1.Query/Validators",
+      type: GRPCCallType.unary
+    )
+
+    internal static let validator = GRPCMethodDescriptor(
+      name: "Validator",
+      path: "/cosmos.staking.v1beta1.Query/Validator",
+      type: GRPCCallType.unary
+    )
+
+    internal static let validatorDelegations = GRPCMethodDescriptor(
+      name: "ValidatorDelegations",
+      path: "/cosmos.staking.v1beta1.Query/ValidatorDelegations",
+      type: GRPCCallType.unary
+    )
+
+    internal static let validatorUnbondingDelegations = GRPCMethodDescriptor(
+      name: "ValidatorUnbondingDelegations",
+      path: "/cosmos.staking.v1beta1.Query/ValidatorUnbondingDelegations",
+      type: GRPCCallType.unary
+    )
+
+    internal static let delegation = GRPCMethodDescriptor(
+      name: "Delegation",
+      path: "/cosmos.staking.v1beta1.Query/Delegation",
+      type: GRPCCallType.unary
+    )
+
+    internal static let unbondingDelegation = GRPCMethodDescriptor(
+      name: "UnbondingDelegation",
+      path: "/cosmos.staking.v1beta1.Query/UnbondingDelegation",
+      type: GRPCCallType.unary
+    )
+
+    internal static let delegatorDelegations = GRPCMethodDescriptor(
+      name: "DelegatorDelegations",
+      path: "/cosmos.staking.v1beta1.Query/DelegatorDelegations",
+      type: GRPCCallType.unary
+    )
+
+    internal static let delegatorUnbondingDelegations = GRPCMethodDescriptor(
+      name: "DelegatorUnbondingDelegations",
+      path: "/cosmos.staking.v1beta1.Query/DelegatorUnbondingDelegations",
+      type: GRPCCallType.unary
+    )
+
+    internal static let redelegations = GRPCMethodDescriptor(
+      name: "Redelegations",
+      path: "/cosmos.staking.v1beta1.Query/Redelegations",
+      type: GRPCCallType.unary
+    )
+
+    internal static let delegatorValidators = GRPCMethodDescriptor(
+      name: "DelegatorValidators",
+      path: "/cosmos.staking.v1beta1.Query/DelegatorValidators",
+      type: GRPCCallType.unary
+    )
+
+    internal static let delegatorValidator = GRPCMethodDescriptor(
+      name: "DelegatorValidator",
+      path: "/cosmos.staking.v1beta1.Query/DelegatorValidator",
+      type: GRPCCallType.unary
+    )
+
+    internal static let historicalInfo = GRPCMethodDescriptor(
+      name: "HistoricalInfo",
+      path: "/cosmos.staking.v1beta1.Query/HistoricalInfo",
+      type: GRPCCallType.unary
+    )
+
+    internal static let pool = GRPCMethodDescriptor(
+      name: "Pool",
+      path: "/cosmos.staking.v1beta1.Query/Pool",
+      type: GRPCCallType.unary
+    )
+
+    internal static let params = GRPCMethodDescriptor(
+      name: "Params",
+      path: "/cosmos.staking.v1beta1.Query/Params",
+      type: GRPCCallType.unary
+    )
+  }
 }

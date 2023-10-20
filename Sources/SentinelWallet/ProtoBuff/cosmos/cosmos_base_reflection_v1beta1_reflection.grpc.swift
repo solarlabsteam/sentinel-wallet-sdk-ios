@@ -22,6 +22,7 @@
 //
 import GRPC
 import NIO
+import NIOConcurrencyHelpers
 import SwiftProtobuf
 
 
@@ -60,7 +61,7 @@ extension Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Base_Reflection_V1beta1_ListAllInterfacesRequest, Cosmos_Base_Reflection_V1beta1_ListAllInterfacesResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.base.reflection.v1beta1.ReflectionService/ListAllInterfaces",
+      path: Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientMetadata.Methods.listAllInterfaces.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeListAllInterfacesInterceptors() ?? []
@@ -79,7 +80,7 @@ extension Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientProtocol {
     callOptions: CallOptions? = nil
   ) -> UnaryCall<Cosmos_Base_Reflection_V1beta1_ListImplementationsRequest, Cosmos_Base_Reflection_V1beta1_ListImplementationsResponse> {
     return self.makeUnaryCall(
-      path: "/cosmos.base.reflection.v1beta1.ReflectionService/ListImplementations",
+      path: Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientMetadata.Methods.listImplementations.path,
       request: request,
       callOptions: callOptions ?? self.defaultCallOptions,
       interceptors: self.interceptors?.makeListImplementationsInterceptors() ?? []
@@ -87,17 +88,43 @@ extension Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientProtocol {
   }
 }
 
-internal protocol Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientInterceptorFactoryProtocol {
+@available(*, deprecated)
+extension Cosmos_Base_Reflection_V1beta1_ReflectionServiceClient: @unchecked Sendable {}
 
-  /// - Returns: Interceptors to use when invoking 'listAllInterfaces'.
-  func makeListAllInterfacesInterceptors() -> [ClientInterceptor<Cosmos_Base_Reflection_V1beta1_ListAllInterfacesRequest, Cosmos_Base_Reflection_V1beta1_ListAllInterfacesResponse>]
+@available(*, deprecated, renamed: "Cosmos_Base_Reflection_V1beta1_ReflectionServiceNIOClient")
+internal final class Cosmos_Base_Reflection_V1beta1_ReflectionServiceClient: Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientProtocol {
+  private let lock = Lock()
+  private var _defaultCallOptions: CallOptions
+  private var _interceptors: Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientInterceptorFactoryProtocol?
+  internal let channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions {
+    get { self.lock.withLock { return self._defaultCallOptions } }
+    set { self.lock.withLockVoid { self._defaultCallOptions = newValue } }
+  }
+  internal var interceptors: Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientInterceptorFactoryProtocol? {
+    get { self.lock.withLock { return self._interceptors } }
+    set { self.lock.withLockVoid { self._interceptors = newValue } }
+  }
 
-  /// - Returns: Interceptors to use when invoking 'listImplementations'.
-  func makeListImplementationsInterceptors() -> [ClientInterceptor<Cosmos_Base_Reflection_V1beta1_ListImplementationsRequest, Cosmos_Base_Reflection_V1beta1_ListImplementationsResponse>]
+  /// Creates a client for the cosmos.base.reflection.v1beta1.ReflectionService service.
+  ///
+  /// - Parameters:
+  ///   - channel: `GRPCChannel` to the service host.
+  ///   - defaultCallOptions: Options to use for each service call if the user doesn't provide them.
+  ///   - interceptors: A factory providing interceptors for each RPC.
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self._defaultCallOptions = defaultCallOptions
+    self._interceptors = interceptors
+  }
 }
 
-internal final class Cosmos_Base_Reflection_V1beta1_ReflectionServiceClient: Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientProtocol {
-  internal let channel: GRPCChannel
+internal struct Cosmos_Base_Reflection_V1beta1_ReflectionServiceNIOClient: Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientProtocol {
+  internal var channel: GRPCChannel
   internal var defaultCallOptions: CallOptions
   internal var interceptors: Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientInterceptorFactoryProtocol?
 
@@ -119,6 +146,136 @@ internal final class Cosmos_Base_Reflection_V1beta1_ReflectionServiceClient: Cos
 }
 
 /// ReflectionService defines a service for interface reflection.
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal protocol Cosmos_Base_Reflection_V1beta1_ReflectionServiceAsyncClientProtocol: GRPCClient {
+  static var serviceDescriptor: GRPCServiceDescriptor { get }
+  var interceptors: Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientInterceptorFactoryProtocol? { get }
+
+  func makeListAllInterfacesCall(
+    _ request: Cosmos_Base_Reflection_V1beta1_ListAllInterfacesRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Base_Reflection_V1beta1_ListAllInterfacesRequest, Cosmos_Base_Reflection_V1beta1_ListAllInterfacesResponse>
+
+  func makeListImplementationsCall(
+    _ request: Cosmos_Base_Reflection_V1beta1_ListImplementationsRequest,
+    callOptions: CallOptions?
+  ) -> GRPCAsyncUnaryCall<Cosmos_Base_Reflection_V1beta1_ListImplementationsRequest, Cosmos_Base_Reflection_V1beta1_ListImplementationsResponse>
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Base_Reflection_V1beta1_ReflectionServiceAsyncClientProtocol {
+  internal static var serviceDescriptor: GRPCServiceDescriptor {
+    return Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientMetadata.serviceDescriptor
+  }
+
+  internal var interceptors: Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientInterceptorFactoryProtocol? {
+    return nil
+  }
+
+  internal func makeListAllInterfacesCall(
+    _ request: Cosmos_Base_Reflection_V1beta1_ListAllInterfacesRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Base_Reflection_V1beta1_ListAllInterfacesRequest, Cosmos_Base_Reflection_V1beta1_ListAllInterfacesResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientMetadata.Methods.listAllInterfaces.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeListAllInterfacesInterceptors() ?? []
+    )
+  }
+
+  internal func makeListImplementationsCall(
+    _ request: Cosmos_Base_Reflection_V1beta1_ListImplementationsRequest,
+    callOptions: CallOptions? = nil
+  ) -> GRPCAsyncUnaryCall<Cosmos_Base_Reflection_V1beta1_ListImplementationsRequest, Cosmos_Base_Reflection_V1beta1_ListImplementationsResponse> {
+    return self.makeAsyncUnaryCall(
+      path: Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientMetadata.Methods.listImplementations.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeListImplementationsInterceptors() ?? []
+    )
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Base_Reflection_V1beta1_ReflectionServiceAsyncClientProtocol {
+  internal func listAllInterfaces(
+    _ request: Cosmos_Base_Reflection_V1beta1_ListAllInterfacesRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Base_Reflection_V1beta1_ListAllInterfacesResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientMetadata.Methods.listAllInterfaces.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeListAllInterfacesInterceptors() ?? []
+    )
+  }
+
+  internal func listImplementations(
+    _ request: Cosmos_Base_Reflection_V1beta1_ListImplementationsRequest,
+    callOptions: CallOptions? = nil
+  ) async throws -> Cosmos_Base_Reflection_V1beta1_ListImplementationsResponse {
+    return try await self.performAsyncUnaryCall(
+      path: Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientMetadata.Methods.listImplementations.path,
+      request: request,
+      callOptions: callOptions ?? self.defaultCallOptions,
+      interceptors: self.interceptors?.makeListImplementationsInterceptors() ?? []
+    )
+  }
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal struct Cosmos_Base_Reflection_V1beta1_ReflectionServiceAsyncClient: Cosmos_Base_Reflection_V1beta1_ReflectionServiceAsyncClientProtocol {
+  internal var channel: GRPCChannel
+  internal var defaultCallOptions: CallOptions
+  internal var interceptors: Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientInterceptorFactoryProtocol?
+
+  internal init(
+    channel: GRPCChannel,
+    defaultCallOptions: CallOptions = CallOptions(),
+    interceptors: Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientInterceptorFactoryProtocol? = nil
+  ) {
+    self.channel = channel
+    self.defaultCallOptions = defaultCallOptions
+    self.interceptors = interceptors
+  }
+}
+
+internal protocol Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientInterceptorFactoryProtocol: Sendable {
+
+  /// - Returns: Interceptors to use when invoking 'listAllInterfaces'.
+  func makeListAllInterfacesInterceptors() -> [ClientInterceptor<Cosmos_Base_Reflection_V1beta1_ListAllInterfacesRequest, Cosmos_Base_Reflection_V1beta1_ListAllInterfacesResponse>]
+
+  /// - Returns: Interceptors to use when invoking 'listImplementations'.
+  func makeListImplementationsInterceptors() -> [ClientInterceptor<Cosmos_Base_Reflection_V1beta1_ListImplementationsRequest, Cosmos_Base_Reflection_V1beta1_ListImplementationsResponse>]
+}
+
+internal enum Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientMetadata {
+  internal static let serviceDescriptor = GRPCServiceDescriptor(
+    name: "ReflectionService",
+    fullName: "cosmos.base.reflection.v1beta1.ReflectionService",
+    methods: [
+      Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientMetadata.Methods.listAllInterfaces,
+      Cosmos_Base_Reflection_V1beta1_ReflectionServiceClientMetadata.Methods.listImplementations,
+    ]
+  )
+
+  internal enum Methods {
+    internal static let listAllInterfaces = GRPCMethodDescriptor(
+      name: "ListAllInterfaces",
+      path: "/cosmos.base.reflection.v1beta1.ReflectionService/ListAllInterfaces",
+      type: GRPCCallType.unary
+    )
+
+    internal static let listImplementations = GRPCMethodDescriptor(
+      name: "ListImplementations",
+      path: "/cosmos.base.reflection.v1beta1.ReflectionService/ListImplementations",
+      type: GRPCCallType.unary
+    )
+  }
+}
+
+/// ReflectionService defines a service for interface reflection.
 ///
 /// To build a server, implement a class that conforms to this protocol.
 internal protocol Cosmos_Base_Reflection_V1beta1_ReflectionServiceProvider: CallHandlerProvider {
@@ -134,7 +291,9 @@ internal protocol Cosmos_Base_Reflection_V1beta1_ReflectionServiceProvider: Call
 }
 
 extension Cosmos_Base_Reflection_V1beta1_ReflectionServiceProvider {
-  internal var serviceName: Substring { return "cosmos.base.reflection.v1beta1.ReflectionService" }
+  internal var serviceName: Substring {
+    return Cosmos_Base_Reflection_V1beta1_ReflectionServiceServerMetadata.serviceDescriptor.fullName[...]
+  }
 
   /// Determines, calls and returns the appropriate request handler, depending on the request's method.
   /// Returns nil for methods not handled by this service.
@@ -167,6 +326,72 @@ extension Cosmos_Base_Reflection_V1beta1_ReflectionServiceProvider {
   }
 }
 
+/// ReflectionService defines a service for interface reflection.
+///
+/// To implement a server, implement an object which conforms to this protocol.
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+internal protocol Cosmos_Base_Reflection_V1beta1_ReflectionServiceAsyncProvider: CallHandlerProvider {
+  static var serviceDescriptor: GRPCServiceDescriptor { get }
+  var interceptors: Cosmos_Base_Reflection_V1beta1_ReflectionServiceServerInterceptorFactoryProtocol? { get }
+
+  /// ListAllInterfaces lists all the interfaces registered in the interface
+  /// registry.
+  @Sendable func listAllInterfaces(
+    request: Cosmos_Base_Reflection_V1beta1_ListAllInterfacesRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Base_Reflection_V1beta1_ListAllInterfacesResponse
+
+  /// ListImplementations list all the concrete types that implement a given
+  /// interface.
+  @Sendable func listImplementations(
+    request: Cosmos_Base_Reflection_V1beta1_ListImplementationsRequest,
+    context: GRPCAsyncServerCallContext
+  ) async throws -> Cosmos_Base_Reflection_V1beta1_ListImplementationsResponse
+}
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension Cosmos_Base_Reflection_V1beta1_ReflectionServiceAsyncProvider {
+  internal static var serviceDescriptor: GRPCServiceDescriptor {
+    return Cosmos_Base_Reflection_V1beta1_ReflectionServiceServerMetadata.serviceDescriptor
+  }
+
+  internal var serviceName: Substring {
+    return Cosmos_Base_Reflection_V1beta1_ReflectionServiceServerMetadata.serviceDescriptor.fullName[...]
+  }
+
+  internal var interceptors: Cosmos_Base_Reflection_V1beta1_ReflectionServiceServerInterceptorFactoryProtocol? {
+    return nil
+  }
+
+  internal func handle(
+    method name: Substring,
+    context: CallHandlerContext
+  ) -> GRPCServerHandlerProtocol? {
+    switch name {
+    case "ListAllInterfaces":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Base_Reflection_V1beta1_ListAllInterfacesRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Base_Reflection_V1beta1_ListAllInterfacesResponse>(),
+        interceptors: self.interceptors?.makeListAllInterfacesInterceptors() ?? [],
+        wrapping: self.listAllInterfaces(request:context:)
+      )
+
+    case "ListImplementations":
+      return GRPCAsyncServerHandler(
+        context: context,
+        requestDeserializer: ProtobufDeserializer<Cosmos_Base_Reflection_V1beta1_ListImplementationsRequest>(),
+        responseSerializer: ProtobufSerializer<Cosmos_Base_Reflection_V1beta1_ListImplementationsResponse>(),
+        interceptors: self.interceptors?.makeListImplementationsInterceptors() ?? [],
+        wrapping: self.listImplementations(request:context:)
+      )
+
+    default:
+      return nil
+    }
+  }
+}
+
 internal protocol Cosmos_Base_Reflection_V1beta1_ReflectionServiceServerInterceptorFactoryProtocol {
 
   /// - Returns: Interceptors to use when handling 'listAllInterfaces'.
@@ -176,4 +401,29 @@ internal protocol Cosmos_Base_Reflection_V1beta1_ReflectionServiceServerIntercep
   /// - Returns: Interceptors to use when handling 'listImplementations'.
   ///   Defaults to calling `self.makeInterceptors()`.
   func makeListImplementationsInterceptors() -> [ServerInterceptor<Cosmos_Base_Reflection_V1beta1_ListImplementationsRequest, Cosmos_Base_Reflection_V1beta1_ListImplementationsResponse>]
+}
+
+internal enum Cosmos_Base_Reflection_V1beta1_ReflectionServiceServerMetadata {
+  internal static let serviceDescriptor = GRPCServiceDescriptor(
+    name: "ReflectionService",
+    fullName: "cosmos.base.reflection.v1beta1.ReflectionService",
+    methods: [
+      Cosmos_Base_Reflection_V1beta1_ReflectionServiceServerMetadata.Methods.listAllInterfaces,
+      Cosmos_Base_Reflection_V1beta1_ReflectionServiceServerMetadata.Methods.listImplementations,
+    ]
+  )
+
+  internal enum Methods {
+    internal static let listAllInterfaces = GRPCMethodDescriptor(
+      name: "ListAllInterfaces",
+      path: "/cosmos.base.reflection.v1beta1.ReflectionService/ListAllInterfaces",
+      type: GRPCCallType.unary
+    )
+
+    internal static let listImplementations = GRPCMethodDescriptor(
+      name: "ListImplementations",
+      path: "/cosmos.base.reflection.v1beta1.ReflectionService/ListImplementations",
+      type: GRPCCallType.unary
+    )
+  }
 }
