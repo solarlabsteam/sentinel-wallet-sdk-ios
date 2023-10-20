@@ -10,6 +10,7 @@ import GRPC
 import NIO
 import Alamofire
 
+@available(*, deprecated, message: "Use AsyncNodesProvider instead.")
 final public class NodesProvider {
     private let connectionProvider: ClientConnectionProviderType
     private let transactionProvider: TransactionProviderType

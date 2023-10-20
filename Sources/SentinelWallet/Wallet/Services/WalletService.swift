@@ -30,6 +30,7 @@ public enum WalletServiceError: Error {
     case savingError
 }
 
+@available(*, deprecated, message: "Use AsynsSubscriptionsProviderType and TransactionProvider instead.")
 final public class WalletService {
     private let transactionProvider: TransactionProviderType
     private let connectionProvider: ClientConnectionProviderType

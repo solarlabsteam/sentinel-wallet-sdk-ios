@@ -7,6 +7,7 @@
 
 import Foundation
 
+@available(*, deprecated, message: "Use AsyncNodesProvider instead.")
 public protocol PlansProviderType {
     func subscribe(
         to planID: UInt64,
@@ -32,10 +33,4 @@ public protocol PlansProviderType {
         for providerAddress: String,
         completion: @escaping (Result<[SentinelPlan], Error>) -> Void
     )
-
-    #warning("TODO: update plans")
-//    func queryNodesForPlan(
-//        with id: UInt64,
-//        completion: @escaping (Result<[SentinelNode], Error>) -> Void
-//    )
 }

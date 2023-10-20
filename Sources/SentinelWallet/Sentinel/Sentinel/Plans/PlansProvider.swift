@@ -17,6 +17,7 @@ private struct Constants {
 }
 private let constants = Constants()
 
+@available(*, deprecated, message: "Use AsyncNodesProvider instead.")
 final public class PlansProvider {
     private let connectionProvider: ClientConnectionProviderType
     private let transactionProvider: TransactionProviderType

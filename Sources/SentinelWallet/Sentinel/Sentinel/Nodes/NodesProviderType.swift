@@ -7,6 +7,7 @@
 
 import Foundation
 
+@available(*, deprecated, message: "Use AsyncNodesProviderType instead.")
 public protocol NodesProviderType {
     func queryNodes(
         offset: UInt64,
