@@ -16,7 +16,7 @@ public struct Fee: Codable {
         case tokens = "amount"
     }
 
-    init(_ gas: String, _ amount: [CoinToken] ) {
+    public init(_ gas: String, _ amount: [CoinToken] ) {
         self.gas = gas
         self.tokens = amount
     }

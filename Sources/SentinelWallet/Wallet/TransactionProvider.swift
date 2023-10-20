@@ -28,18 +28,6 @@ enum ValidatorType: String {
     case unbonded = "BOND_STATUS_UNBONDED"
 }
 
-public struct TransactionSender {
-    public let owner: String
-    public let ownerMnemonic: [String]
-    let chainID: String
-
-    public init(owner: String, ownerMnemonic: [String], chainID: String) {
-        self.owner = owner
-        self.ownerMnemonic = ownerMnemonic
-        self.chainID = chainID
-    }
-}
-
 protocol TransactionProviderType {
     func fetchAuthorization(for address: String, completion: @escaping (Result<Google_Protobuf_Any, Error>) -> Void)
 

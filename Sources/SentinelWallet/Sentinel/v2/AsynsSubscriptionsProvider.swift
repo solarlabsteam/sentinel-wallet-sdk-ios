@@ -10,8 +10,6 @@ import GRPC
 import NIO
 
 public protocol AsynsSubscriptionsProviderType {
-    func set(host: String, port: Int)
-    
     func fetchBalance(for wallet: String) async throws -> [String]
     func fetchSubscriptions(limit: UInt64, offset: UInt64, for wallet: String) async throws -> [String]
 }
@@ -32,11 +30,17 @@ final public class AsynsSubscriptionsProvider {
     }
 }
 
-extension AsynsSubscriptionsProvider: AsynsSubscriptionsProviderType {
+// MARK: - ConfigurableProvider
+
+extension AsynsSubscriptionsProvider: ConfigurableProvider {
     public func set(host: String, port: Int) {
-        self.configuration = .init(host: host, port: port)
+        configuration = .init(host: host, port: port)
     }
-    
+}
+
+// MARK: - AsynsSubscriptionsProviderType
+
+extension AsynsSubscriptionsProvider: AsynsSubscriptionsProviderType {
     public func fetchBalance(for wallet: String) async throws -> [String] {
         let channel = connectionProvider.channel(for: configuration.host, port: configuration.port)
         defer {

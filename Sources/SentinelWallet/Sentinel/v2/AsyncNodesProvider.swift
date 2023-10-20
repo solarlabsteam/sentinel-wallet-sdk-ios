@@ -10,8 +10,6 @@ import GRPC
 import NIO
 
 public protocol AsyncNodesProviderType {
-    func set(host: String, port: Int)
-    
     func getActiveNodes(limit: UInt64, offset: UInt64) async throws -> [String]
     func getActiveNodes(for planID: UInt64, limit: UInt64, offset: UInt64) async throws -> [String]
     func getPlans(limit: UInt64, offset: UInt64) async throws -> [String]
@@ -33,11 +31,18 @@ final public class AsyncNodesProvider {
     }
 }
 
-extension AsyncNodesProvider: AsyncNodesProviderType {
+
+// MARK: - ConfigurableProvider
+
+extension AsyncNodesProvider: ConfigurableProvider {
     public func set(host: String, port: Int) {
-        self.configuration = .init(host: host, port: port)
+        configuration = .init(host: host, port: port)
     }
-    
+}
+
+// MARK: - AsyncNodesProviderType
+
+extension AsyncNodesProvider: AsyncNodesProviderType {
     public func getActiveNodes(limit: UInt64, offset: UInt64) async throws -> [String] {
         let channel = connectionProvider.channel(for: configuration.host, port: configuration.port)
         defer {
