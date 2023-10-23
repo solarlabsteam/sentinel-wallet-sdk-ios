@@ -20,4 +20,8 @@ public struct Fee: Codable {
         self.gas = gas
         self.tokens = amount
     }
+    
+    public init(for gas: Int) {
+        self.init(String(gas * 10), [.init(denom: GlobalConstants.denom, amount: String(gas))])
+    }
 }

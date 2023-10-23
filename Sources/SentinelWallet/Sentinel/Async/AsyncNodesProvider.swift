@@ -96,6 +96,7 @@ extension AsyncNodesProvider: AsyncNodesProviderType {
         }
         let request = Sentinel_Plan_V2_QueryPlansRequest.with {
             $0.pagination = page
+            $0.status = .active
         }
         
         let planClient =  Sentinel_Plan_V2_QueryServiceAsyncClient(channel: channel)

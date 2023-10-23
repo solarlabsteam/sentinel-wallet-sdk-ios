@@ -12,12 +12,8 @@ import HDWallet
 import SwiftProtobuf
 
 private struct Constants {
-    let sendMessageURL = "/cosmos.bank.v1beta1.MsgSend"
-    let startSessionURL = "/sentinel.session.v2.MsgStartRequest"
-    let stopSessionURL = "/sentinel.session.v2.MsgEndRequest"
-
     let subscribeToNodeURL = "/sentinel.node.v2.MsgSubscribeRequest"
-    let cancelSubscriptionURL = "/sentinel.subscription.v2.MsgCancelRequest"
+    let subscribeToPlanURL = "/sentinel.plan.v2.MsgSubscribeRequest"
 }
 
 private let constants = Constants()
@@ -26,9 +22,14 @@ public protocol AsyncTransactionProviderType {
     func subscribe(
         sender: TransactionSender,
         node: String,
-        denom: String,
-        gigabytes: Int64,
-        hours: Int64,
+        details: NodePaymentDetails,
+        fee: Fee
+    ) async throws -> String
+    
+    func subscribe(
+        sender: TransactionSender,
+        plan: UInt64,
+        details: PlanPaymentDetails,
         fee: Fee
     ) async throws -> String
 }
@@ -63,17 +64,15 @@ extension AsyncTransactionProvider: AsyncTransactionProviderType {
     public func subscribe(
         sender: TransactionSender,
         node: String,
-        denom: String,
-        gigabytes: Int64,
-        hours: Int64,
+        details: NodePaymentDetails,
         fee: Fee
     ) async throws -> String {
         let startMessage = Sentinel_Node_V2_MsgSubscribeRequest.with {
             $0.from = sender.owner
             $0.nodeAddress = node
-            $0.gigabytes = gigabytes
-            $0.hours = hours
-            $0.denom = denom
+            $0.gigabytes = details.gigabytes
+            $0.hours = details.hours
+            $0.denom = details.denom
         }
         
         let anyMessage = Google_Protobuf_Any.with {
@@ -82,6 +81,26 @@ extension AsyncTransactionProvider: AsyncTransactionProviderType {
         }
         
         return try await broadcast(sender: sender, recipient: node, messages: [anyMessage], fee: fee).jsonString()
+    }    
+    
+    public func subscribe(
+        sender: TransactionSender,
+        plan: UInt64,
+        details: PlanPaymentDetails,
+        fee: Fee
+    ) async throws -> String {
+        let startMessage = Sentinel_Plan_V2_MsgSubscribeRequest.with {
+            $0.from = sender.owner
+            $0.id = plan
+            $0.denom = details.denom
+        }
+        
+        let anyMessage = Google_Protobuf_Any.with {
+            $0.typeURL = constants.subscribeToPlanURL
+            $0.value = try! startMessage.serializedData()
+        }
+        
+        return try await broadcast(sender: sender, recipient: details.address, messages: [anyMessage], fee: fee).jsonString()
     }
 }
 
