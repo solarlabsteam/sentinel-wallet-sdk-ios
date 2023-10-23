@@ -12,6 +12,8 @@ import HDWallet
 import SwiftProtobuf
 
 private struct Constants {
+    let sendMessageURL = "/cosmos.bank.v1beta1.MsgSend"
+    
     let subscribeToNodeURL = "/sentinel.node.v2.MsgSubscribeRequest"
     let subscribeToPlanURL = "/sentinel.plan.v2.MsgSubscribeRequest"
 }
@@ -30,6 +32,13 @@ public protocol AsyncTransactionProviderType {
         sender: TransactionSender,
         plan: UInt64,
         details: PlanPaymentDetails,
+        fee: Fee
+    ) async throws -> String
+    
+    func transfer(
+        sender: TransactionSender,
+        recipient: String,
+        details: DirectPaymentDetails,
         fee: Fee
     ) async throws -> String
 }
@@ -101,6 +110,37 @@ extension AsyncTransactionProvider: AsyncTransactionProviderType {
         }
         
         return try await broadcast(sender: sender, recipient: details.address, messages: [anyMessage], fee: fee).jsonString()
+    }    
+    
+    public func transfer(
+        sender: TransactionSender,
+        recipient: String,
+        details: DirectPaymentDetails,
+        fee: Fee
+    ) async throws -> String {
+        let sendCoin = Cosmos_Base_V1beta1_Coin.with {
+            $0.denom = details.denom
+            $0.amount = details.amount
+        }
+        
+        let sendMessage = Cosmos_Bank_V1beta1_MsgSend.with {
+            $0.fromAddress = sender.owner
+            $0.toAddress = recipient
+            $0.amount = [sendCoin]
+        }
+        
+        let anyMessage = Google_Protobuf_Any.with {
+            $0.typeURL = constants.sendMessageURL
+            $0.value = try! sendMessage.serializedData()
+        }
+        
+        return try await broadcast(
+            sender: sender,
+            recipient: recipient,
+            messages: [anyMessage],
+            memo: details.memo,
+            fee: fee
+        ).jsonString()
     }
 }
 

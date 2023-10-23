@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: - NodePaymentDetails
+
 public struct NodePaymentDetails {
     public let denom: String
     public let gigabytes: Int64
@@ -21,6 +23,8 @@ public struct NodePaymentDetails {
 
 extension NodePaymentDetails: Codable {}
 
+// MARK: - PlanPaymentDetails
+
 public struct PlanPaymentDetails {
     public let address: String
     public let denom: String
@@ -32,3 +36,19 @@ public struct PlanPaymentDetails {
 }
 
 extension PlanPaymentDetails: Codable {}
+
+// MARK: - DirectPaymentDetails
+
+public struct DirectPaymentDetails {
+    public let amount: String
+    public let denom: String
+    public let memo: String?
+    
+    public init(amount: String, denom: String, memo: String?) {
+        self.amount = amount
+        self.denom = denom
+        self.memo = memo
+    }
+}
+
+extension DirectPaymentDetails: Codable {}
