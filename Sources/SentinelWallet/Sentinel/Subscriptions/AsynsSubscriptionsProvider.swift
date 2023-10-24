@@ -87,3 +87,49 @@ extension AsynsSubscriptionsProvider: AsynsSubscriptionsProviderType {
             }
     }
 }
+//public func queryAllocation(
+//    address: String,
+//    subscriptionId: UInt64,
+//    completion: @escaping (Result<Allocation, Error>) -> Void
+//){
+//    connectionProvider.openConnection(for: { channel in
+//        do {
+//            let request = Sentinel_Subscription_V2_QueryAllocationRequest.with {
+//                $0.address = address
+//                $0.id = subscriptionId
+//            }
+//            let response = try Sentinel_Subscription_V2_QueryServiceClient(channel: channel)
+//                .queryAllocation(request, callOptions: self.callOptions)
+//                .response
+//                .wait()
+//
+//            completion(.success(Allocation(from: response.allocation)))
+//        } catch {
+//            completion(.failure(error))
+//        }
+//    })
+//}
+//
+//public func querySessions(
+//    address: String,
+//    completion: @escaping (Result<UInt64?, Error>) -> Void
+//){
+//    connectionProvider.openConnection(for: { channel in
+//        do {
+//            let request = Sentinel_Session_V2_QuerySessionsForAccountRequest.with {
+//                $0.address = address
+//            }
+//            let response = try Sentinel_Session_V2_QueryServiceClient(channel: channel)
+//                .querySessionsForAccount(request)
+//                .response
+//                .wait()
+//                .sessions
+//                .first(where: { $0.status == .active })?
+//                .id
+//
+//            completion(.success(response))
+//        } catch {
+//            completion(.failure(error))
+//        }
+//    })
+//}

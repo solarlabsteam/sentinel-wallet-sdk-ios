@@ -165,8 +165,8 @@ extension AsyncTransactionProvider {
         messages: [Google_Protobuf_Any],
         memo: String? = nil,
         fee: Fee
-    ) async throws -> Cosmos_Tx_V1beta1_BroadcastTxResponse {
-        guard recipient != sender.owner else { throw WalletServiceError.accountMatchesDestination }
+    ) async throws -> Cosmos_Base_Abci_V1beta1_TxResponse {
+        guard recipient != sender.owner else { throw TransactionError.accountMatchesDestination }
         
         let accountGRPC = try await fetchAuthorization(for: sender.owner)
         
@@ -185,11 +185,108 @@ extension AsyncTransactionProvider {
     
     private func broadcastGrpcTx(
         signedRequest: Cosmos_Tx_V1beta1_BroadcastTxRequest
-    ) async throws -> Cosmos_Tx_V1beta1_BroadcastTxResponse {
+    ) async throws -> Cosmos_Base_Abci_V1beta1_TxResponse {
         let channel = connectionProvider.channel(for: configuration.host, port: configuration.port)
         defer {
             try? channel.close().wait()
         }
-        return try await Cosmos_Tx_V1beta1_ServiceAsyncClient(channel: channel).broadcastTx(signedRequest)
+        return try await Cosmos_Tx_V1beta1_ServiceAsyncClient(channel: channel).broadcastTx(signedRequest).txResponse
     }
 }
+///// Cancel any type of subscription (to a node or to a plan)
+//public func cancel(
+//    subscriptions: [UInt64],
+//    sender: TransactionSender,
+//    node: String,
+//    completion: @escaping (Result<TransactionResult, Error>) -> Void
+//) {
+//    let messages = subscriptions.map { subscriptionID -> Google_Protobuf_Any in
+//        let startMessage = Sentinel_Subscription_V2_MsgCancelRequest.with {
+//            $0.id = subscriptionID
+//            $0.from = sender.owner
+//        }
+//
+//        let anyMessage = Google_Protobuf_Any.with {
+//            $0.typeURL = constants.cancelSubscriptionURL
+//            $0.value = try! startMessage.serializedData()
+//        }
+//        
+//        return anyMessage
+//    }
+//    
+//    transactionProvider.broadcast(
+//        sender: sender,
+//        recipient: node,
+//        messages: messages,
+//        gasFactor: subscriptions.count,
+//        completion: completion
+//    )
+//}
+//}
+
+//// MARK: - Sessions
+//
+//extension SubscriptionsProvider {
+//public func startNewSession(
+//    on subscriptionID: UInt64,
+//    activeSession: UInt64?,
+//    sender: TransactionSender,
+//    node: String,
+//    completion: @escaping (Result<Bool, Error>) -> Void
+//) {
+//    let stopMessage = formStopMessage(activeSession: activeSession, sender: sender)
+//    let startMessage = Sentinel_Session_V2_MsgStartRequest.with {
+//        $0.id = subscriptionID
+//        $0.from = sender.owner
+//        $0.address = node
+//    }
+//    
+//    let anyMessage = Google_Protobuf_Any.with {
+//        $0.typeURL = constants.startSessionURL
+//        $0.value = try! startMessage.serializedData()
+//    }
+//    
+//    let messages = stopMessage + [anyMessage]
+//    
+//    transactionProvider.broadcast(
+//        sender: sender,
+//        recipient: node,
+//        messages: messages,
+//        gasFactor: 0
+//    ) { result in
+//        let mapped =  result.map { $0.isSuccess }
+//        completion(mapped)
+//    }
+//}
+//
+//public func stop(
+//    activeSession: UInt64,
+//    node: String,
+//    sender: TransactionSender,
+//    completion: @escaping (Result<Bool, Error>) -> Void
+//) {
+//    let stopMessage = formStopMessage(activeSession: activeSession, sender: sender)
+//    transactionProvider.broadcast(
+//        sender: sender,
+//        recipient: node,
+//        messages: stopMessage,
+//        gasFactor: 0
+//    ) { result in
+//        let mapped =  result.map { $0.isSuccess }
+//        completion(mapped)
+//    }
+//}
+//
+//private func formStopMessage(activeSession: UInt64?, sender: TransactionSender) -> [Google_Protobuf_Any] {
+//    guard let activeSession = activeSession else { return [] }
+//    let stopMessage = Sentinel_Session_V2_MsgEndRequest.with {
+//        $0.id = activeSession
+//        $0.from = sender.owner
+//    }
+//    let anyMessage = Google_Protobuf_Any.with {
+//        $0.typeURL = constants.stopSessionURL
+//        $0.value = try! stopMessage.serializedData()
+//    }
+//    return [anyMessage]
+//}
+//}
