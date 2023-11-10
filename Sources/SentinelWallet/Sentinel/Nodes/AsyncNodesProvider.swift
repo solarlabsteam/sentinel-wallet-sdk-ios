@@ -10,9 +10,9 @@ import GRPC
 import NIO
 
 public protocol AsyncNodesProviderType {
-    func getActiveNodes(limit: UInt64, offset: UInt64) async throws -> [String]
-    func getActiveNodes(for planID: UInt64, limit: UInt64, offset: UInt64) async throws -> [String]
-    func getPlans(limit: UInt64, offset: UInt64) async throws -> [String]
+    func getActiveNodes(limit: UInt64, offset: UInt64) async throws -> String
+    func getActiveNodes(for planID: UInt64, limit: UInt64, offset: UInt64) async throws -> String
+    func getPlans(limit: UInt64, offset: UInt64) async throws -> String
 }
 
 final public class AsyncNodesProvider {
@@ -43,7 +43,7 @@ extension AsyncNodesProvider: ConfigurableProvider {
 // MARK: - AsyncNodesProviderType
 
 extension AsyncNodesProvider: AsyncNodesProviderType {
-    public func getActiveNodes(limit: UInt64, offset: UInt64) async throws -> [String] {
+    public func getActiveNodes(limit: UInt64, offset: UInt64) async throws -> String {
         let channel = connectionProvider.channel(for: configuration.host, port: configuration.port)
         defer {
             try? channel.close().wait()
@@ -60,10 +60,10 @@ extension AsyncNodesProvider: AsyncNodesProviderType {
             $0.pagination = page
         }
         
-        return try await nodeClient.queryNodes(request).nodes.compactMap { try? $0.jsonString() }
+        return try await nodeClient.queryNodes(request).jsonString()
     }
        
-    public func getActiveNodes(for planID: UInt64, limit: UInt64, offset: UInt64) async throws -> [String] {
+    public func getActiveNodes(for planID: UInt64, limit: UInt64, offset: UInt64) async throws -> String {
         let channel = connectionProvider.channel(for: configuration.host, port: configuration.port)
         defer {
             try? channel.close().wait()
@@ -81,10 +81,10 @@ extension AsyncNodesProvider: AsyncNodesProviderType {
             $0.pagination = page
         }
         
-        return try await nodeClient.queryNodesForPlan(request).nodes.compactMap { try? $0.jsonString() }
+        return try await nodeClient.queryNodesForPlan(request).jsonString()
     }
     
-    public func getPlans(limit: UInt64, offset: UInt64) async throws -> [String] {
+    public func getPlans(limit: UInt64, offset: UInt64) async throws -> String {
         let channel = connectionProvider.channel(for: configuration.host, port: configuration.port)
         defer {
             try? channel.close().wait()
@@ -100,6 +100,6 @@ extension AsyncNodesProvider: AsyncNodesProviderType {
         }
         
         let planClient =  Sentinel_Plan_V2_QueryServiceAsyncClient(channel: channel)
-        return try await planClient.queryPlans(request).plans.compactMap { try? $0.jsonString() }
+        return try await planClient.queryPlans(request).jsonString()
     }
 }
