@@ -1,5 +1,5 @@
 //
-//  AsynsSubscriptionsProvider.swift
+//  AsyncSubscriptionsProvider.swift
 //
 //
 //  Created by Lika Vorobeva on 20.10.2023.
@@ -9,12 +9,12 @@ import Foundation
 import GRPC
 import NIO
 
-public protocol AsynsSubscriptionsProviderType {
+public protocol AsyncSubscriptionsProviderType {
     func fetchBalance(for wallet: String) async throws -> String
     func fetchSubscriptions(limit: UInt64, offset: UInt64, for wallet: String) async throws -> String
 }
 
-final public class AsynsSubscriptionsProvider {
+final public class AsyncSubscriptionsProvider {
     private let connectionProvider: AsyncClientConnectionProviderType
     private var configuration: ClientConnectionConfiguration
     
@@ -32,15 +32,15 @@ final public class AsynsSubscriptionsProvider {
 
 // MARK: - ConfigurableProvider
 
-extension AsynsSubscriptionsProvider: ConfigurableProvider {
+extension AsyncSubscriptionsProvider: ConfigurableProvider {
     public func set(host: String, port: Int) {
         configuration = .init(host: host, port: port)
     }
 }
 
-// MARK: - AsynsSubscriptionsProviderType
+// MARK: - AsyncSubscriptionsProviderType
 
-extension AsynsSubscriptionsProvider: AsynsSubscriptionsProviderType {
+extension AsyncSubscriptionsProvider: AsyncSubscriptionsProviderType {
     public func fetchBalance(for wallet: String) async throws -> String {
         let channel = connectionProvider.channel(for: configuration.host, port: configuration.port)
         defer {
