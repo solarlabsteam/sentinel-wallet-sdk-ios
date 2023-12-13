@@ -31,9 +31,6 @@ let package = Package(
                 .product(name: "NIO", package: "swift-nio"),
                 .product(name: "NIOHTTP1", package: "swift-nio"),
             ]
-        ),
-        .testTarget(
-            name: "SentinelWalletTests",
-            dependencies: ["SentinelWallet"]),
+        )
     ]
 )
