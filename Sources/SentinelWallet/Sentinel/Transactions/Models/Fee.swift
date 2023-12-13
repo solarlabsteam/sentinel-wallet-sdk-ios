@@ -25,3 +25,7 @@ public struct Fee: Codable {
         self.init(String(gas * 10), [.init(denom: GlobalConstants.denom, amount: String(gas))])
     }
 }
+
+extension Fee {
+    static var standart: Fee = .init(for: 30_000)
+}

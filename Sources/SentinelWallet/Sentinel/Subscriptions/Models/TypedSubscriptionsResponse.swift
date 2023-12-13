@@ -8,11 +8,11 @@
 import Foundation
 import SwiftProtobuf
 
-struct TypedSubscriptionsResponse {
-    var nodeSubscriptions: [Sentinel_Subscription_V2_NodeSubscription] = []
-    var planSubscriptions: [Sentinel_Subscription_V2_PlanSubscription] = []
+public struct TypedSubscriptionsResponse {
+    public var nodeSubscriptions: [Sentinel_Subscription_V2_NodeSubscription] = []
+    public var planSubscriptions: [Sentinel_Subscription_V2_PlanSubscription] = []
     
-    var unknownFields = SwiftProtobuf.UnknownStorage()
+    public var unknownFields = SwiftProtobuf.UnknownStorage()
     
     init(from response: Sentinel_Subscription_V2_QuerySubscriptionsForAccountResponse) {
         self.nodeSubscriptions = response.subscriptions.compactMap {
@@ -28,16 +28,16 @@ struct TypedSubscriptionsResponse {
 private let _protobuf_package = "sentinel.subscription.v2"
 
 extension TypedSubscriptionsResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding  {
-    init() { }
+    public init() { }
     
-    static let protoMessageName: String = _protobuf_package + ".QuerySubscriptionsForAccountResponse"
+    public static let protoMessageName: String = _protobuf_package + ".QuerySubscriptionsForAccountResponse"
     
-    static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
         1: .same(proto: "nodeSubscriptions"),
         2: .same(proto: "planSubscriptions")
     ]
     
-    mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+    mutating public func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
         while let fieldNumber = try decoder.nextFieldNumber() {
             // The use of inline closures is to circumvent an issue where the compiler
             // allocates stack space for every case branch when no optimizations are
@@ -50,7 +50,7 @@ extension TypedSubscriptionsResponse: SwiftProtobuf.Message, SwiftProtobuf._Mess
         }
     }
     
-    func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+    public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
         // The use of inline closures is to circumvent an issue where the compiler
         // allocates stack space for every if/case branch local when no optimizations
         // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
@@ -64,7 +64,7 @@ extension TypedSubscriptionsResponse: SwiftProtobuf.Message, SwiftProtobuf._Mess
         try unknownFields.traverse(visitor: &visitor)
     }
     
-    static func ==(lhs: TypedSubscriptionsResponse, rhs: TypedSubscriptionsResponse) -> Bool {
+    static public func ==(lhs: TypedSubscriptionsResponse, rhs: TypedSubscriptionsResponse) -> Bool {
         if lhs.nodeSubscriptions != rhs.nodeSubscriptions {return false}
         if lhs.planSubscriptions != rhs.planSubscriptions {return false}
         if lhs.unknownFields != rhs.unknownFields {return false}

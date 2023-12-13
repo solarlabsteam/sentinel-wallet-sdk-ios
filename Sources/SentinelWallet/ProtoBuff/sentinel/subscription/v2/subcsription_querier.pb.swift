@@ -366,7 +366,7 @@ struct Sentinel_Subscription_V2_QueryAllocationResponse {
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  var allocation: Sentinel_Subscription_V2_Allocation {
+  public var allocation: Sentinel_Subscription_V2_Allocation {
     get {return _allocation ?? Sentinel_Subscription_V2_Allocation()}
     set {_allocation = newValue}
   }
