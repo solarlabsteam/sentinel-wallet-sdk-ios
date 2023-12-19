@@ -12,6 +12,7 @@ import NIO
 public protocol AsyncSubscriptionsProviderType {
     func fetchBalance(for wallet: String) async throws -> String
     func fetchSubscriptions(limit: UInt64, offset: UInt64, for wallet: String) async throws -> String
+    func fetchSessions(for wallet: String) async throws -> String?
 }
 
 public protocol TypedSubscriptionsProviderType {
@@ -59,6 +60,10 @@ extension AsyncSubscriptionsProvider: AsyncSubscriptionsProviderType {
     
     public func fetchSubscriptions(limit: UInt64, offset: UInt64, for wallet: String) async throws -> String {
         try await fetchSubscriptions(limit: limit, offset: offset, for: wallet).jsonString()
+    }
+    
+    public func fetchSessions(for wallet: String) async throws -> String? {
+        try await fetchSessions(for: wallet)?.jsonString()
     }
 }
 
@@ -115,21 +120,7 @@ extension AsyncSubscriptionsProvider: TypedSubscriptionsProviderType {
     }
     
     public func fetchSessions(for wallet: String) async throws -> UInt64? {
-        let channel = connectionProvider.channel(for: configuration.host, port: configuration.port)
-        defer { try? channel.close().wait()}
-        
-        var callOptions = CallOptions()
-        callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(5000))
-        
-        let request = Sentinel_Session_V2_QuerySessionsForAccountRequest.with {
-            $0.address = wallet
-        }
-        
-        let client = Sentinel_Session_V2_QueryServiceAsyncClient(channel: channel)
-        return try await client.querySessionsForAccount(request, callOptions: callOptions)
-            .sessions
-            .first(where: { $0.status == .active })?
-            .id
+        try await fetchSessions(for: wallet)?.id
     }
 }
 
@@ -144,5 +135,20 @@ private extension AsyncSubscriptionsProvider {
         let client = Cosmos_Bank_V1beta1_QueryAsyncClient(channel: channel)
         
         return try await client.allBalances(req, callOptions: callOptions)
+    }
+    
+    func fetchSessions(for wallet: String) async throws -> Sentinel_Session_V2_Session? {
+        let channel = connectionProvider.channel(for: configuration.host, port: configuration.port)
+        defer { try? channel.close().wait()}
+        
+        var callOptions = CallOptions()
+        callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(5000))
+        
+        let request = Sentinel_Session_V2_QuerySessionsForAccountRequest.with { $0.address = wallet }
+        
+        let client = Sentinel_Session_V2_QueryServiceAsyncClient(channel: channel)
+        return try await client.querySessionsForAccount(request, callOptions: callOptions)
+            .sessions
+            .first(where: { $0.status == .active })
     }
 }

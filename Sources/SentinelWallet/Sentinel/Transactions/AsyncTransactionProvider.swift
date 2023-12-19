@@ -46,6 +46,14 @@ public protocol AsyncTransactionProviderType {
         details: DirectPaymentDetails,
         fee: Fee
     ) async throws -> String
+    
+    func startSession(
+        sender: TransactionSender,
+        on subscriptionID: UInt64,
+        activeSession: UInt64?,
+        node: String,
+        fee: Fee
+    ) async throws -> String
 }
 
 public protocol TypedTransactionProviderType {
@@ -156,6 +164,22 @@ extension AsyncTransactionProvider: AsyncTransactionProviderType {
             fee: fee
         ).jsonString()
     }
+    
+    public func startSession(
+        sender: TransactionSender,
+        on subscriptionID: UInt64,
+        activeSession: UInt64?,
+        node: String,
+        fee: Fee
+    ) async throws -> String {
+        try await startSession(
+            sender: sender,
+            on: subscriptionID,
+            activeSession: activeSession,
+            node: node,
+            fee: fee
+        ).jsonString()
+    }
 }
 
 // MARK: - AsyncTransactionProviderType
@@ -205,20 +229,7 @@ extension AsyncTransactionProvider: TypedTransactionProviderType {
         activeSession: UInt64?,
         node: String
     ) async throws -> Bool {
-        let stopMessage = formStopMessage(activeSession: activeSession, sender: sender)
-        let startMessage = Sentinel_Session_V2_MsgStartRequest.with {
-            $0.id = subscriptionID
-            $0.from = sender.owner
-            $0.address = node
-        }
-        
-        let anyMessage = Google_Protobuf_Any.with {
-            $0.typeURL = constants.startSessionURL
-            $0.value = try! startMessage.serializedData()
-        }
-        
-        let messages = stopMessage + [anyMessage]
-        return try await broadcast(sender: sender, recipient: node, messages: messages, fee: .standart).isSuccess
+        try await startSession(sender: sender, on: subscriptionID, activeSession: activeSession, node: node).isSuccess
     }
     
     public func stopSession(
@@ -274,6 +285,29 @@ private extension AsyncTransactionProvider {
         }
         
         return try await broadcast(sender: sender, recipient: details.address, messages: [anyMessage], fee: fee)
+    }
+    
+    func startSession(
+        sender: TransactionSender,
+        on subscriptionID: UInt64,
+        activeSession: UInt64?,
+        node: String,
+        fee: Fee = .standart
+    ) async throws -> Cosmos_Base_Abci_V1beta1_TxResponse {
+        let stopMessage = formStopMessage(activeSession: activeSession, sender: sender)
+        let startMessage = Sentinel_Session_V2_MsgStartRequest.with {
+            $0.id = subscriptionID
+            $0.from = sender.owner
+            $0.address = node
+        }
+        
+        let anyMessage = Google_Protobuf_Any.with {
+            $0.typeURL = constants.startSessionURL
+            $0.value = try! startMessage.serializedData()
+        }
+        
+        let messages = stopMessage + [anyMessage]
+        return try await broadcast(sender: sender, recipient: node, messages: messages, fee: fee)
     }
 }
 
