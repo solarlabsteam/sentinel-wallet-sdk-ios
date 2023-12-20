@@ -16,10 +16,12 @@ public struct TypedSubscriptionsResponse {
     
     init(from response: Sentinel_Subscription_V2_QuerySubscriptionsForAccountResponse) {
         self.nodeSubscriptions = response.subscriptions.compactMap {
-            try? Sentinel_Subscription_V2_NodeSubscription(serializedData: $0.value)
+            guard $0.typeURL.contains("Node") else { return nil }
+            return try? Sentinel_Subscription_V2_NodeSubscription(serializedData: $0.value)
         }
         self.planSubscriptions = response.subscriptions.compactMap {
-            try? Sentinel_Subscription_V2_PlanSubscription(serializedData: $0.value)
+            guard $0.typeURL.contains("Plan") else { return nil }
+            return try? Sentinel_Subscription_V2_PlanSubscription(serializedData: $0.value)
         }
         self.unknownFields = response.unknownFields
     }
