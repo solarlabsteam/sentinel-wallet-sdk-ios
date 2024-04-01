@@ -16,7 +16,7 @@ final class Signer {
         fee: Fee,
         for messages: [Google_Protobuf_Any],
         memo: String,
-        mode: Cosmos_Tx_V1beta1_BroadcastMode = .block,
+        mode: Cosmos_Tx_V1beta1_BroadcastMode = .sync,
         mnemonic: [String],
         chainId: String
     ) -> Cosmos_Tx_V1beta1_BroadcastTxRequest {
