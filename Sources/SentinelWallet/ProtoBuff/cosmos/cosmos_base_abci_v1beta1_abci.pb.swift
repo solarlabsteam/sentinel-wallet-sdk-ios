@@ -407,8 +407,9 @@ extension Cosmos_Base_Abci_V1beta1_TxResponse: SwiftProtobuf.Message, SwiftProto
     if self.gasUsed != 0 {
       try visitor.visitSingularInt64Field(value: self.gasUsed, fieldNumber: 10)
     }
-    try { if let v = self._tx {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 11)
+      #warning("todo: fix endoding from any")
+    { if let v = self._tx {
+      try? visitor.visitSingularMessageField(value: v, fieldNumber: 11)
     } }()
     if !self.timestamp.isEmpty {
       try visitor.visitSingularStringField(value: self.timestamp, fieldNumber: 12)

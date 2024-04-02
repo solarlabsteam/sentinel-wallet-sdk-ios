@@ -26,6 +26,8 @@ private struct Constants {
 private let constants = Constants()
 
 public protocol AsyncTransactionProviderType {
+    func getTx(by hash: String) async throws -> String
+    
     func subscribe(
         sender: TransactionSender,
         node: String,
@@ -116,6 +118,15 @@ extension AsyncTransactionProvider: ConfigurableProvider {
 // MARK: - AsyncTransactionProviderType
 
 extension AsyncTransactionProvider: AsyncTransactionProviderType {
+    public func getTx(by hash: String) async throws -> String {
+        let channel = connectionProvider.channel(for: configuration.host, port: configuration.port)
+        defer {
+            try? channel.close().wait()
+        }
+        let request = Cosmos_Tx_V1beta1_GetTxRequest.with { $0.hash = hash }
+        return try await Cosmos_Tx_V1beta1_ServiceAsyncClient(channel: channel).getTx(request).txResponse.jsonString()
+    }
+    
     public func subscribe(
         sender: TransactionSender,
         node: String,
