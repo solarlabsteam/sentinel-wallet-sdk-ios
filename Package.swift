@@ -18,7 +18,6 @@ let package = Package(
         .package(name: "SwiftProtobuf", url: "https://github.com/apple/swift-protobuf.git", from: "1.6.0"),
         .package(url: "https://github.com/grpc/grpc-swift.git", from: "1.19.0"),
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.0.0"),
-        .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMinor(from: "5.7.1")),
         .package(url: "https://github.com/SwiftyBeaver/SwiftyBeaver.git", .upToNextMinor(from: "2.0.0")),
         .package(url: "https://github.com/solarlabsteam/HDWallet", .branch("spm"))
     ],
@@ -26,7 +25,7 @@ let package = Package(
         .target(
             name: "SentinelWallet",
             dependencies: [
-                "SwiftProtobuf", "HDWallet", "Alamofire", "SwiftyBeaver",
+                "SwiftProtobuf", "HDWallet", "SwiftyBeaver",
                 .product(name: "GRPC", package: "grpc-swift"),
                 .product(name: "NIO", package: "swift-nio"),
                 .product(name: "NIOHTTP1", package: "swift-nio"),
