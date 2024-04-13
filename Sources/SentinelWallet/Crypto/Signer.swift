@@ -99,6 +99,9 @@ extension Signer {
         let txFee = Cosmos_Tx_V1beta1_Fee.with {
             $0.amount = [feeCoin]
             $0.gasLimit = UInt64(fee.gas)!
+            if let granter = fee.granter {
+                $0.granter = granter
+            }
         }
         return Cosmos_Tx_V1beta1_AuthInfo.with {
             $0.fee = txFee
