@@ -13,6 +13,7 @@ public protocol AsyncSubscriptionsProviderType {
     func fetchBalance(for wallet: String) async throws -> String
     func fetchSubscriptions(limit: UInt64, offset: UInt64, for wallet: String) async throws -> String
     func fetchSessions(for wallet: String) async throws -> String?
+    func fetchGrants(for wallet: String, granter: String) async throws -> String
 }
 
 public protocol TypedSubscriptionsProviderType {
@@ -56,6 +57,24 @@ extension AsyncSubscriptionsProvider: ConfigurableProvider {
 extension AsyncSubscriptionsProvider: AsyncSubscriptionsProviderType {
     public func fetchBalance(for wallet: String) async throws -> String {
         try await fetchBalance(for: wallet).jsonString()
+    }
+    
+    public func fetchGrants(for wallet: String, granter: String) async throws -> String {
+        let channel = connectionProvider.channel(for: configuration.host, port: configuration.port)
+        defer { try? channel.close().wait()}
+        
+        var callOptions = CallOptions()
+        callOptions.timeLimit = TimeLimit.timeout(TimeAmount.seconds(5))
+        
+        
+        let request = Cosmos_Feegrant_V1beta1_QueryAllowanceRequest.with {
+            $0.grantee = wallet
+            $0.granter = granter
+        }
+        
+        let client = Cosmos_Feegrant_V1beta1_QueryAsyncClient(channel: channel)
+        let result = try await client.allowance(request, callOptions: callOptions)
+        return try result.jsonString()
     }
     
     public func fetchSubscriptions(limit: UInt64, offset: UInt64, for wallet: String) async throws -> String {
