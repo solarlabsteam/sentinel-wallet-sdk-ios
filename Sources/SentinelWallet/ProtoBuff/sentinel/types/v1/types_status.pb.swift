@@ -16,54 +16,54 @@ import SwiftProtobuf
 // Please ensure that you are building against the same version of the API
 // that was used to generate this file.
 fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
-  struct _2: SwiftProtobuf.ProtobufAPIVersion_2 {}
-  typealias Version = _2
+    struct _2: SwiftProtobuf.ProtobufAPIVersion_2 {}
+    typealias Version = _2
 }
 
-enum Sentinel_Types_V1_Status: SwiftProtobuf.Enum, Swift.CaseIterable {
-  typealias RawValue = Int
-  case unspecified // = 0
-  case active // = 1
-  case inactivePending // = 2
-  case inactive // = 3
-  case UNRECOGNIZED(Int)
-
-  init() {
-    self = .unspecified
-  }
-
-  init?(rawValue: Int) {
-    switch rawValue {
-    case 0: self = .unspecified
-    case 1: self = .active
-    case 2: self = .inactivePending
-    case 3: self = .inactive
-    default: self = .UNRECOGNIZED(rawValue)
+public enum Sentinel_Types_V1_Status: SwiftProtobuf.Enum, Swift.CaseIterable {
+    public typealias RawValue = Int
+    case unspecified // = 0
+    case active // = 1
+    case inactivePending // = 2
+    case inactive // = 3
+    case UNRECOGNIZED(Int)
+    
+    public init() {
+        self = .unspecified
     }
-  }
-
-  var rawValue: Int {
-    switch self {
-    case .unspecified: return 0
-    case .active: return 1
-    case .inactivePending: return 2
-    case .inactive: return 3
-    case .UNRECOGNIZED(let i): return i
+    
+    public init?(rawValue: Int) {
+        switch rawValue {
+        case 0: self = .unspecified
+        case 1: self = .active
+        case 2: self = .inactivePending
+        case 3: self = .inactive
+        default: self = .UNRECOGNIZED(rawValue)
+        }
     }
-  }
-
-  // The compiler won't synthesize support with the UNRECOGNIZED case.
-  static let allCases: [Sentinel_Types_V1_Status] = [
-    .unspecified,
-    .active,
-    .inactivePending,
-    .inactive,
-  ]
-
+    
+    public var rawValue: Int {
+        switch self {
+        case .unspecified: return 0
+        case .active: return 1
+        case .inactivePending: return 2
+        case .inactive: return 3
+        case .UNRECOGNIZED(let i): return i
+        }
+    }
+    
+    // The compiler won't synthesize support with the UNRECOGNIZED case.
+    public static let allCases: [Sentinel_Types_V1_Status] = [
+        .unspecified,
+        .active,
+        .inactivePending,
+        .inactive,
+    ]
+    
 }
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
 extension Sentinel_Types_V1_Status: SwiftProtobuf._ProtoNameProviding {
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0STATUS_UNSPECIFIED\0\u{1}STATUS_ACTIVE\0\u{1}STATUS_INACTIVE_PENDING\0\u{1}STATUS_INACTIVE\0")
+    public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{2}\0STATUS_UNSPECIFIED\0\u{1}STATUS_ACTIVE\0\u{1}STATUS_INACTIVE_PENDING\0\u{1}STATUS_INACTIVE\0")
 }

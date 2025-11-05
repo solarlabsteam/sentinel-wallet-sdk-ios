@@ -18,7 +18,7 @@ public protocol AsyncSubscriptionsProviderType {
 
 public protocol TypedSubscriptionsProviderType {
     func fetchBalance(for wallet: String) async throws -> [Cosmos_Base_V1beta1_Coin]
-    func fetchSubscriptions(limit: UInt64, offset: UInt64, for wallet: String) async throws -> TypedSubscriptionsResponse
+    func fetchSubscriptions(limit: UInt64, offset: UInt64, for wallet: String) async throws -> Sentinel_Subscription_V3_QuerySubscriptionsForAccountResponse
     func fetchAllocation(
         for wallet: String,
         subscription: UInt64
@@ -96,7 +96,7 @@ extension AsyncSubscriptionsProvider: TypedSubscriptionsProviderType {
     public func fetchSubscriptions(
         limit: UInt64, offset: UInt64,
         for wallet: String
-    ) async throws -> TypedSubscriptionsResponse {
+    ) async throws -> Sentinel_Subscription_V3_QuerySubscriptionsForAccountResponse {
         let channel = connectionProvider.channel(for: configuration.host, port: configuration.port)
         defer { try? channel.close().wait()}
         
@@ -108,15 +108,15 @@ extension AsyncSubscriptionsProvider: TypedSubscriptionsProviderType {
             $0.offset = offset
         }
         
-        let request = Sentinel_Subscription_V2_QuerySubscriptionsForAccountRequest.with {
+        let request = Sentinel_Subscription_V3_QuerySubscriptionsForAccountRequest.with {
             $0.address = wallet
             $0.pagination = page
         }
         
-        let client = Sentinel_Subscription_V2_QueryServiceAsyncClient(channel: channel)
+        let client = Sentinel_Subscription_V3_QueryServiceAsyncClient(channel: channel)
         let response = try await client.querySubscriptionsForAccount(request, callOptions: callOptions)
         
-        return TypedSubscriptionsResponse(from: response)
+        return response
     }
     
     public func fetchAllocation(

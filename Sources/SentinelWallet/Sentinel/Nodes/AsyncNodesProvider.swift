@@ -49,13 +49,13 @@ extension AsyncNodesProvider: AsyncNodesProviderType {
             try? channel.close().wait()
         }
         
-        let nodeClient = Sentinel_Node_V2_QueryServiceAsyncClient(channel: channel)
+        let nodeClient = Sentinel_Node_V3_QueryServiceAsyncClient(channel: channel)
     
         let page = Cosmos_Base_Query_V1beta1_PageRequest.with {
             $0.limit = limit
             $0.offset = offset
         }
-        let request = Sentinel_Node_V2_QueryNodesRequest.with {
+        let request = Sentinel_Node_V3_QueryNodesRequest.with {
             $0.status = .active
             $0.pagination = page
         }
@@ -69,13 +69,13 @@ extension AsyncNodesProvider: AsyncNodesProviderType {
             try? channel.close().wait()
         }
         
-        let nodeClient = Sentinel_Node_V2_QueryServiceAsyncClient(channel: channel)
+        let nodeClient = Sentinel_Node_V3_QueryServiceAsyncClient(channel: channel)
         
         let page = Cosmos_Base_Query_V1beta1_PageRequest.with {
             $0.limit = limit
             $0.offset = offset
         }
-        let request = Sentinel_Node_V2_QueryNodesForPlanRequest.with {
+        let request = Sentinel_Node_V3_QueryNodesForPlanRequest.with {
             $0.id = planID
             $0.status = .active
             $0.pagination = page
@@ -94,12 +94,12 @@ extension AsyncNodesProvider: AsyncNodesProviderType {
             $0.limit = limit
             $0.offset = offset
         }
-        let request = Sentinel_Plan_V2_QueryPlansRequest.with {
+        let request = Sentinel_Plan_V3_QueryPlansRequest.with {
             $0.pagination = page
             $0.status = .active
         }
         
-        let planClient =  Sentinel_Plan_V2_QueryServiceAsyncClient(channel: channel)
+        let planClient =  Sentinel_Plan_V3_QueryServiceAsyncClient(channel: channel)
         return try await planClient.queryPlans(request).jsonString()
     }
 }
