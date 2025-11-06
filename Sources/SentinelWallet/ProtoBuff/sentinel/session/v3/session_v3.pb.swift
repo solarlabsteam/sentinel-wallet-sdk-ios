@@ -16,100 +16,100 @@ import SwiftProtobuf
 // Please ensure that you are building against the same version of the API
 // that was used to generate this file.
 fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
-  struct _2: SwiftProtobuf.ProtobufAPIVersion_2 {}
-  typealias Version = _2
+    struct _2: SwiftProtobuf.ProtobufAPIVersion_2 {}
+    typealias Version = _2
 }
 
-struct Sentinel_Session_V3_BaseSession: @unchecked Sendable {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  var id: UInt64 {
-    get {return _storage._id}
-    set {_uniqueStorage()._id = newValue}
-  }
-
-  var accAddress: String {
-    get {return _storage._accAddress}
-    set {_uniqueStorage()._accAddress = newValue}
-  }
-
-  var nodeAddress: String {
-    get {return _storage._nodeAddress}
-    set {_uniqueStorage()._nodeAddress = newValue}
-  }
-
-  var downloadBytes: String {
-    get {return _storage._downloadBytes}
-    set {_uniqueStorage()._downloadBytes = newValue}
-  }
-
-  var uploadBytes: String {
-    get {return _storage._uploadBytes}
-    set {_uniqueStorage()._uploadBytes = newValue}
-  }
-
-  var maxBytes: String {
-    get {return _storage._maxBytes}
-    set {_uniqueStorage()._maxBytes = newValue}
-  }
-
-  var duration: SwiftProtobuf.Google_Protobuf_Duration {
-    get {return _storage._duration ?? SwiftProtobuf.Google_Protobuf_Duration()}
-    set {_uniqueStorage()._duration = newValue}
-  }
-  /// Returns true if `duration` has been explicitly set.
-  var hasDuration: Bool {return _storage._duration != nil}
-  /// Clears the value of `duration`. Subsequent reads from it will return its default value.
-  mutating func clearDuration() {_uniqueStorage()._duration = nil}
-
-  var maxDuration: SwiftProtobuf.Google_Protobuf_Duration {
-    get {return _storage._maxDuration ?? SwiftProtobuf.Google_Protobuf_Duration()}
-    set {_uniqueStorage()._maxDuration = newValue}
-  }
-  /// Returns true if `maxDuration` has been explicitly set.
-  var hasMaxDuration: Bool {return _storage._maxDuration != nil}
-  /// Clears the value of `maxDuration`. Subsequent reads from it will return its default value.
-  mutating func clearMaxDuration() {_uniqueStorage()._maxDuration = nil}
-
-  var status: Sentinel_Types_V1_Status {
-    get {return _storage._status}
-    set {_uniqueStorage()._status = newValue}
-  }
-
-  var inactiveAt: SwiftProtobuf.Google_Protobuf_Timestamp {
-    get {return _storage._inactiveAt ?? SwiftProtobuf.Google_Protobuf_Timestamp()}
-    set {_uniqueStorage()._inactiveAt = newValue}
-  }
-  /// Returns true if `inactiveAt` has been explicitly set.
-  var hasInactiveAt: Bool {return _storage._inactiveAt != nil}
-  /// Clears the value of `inactiveAt`. Subsequent reads from it will return its default value.
-  mutating func clearInactiveAt() {_uniqueStorage()._inactiveAt = nil}
-
-  var startAt: SwiftProtobuf.Google_Protobuf_Timestamp {
-    get {return _storage._startAt ?? SwiftProtobuf.Google_Protobuf_Timestamp()}
-    set {_uniqueStorage()._startAt = newValue}
-  }
-  /// Returns true if `startAt` has been explicitly set.
-  var hasStartAt: Bool {return _storage._startAt != nil}
-  /// Clears the value of `startAt`. Subsequent reads from it will return its default value.
-  mutating func clearStartAt() {_uniqueStorage()._startAt = nil}
-
-  var statusAt: SwiftProtobuf.Google_Protobuf_Timestamp {
-    get {return _storage._statusAt ?? SwiftProtobuf.Google_Protobuf_Timestamp()}
-    set {_uniqueStorage()._statusAt = newValue}
-  }
-  /// Returns true if `statusAt` has been explicitly set.
-  var hasStatusAt: Bool {return _storage._statusAt != nil}
-  /// Clears the value of `statusAt`. Subsequent reads from it will return its default value.
-  mutating func clearStatusAt() {_uniqueStorage()._statusAt = nil}
-
-  var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  init() {}
-
-  fileprivate var _storage = _StorageClass.defaultInstance
+public struct Sentinel_Session_V3_BaseSession: @unchecked Sendable {
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+    
+    public var id: UInt64 {
+        get {return _storage._id}
+        set {_uniqueStorage()._id = newValue}
+    }
+    
+    public var accAddress: String {
+        get {return _storage._accAddress}
+        set {_uniqueStorage()._accAddress = newValue}
+    }
+    
+    public var nodeAddress: String {
+        get {return _storage._nodeAddress}
+        set {_uniqueStorage()._nodeAddress = newValue}
+    }
+    
+    public var downloadBytes: String {
+        get {return _storage._downloadBytes}
+        set {_uniqueStorage()._downloadBytes = newValue}
+    }
+    
+    public var uploadBytes: String {
+        get {return _storage._uploadBytes}
+        set {_uniqueStorage()._uploadBytes = newValue}
+    }
+    
+    public var maxBytes: String {
+        get {return _storage._maxBytes}
+        set {_uniqueStorage()._maxBytes = newValue}
+    }
+    
+    public var duration: SwiftProtobuf.Google_Protobuf_Duration {
+        get {return _storage._duration ?? SwiftProtobuf.Google_Protobuf_Duration()}
+        set {_uniqueStorage()._duration = newValue}
+    }
+    /// Returns true if `duration` has been explicitly set.
+    var hasDuration: Bool {return _storage._duration != nil}
+    /// Clears the value of `duration`. Subsequent reads from it will return its default value.
+    mutating func clearDuration() {_uniqueStorage()._duration = nil}
+    
+    var maxDuration: SwiftProtobuf.Google_Protobuf_Duration {
+        get {return _storage._maxDuration ?? SwiftProtobuf.Google_Protobuf_Duration()}
+        set {_uniqueStorage()._maxDuration = newValue}
+    }
+    /// Returns true if `maxDuration` has been explicitly set.
+    var hasMaxDuration: Bool {return _storage._maxDuration != nil}
+    /// Clears the value of `maxDuration`. Subsequent reads from it will return its default value.
+    mutating func clearMaxDuration() {_uniqueStorage()._maxDuration = nil}
+    
+    public  var status: Sentinel_Types_V1_Status {
+        get {return _storage._status}
+        set {_uniqueStorage()._status = newValue}
+    }
+    
+    var inactiveAt: SwiftProtobuf.Google_Protobuf_Timestamp {
+        get {return _storage._inactiveAt ?? SwiftProtobuf.Google_Protobuf_Timestamp()}
+        set {_uniqueStorage()._inactiveAt = newValue}
+    }
+    /// Returns true if `inactiveAt` has been explicitly set.
+    var hasInactiveAt: Bool {return _storage._inactiveAt != nil}
+    /// Clears the value of `inactiveAt`. Subsequent reads from it will return its default value.
+    mutating func clearInactiveAt() {_uniqueStorage()._inactiveAt = nil}
+    
+    var startAt: SwiftProtobuf.Google_Protobuf_Timestamp {
+        get {return _storage._startAt ?? SwiftProtobuf.Google_Protobuf_Timestamp()}
+        set {_uniqueStorage()._startAt = newValue}
+    }
+    /// Returns true if `startAt` has been explicitly set.
+    var hasStartAt: Bool {return _storage._startAt != nil}
+    /// Clears the value of `startAt`. Subsequent reads from it will return its default value.
+    mutating func clearStartAt() {_uniqueStorage()._startAt = nil}
+    
+    var statusAt: SwiftProtobuf.Google_Protobuf_Timestamp {
+        get {return _storage._statusAt ?? SwiftProtobuf.Google_Protobuf_Timestamp()}
+        set {_uniqueStorage()._statusAt = newValue}
+    }
+    /// Returns true if `statusAt` has been explicitly set.
+    var hasStatusAt: Bool {return _storage._statusAt != nil}
+    /// Clears the value of `statusAt`. Subsequent reads from it will return its default value.
+    mutating func clearStatusAt() {_uniqueStorage()._statusAt = nil}
+    
+    public var unknownFields = SwiftProtobuf.UnknownStorage()
+    
+    public init() {}
+    
+    fileprivate var _storage = _StorageClass.defaultInstance
 }
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
@@ -117,148 +117,148 @@ struct Sentinel_Session_V3_BaseSession: @unchecked Sendable {
 fileprivate let _protobuf_package = "sentinel.session.v3"
 
 extension Sentinel_Session_V3_BaseSession: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".BaseSession"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}id\0\u{3}acc_address\0\u{3}node_address\0\u{3}download_bytes\0\u{3}upload_bytes\0\u{3}max_bytes\0\u{1}duration\0\u{3}max_duration\0\u{1}status\0\u{3}inactive_at\0\u{3}start_at\0\u{3}status_at\0")
-
-  fileprivate class _StorageClass {
-    var _id: UInt64 = 0
-    var _accAddress: String = String()
-    var _nodeAddress: String = String()
-    var _downloadBytes: String = String()
-    var _uploadBytes: String = String()
-    var _maxBytes: String = String()
-    var _duration: SwiftProtobuf.Google_Protobuf_Duration? = nil
-    var _maxDuration: SwiftProtobuf.Google_Protobuf_Duration? = nil
-    var _status: Sentinel_Types_V1_Status = .unspecified
-    var _inactiveAt: SwiftProtobuf.Google_Protobuf_Timestamp? = nil
-    var _startAt: SwiftProtobuf.Google_Protobuf_Timestamp? = nil
-    var _statusAt: SwiftProtobuf.Google_Protobuf_Timestamp? = nil
-
-      // This property is used as the initial default value for new instances of the type.
-      // The type itself is protecting the reference to its storage via CoW semantics.
-      // This will force a copy to be made of this reference when the first mutation occurs;
-      // hence, it is safe to mark this as `nonisolated(unsafe)`.
-      static nonisolated(unsafe) let defaultInstance = _StorageClass()
-
-    private init() {}
-
-    init(copying source: _StorageClass) {
-      _id = source._id
-      _accAddress = source._accAddress
-      _nodeAddress = source._nodeAddress
-      _downloadBytes = source._downloadBytes
-      _uploadBytes = source._uploadBytes
-      _maxBytes = source._maxBytes
-      _duration = source._duration
-      _maxDuration = source._maxDuration
-      _status = source._status
-      _inactiveAt = source._inactiveAt
-      _startAt = source._startAt
-      _statusAt = source._statusAt
-    }
-  }
-
-  fileprivate mutating func _uniqueStorage() -> _StorageClass {
-    if !isKnownUniquelyReferenced(&_storage) {
-      _storage = _StorageClass(copying: _storage)
-    }
-    return _storage
-  }
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    _ = _uniqueStorage()
-    try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
-      while let fieldNumber = try decoder.nextFieldNumber() {
-        // The use of inline closures is to circumvent an issue where the compiler
-        // allocates stack space for every case branch when no optimizations are
-        // enabled. https://github.com/apple/swift-protobuf/issues/1034
-        switch fieldNumber {
-        case 1: try { try decoder.decodeSingularUInt64Field(value: &_storage._id) }()
-        case 2: try { try decoder.decodeSingularStringField(value: &_storage._accAddress) }()
-        case 3: try { try decoder.decodeSingularStringField(value: &_storage._nodeAddress) }()
-        case 4: try { try decoder.decodeSingularStringField(value: &_storage._downloadBytes) }()
-        case 5: try { try decoder.decodeSingularStringField(value: &_storage._uploadBytes) }()
-        case 6: try { try decoder.decodeSingularStringField(value: &_storage._maxBytes) }()
-        case 7: try { try decoder.decodeSingularMessageField(value: &_storage._duration) }()
-        case 8: try { try decoder.decodeSingularMessageField(value: &_storage._maxDuration) }()
-        case 9: try { try decoder.decodeSingularEnumField(value: &_storage._status) }()
-        case 10: try { try decoder.decodeSingularMessageField(value: &_storage._inactiveAt) }()
-        case 11: try { try decoder.decodeSingularMessageField(value: &_storage._startAt) }()
-        case 12: try { try decoder.decodeSingularMessageField(value: &_storage._statusAt) }()
-        default: break
+    public static let protoMessageName: String = _protobuf_package + ".BaseSession"
+    public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}id\0\u{3}acc_address\0\u{3}node_address\0\u{3}download_bytes\0\u{3}upload_bytes\0\u{3}max_bytes\0\u{1}duration\0\u{3}max_duration\0\u{1}status\0\u{3}inactive_at\0\u{3}start_at\0\u{3}status_at\0")
+    
+    fileprivate class _StorageClass {
+        var _id: UInt64 = 0
+        var _accAddress: String = String()
+        var _nodeAddress: String = String()
+        var _downloadBytes: String = String()
+        var _uploadBytes: String = String()
+        var _maxBytes: String = String()
+        var _duration: SwiftProtobuf.Google_Protobuf_Duration? = nil
+        var _maxDuration: SwiftProtobuf.Google_Protobuf_Duration? = nil
+        var _status: Sentinel_Types_V1_Status = .unspecified
+        var _inactiveAt: SwiftProtobuf.Google_Protobuf_Timestamp? = nil
+        var _startAt: SwiftProtobuf.Google_Protobuf_Timestamp? = nil
+        var _statusAt: SwiftProtobuf.Google_Protobuf_Timestamp? = nil
+        
+        // This property is used as the initial default value for new instances of the type.
+        // The type itself is protecting the reference to its storage via CoW semantics.
+        // This will force a copy to be made of this reference when the first mutation occurs;
+        // hence, it is safe to mark this as `nonisolated(unsafe)`.
+        static nonisolated(unsafe) let defaultInstance = _StorageClass()
+        
+        private init() {}
+        
+        init(copying source: _StorageClass) {
+            _id = source._id
+            _accAddress = source._accAddress
+            _nodeAddress = source._nodeAddress
+            _downloadBytes = source._downloadBytes
+            _uploadBytes = source._uploadBytes
+            _maxBytes = source._maxBytes
+            _duration = source._duration
+            _maxDuration = source._maxDuration
+            _status = source._status
+            _inactiveAt = source._inactiveAt
+            _startAt = source._startAt
+            _statusAt = source._statusAt
         }
-      }
     }
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every if/case branch local when no optimizations
-      // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
-      // https://github.com/apple/swift-protobuf/issues/1182
-      if _storage._id != 0 {
-        try visitor.visitSingularUInt64Field(value: _storage._id, fieldNumber: 1)
-      }
-      if !_storage._accAddress.isEmpty {
-        try visitor.visitSingularStringField(value: _storage._accAddress, fieldNumber: 2)
-      }
-      if !_storage._nodeAddress.isEmpty {
-        try visitor.visitSingularStringField(value: _storage._nodeAddress, fieldNumber: 3)
-      }
-      if !_storage._downloadBytes.isEmpty {
-        try visitor.visitSingularStringField(value: _storage._downloadBytes, fieldNumber: 4)
-      }
-      if !_storage._uploadBytes.isEmpty {
-        try visitor.visitSingularStringField(value: _storage._uploadBytes, fieldNumber: 5)
-      }
-      if !_storage._maxBytes.isEmpty {
-        try visitor.visitSingularStringField(value: _storage._maxBytes, fieldNumber: 6)
-      }
-      try { if let v = _storage._duration {
-        try visitor.visitSingularMessageField(value: v, fieldNumber: 7)
-      } }()
-      try { if let v = _storage._maxDuration {
-        try visitor.visitSingularMessageField(value: v, fieldNumber: 8)
-      } }()
-      if _storage._status != .unspecified {
-        try visitor.visitSingularEnumField(value: _storage._status, fieldNumber: 9)
-      }
-      try { if let v = _storage._inactiveAt {
-        try visitor.visitSingularMessageField(value: v, fieldNumber: 10)
-      } }()
-      try { if let v = _storage._startAt {
-        try visitor.visitSingularMessageField(value: v, fieldNumber: 11)
-      } }()
-      try { if let v = _storage._statusAt {
-        try visitor.visitSingularMessageField(value: v, fieldNumber: 12)
-      } }()
+    
+    fileprivate mutating func _uniqueStorage() -> _StorageClass {
+        if !isKnownUniquelyReferenced(&_storage) {
+            _storage = _StorageClass(copying: _storage)
+        }
+        return _storage
     }
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: Sentinel_Session_V3_BaseSession, rhs: Sentinel_Session_V3_BaseSession) -> Bool {
-    if lhs._storage !== rhs._storage {
-      let storagesAreEqual: Bool = withExtendedLifetime((lhs._storage, rhs._storage)) { (_args: (_StorageClass, _StorageClass)) in
-        let _storage = _args.0
-        let rhs_storage = _args.1
-        if _storage._id != rhs_storage._id {return false}
-        if _storage._accAddress != rhs_storage._accAddress {return false}
-        if _storage._nodeAddress != rhs_storage._nodeAddress {return false}
-        if _storage._downloadBytes != rhs_storage._downloadBytes {return false}
-        if _storage._uploadBytes != rhs_storage._uploadBytes {return false}
-        if _storage._maxBytes != rhs_storage._maxBytes {return false}
-        if _storage._duration != rhs_storage._duration {return false}
-        if _storage._maxDuration != rhs_storage._maxDuration {return false}
-        if _storage._status != rhs_storage._status {return false}
-        if _storage._inactiveAt != rhs_storage._inactiveAt {return false}
-        if _storage._startAt != rhs_storage._startAt {return false}
-        if _storage._statusAt != rhs_storage._statusAt {return false}
+    
+    mutating public func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+        _ = _uniqueStorage()
+        try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
+            while let fieldNumber = try decoder.nextFieldNumber() {
+                // The use of inline closures is to circumvent an issue where the compiler
+                // allocates stack space for every case branch when no optimizations are
+                // enabled. https://github.com/apple/swift-protobuf/issues/1034
+                switch fieldNumber {
+                case 1: try { try decoder.decodeSingularUInt64Field(value: &_storage._id) }()
+                case 2: try { try decoder.decodeSingularStringField(value: &_storage._accAddress) }()
+                case 3: try { try decoder.decodeSingularStringField(value: &_storage._nodeAddress) }()
+                case 4: try { try decoder.decodeSingularStringField(value: &_storage._downloadBytes) }()
+                case 5: try { try decoder.decodeSingularStringField(value: &_storage._uploadBytes) }()
+                case 6: try { try decoder.decodeSingularStringField(value: &_storage._maxBytes) }()
+                case 7: try { try decoder.decodeSingularMessageField(value: &_storage._duration) }()
+                case 8: try { try decoder.decodeSingularMessageField(value: &_storage._maxDuration) }()
+                case 9: try { try decoder.decodeSingularEnumField(value: &_storage._status) }()
+                case 10: try { try decoder.decodeSingularMessageField(value: &_storage._inactiveAt) }()
+                case 11: try { try decoder.decodeSingularMessageField(value: &_storage._startAt) }()
+                case 12: try { try decoder.decodeSingularMessageField(value: &_storage._statusAt) }()
+                default: break
+                }
+            }
+        }
+    }
+    
+    public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+        try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
+            // The use of inline closures is to circumvent an issue where the compiler
+            // allocates stack space for every if/case branch local when no optimizations
+            // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+            // https://github.com/apple/swift-protobuf/issues/1182
+            if _storage._id != 0 {
+                try visitor.visitSingularUInt64Field(value: _storage._id, fieldNumber: 1)
+            }
+            if !_storage._accAddress.isEmpty {
+                try visitor.visitSingularStringField(value: _storage._accAddress, fieldNumber: 2)
+            }
+            if !_storage._nodeAddress.isEmpty {
+                try visitor.visitSingularStringField(value: _storage._nodeAddress, fieldNumber: 3)
+            }
+            if !_storage._downloadBytes.isEmpty {
+                try visitor.visitSingularStringField(value: _storage._downloadBytes, fieldNumber: 4)
+            }
+            if !_storage._uploadBytes.isEmpty {
+                try visitor.visitSingularStringField(value: _storage._uploadBytes, fieldNumber: 5)
+            }
+            if !_storage._maxBytes.isEmpty {
+                try visitor.visitSingularStringField(value: _storage._maxBytes, fieldNumber: 6)
+            }
+            try { if let v = _storage._duration {
+                try visitor.visitSingularMessageField(value: v, fieldNumber: 7)
+            } }()
+            try { if let v = _storage._maxDuration {
+                try visitor.visitSingularMessageField(value: v, fieldNumber: 8)
+            } }()
+            if _storage._status != .unspecified {
+                try visitor.visitSingularEnumField(value: _storage._status, fieldNumber: 9)
+            }
+            try { if let v = _storage._inactiveAt {
+                try visitor.visitSingularMessageField(value: v, fieldNumber: 10)
+            } }()
+            try { if let v = _storage._startAt {
+                try visitor.visitSingularMessageField(value: v, fieldNumber: 11)
+            } }()
+            try { if let v = _storage._statusAt {
+                try visitor.visitSingularMessageField(value: v, fieldNumber: 12)
+            } }()
+        }
+        try unknownFields.traverse(visitor: &visitor)
+    }
+    
+    public static func ==(lhs: Sentinel_Session_V3_BaseSession, rhs: Sentinel_Session_V3_BaseSession) -> Bool {
+        if lhs._storage !== rhs._storage {
+            let storagesAreEqual: Bool = withExtendedLifetime((lhs._storage, rhs._storage)) { (_args: (_StorageClass, _StorageClass)) in
+                let _storage = _args.0
+                let rhs_storage = _args.1
+                if _storage._id != rhs_storage._id {return false}
+                if _storage._accAddress != rhs_storage._accAddress {return false}
+                if _storage._nodeAddress != rhs_storage._nodeAddress {return false}
+                if _storage._downloadBytes != rhs_storage._downloadBytes {return false}
+                if _storage._uploadBytes != rhs_storage._uploadBytes {return false}
+                if _storage._maxBytes != rhs_storage._maxBytes {return false}
+                if _storage._duration != rhs_storage._duration {return false}
+                if _storage._maxDuration != rhs_storage._maxDuration {return false}
+                if _storage._status != rhs_storage._status {return false}
+                if _storage._inactiveAt != rhs_storage._inactiveAt {return false}
+                if _storage._startAt != rhs_storage._startAt {return false}
+                if _storage._statusAt != rhs_storage._statusAt {return false}
+                return true
+            }
+            if !storagesAreEqual {return false}
+        }
+        if lhs.unknownFields != rhs.unknownFields {return false}
         return true
-      }
-      if !storagesAreEqual {return false}
     }
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
 }

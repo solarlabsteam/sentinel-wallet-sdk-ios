@@ -16,31 +16,31 @@ import SwiftProtobuf
 // Please ensure that you are building against the same version of the API
 // that was used to generate this file.
 fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
-  struct _2: SwiftProtobuf.ProtobufAPIVersion_2 {}
-  typealias Version = _2
+    struct _2: SwiftProtobuf.ProtobufAPIVersion_2 {}
+    typealias Version = _2
 }
 
-struct Sentinel_Subscription_V3_Session: Sendable {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  var baseSession: Sentinel_Session_V3_BaseSession {
-    get {return _baseSession ?? Sentinel_Session_V3_BaseSession()}
-    set {_baseSession = newValue}
-  }
-  /// Returns true if `baseSession` has been explicitly set.
-  var hasBaseSession: Bool {return self._baseSession != nil}
-  /// Clears the value of `baseSession`. Subsequent reads from it will return its default value.
-  mutating func clearBaseSession() {self._baseSession = nil}
-
-  var subscriptionID: UInt64 = 0
-
-  var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  init() {}
-
-  fileprivate var _baseSession: Sentinel_Session_V3_BaseSession? = nil
+public struct Sentinel_Subscription_V3_Session: Sendable {
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+    
+    public var baseSession: Sentinel_Session_V3_BaseSession {
+        get {return _baseSession ?? Sentinel_Session_V3_BaseSession()}
+        set {_baseSession = newValue}
+    }
+    /// Returns true if `baseSession` has been explicitly set.
+    var hasBaseSession: Bool {return self._baseSession != nil}
+    /// Clears the value of `baseSession`. Subsequent reads from it will return its default value.
+    mutating func clearBaseSession() {self._baseSession = nil}
+    
+    public var subscriptionID: UInt64 = 0
+    
+    public var unknownFields = SwiftProtobuf.UnknownStorage()
+    
+    public init() {}
+    
+    fileprivate var _baseSession: Sentinel_Session_V3_BaseSession? = nil
 }
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
@@ -48,40 +48,40 @@ struct Sentinel_Subscription_V3_Session: Sendable {
 fileprivate let _protobuf_package = "sentinel.subscription.v3"
 
 extension Sentinel_Subscription_V3_Session: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".Session"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}base_session\0\u{3}subscription_id\0")
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every case branch when no optimizations are
-      // enabled. https://github.com/apple/swift-protobuf/issues/1034
-      switch fieldNumber {
-      case 1: try { try decoder.decodeSingularMessageField(value: &self._baseSession) }()
-      case 2: try { try decoder.decodeSingularUInt64Field(value: &self.subscriptionID) }()
-      default: break
-      }
+    public static let protoMessageName: String = _protobuf_package + ".Session"
+    public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{3}base_session\0\u{3}subscription_id\0")
+    
+    mutating public func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+        while let fieldNumber = try decoder.nextFieldNumber() {
+            // The use of inline closures is to circumvent an issue where the compiler
+            // allocates stack space for every case branch when no optimizations are
+            // enabled. https://github.com/apple/swift-protobuf/issues/1034
+            switch fieldNumber {
+            case 1: try { try decoder.decodeSingularMessageField(value: &self._baseSession) }()
+            case 2: try { try decoder.decodeSingularUInt64Field(value: &self.subscriptionID) }()
+            default: break
+            }
+        }
     }
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every if/case branch local when no optimizations
-    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
-    // https://github.com/apple/swift-protobuf/issues/1182
-    try { if let v = self._baseSession {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
-    } }()
-    if self.subscriptionID != 0 {
-      try visitor.visitSingularUInt64Field(value: self.subscriptionID, fieldNumber: 2)
+    
+    public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+        // The use of inline closures is to circumvent an issue where the compiler
+        // allocates stack space for every if/case branch local when no optimizations
+        // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+        // https://github.com/apple/swift-protobuf/issues/1182
+        try { if let v = self._baseSession {
+            try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+        } }()
+        if self.subscriptionID != 0 {
+            try visitor.visitSingularUInt64Field(value: self.subscriptionID, fieldNumber: 2)
+        }
+        try unknownFields.traverse(visitor: &visitor)
     }
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: Sentinel_Subscription_V3_Session, rhs: Sentinel_Subscription_V3_Session) -> Bool {
-    if lhs._baseSession != rhs._baseSession {return false}
-    if lhs.subscriptionID != rhs.subscriptionID {return false}
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
+    
+    public static func ==(lhs: Sentinel_Subscription_V3_Session, rhs: Sentinel_Subscription_V3_Session) -> Bool {
+        if lhs._baseSession != rhs._baseSession {return false}
+        if lhs.subscriptionID != rhs.subscriptionID {return false}
+        if lhs.unknownFields != rhs.unknownFields {return false}
+        return true
+    }
 }

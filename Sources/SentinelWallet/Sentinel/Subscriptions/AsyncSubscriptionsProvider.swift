@@ -116,7 +116,7 @@ extension AsyncSubscriptionsProvider: TypedSubscriptionsProviderType {
     }
     
     public func fetchSessions(for wallet: String) async throws -> UInt64? {
-        try await fetchSessions(for: wallet)?.id
+        try await fetchSessions(for: wallet)?.sessions.first(where: { $0.baseSession.status == .active })?.baseSession.id
     }
 }
 
@@ -133,7 +133,7 @@ private extension AsyncSubscriptionsProvider {
         return try await client.allBalances(req, callOptions: callOptions)
     }
     
-    func fetchSessions(for wallet: String) async throws -> Sentinel_Session_V3_BaseSession? {
+    func fetchSessions(for wallet: String) async throws -> TypedSessionResponse? {
         let channel = connectionProvider.channel(for: configuration.host, port: configuration.port)
         defer { try? channel.close().wait()}
         
@@ -144,9 +144,7 @@ private extension AsyncSubscriptionsProvider {
         
         let client = Sentinel_Session_V3_QueryServiceAsyncClient(channel: channel)
         let result = try await client.querySessionsForAccount(request, callOptions: callOptions)
-        let session = result.sessions
-            .compactMap { try? Sentinel_Session_V3_BaseSession(serializedData: $0.value) }
         
-        return session.first(where: { $0.status == .active || $0.status == .unspecified })
+        return TypedSessionResponse(from: result)
     }
 }
