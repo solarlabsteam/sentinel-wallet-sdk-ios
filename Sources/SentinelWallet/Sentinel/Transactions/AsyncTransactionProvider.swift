@@ -14,26 +14,18 @@ import SwiftProtobuf
 private struct Constants {
     let sendMessageURL = "/cosmos.bank.v1beta1.MsgSend"
     
-    let subscribeToNodeURL = "/sentinel.node.v2.MsgSubscribeRequest"
-    let subscribeToPlanURL = "/sentinel.plan.v2.MsgSubscribeRequest"
+    let subscribeURL = "/sentinel.subscription.v3.MsgStartSubscriptionRequest"
     
-    let startSessionURL = "/sentinel.session.v2.MsgStartRequest"
+    let startSessionURL = "/sentinel.subscription.v3.MsgStartSessionRequest"
     
-    let stopSessionURL = "/sentinel.session.v2.MsgEndRequest"
-    let cancelSubscriptionURL = "/sentinel.subscription.v2.MsgCancelRequest"
+    let stopSessionURL = "/sentinel.session.v3.MsgCancelSessionRequest"
+    let cancelSubscriptionURL = "/sentinel.subscription.v3.MsgCancelSubscriptionRequest"
 }
 
 private let constants = Constants()
 
 public protocol AsyncTransactionProviderType {
     func getTx(by hash: String) async throws -> String
-    
-    func subscribe(
-        sender: TransactionSender,
-        node: String,
-        details: NodePaymentDetails,
-        fee: Fee
-    ) async throws -> String
     
     func subscribe(
         sender: TransactionSender,
@@ -59,12 +51,6 @@ public protocol AsyncTransactionProviderType {
 }
 
 public protocol TypedTransactionProviderType {
-    func subscribe(
-        sender: TransactionSender,
-        node: String,
-        details: NodePaymentDetails
-    ) async throws -> Bool
-    
     func subscribe(
         sender: TransactionSender,
         plan: UInt64,
@@ -129,15 +115,6 @@ extension AsyncTransactionProvider: AsyncTransactionProviderType {
     
     public func subscribe(
         sender: TransactionSender,
-        node: String,
-        details: NodePaymentDetails,
-        fee: Fee
-    ) async throws -> String {
-        try await subscribe(sender: sender, node: node, details: details, fee: fee).jsonString()
-    }
-    
-    public func subscribe(
-        sender: TransactionSender,
         plan: UInt64,
         details: PlanPaymentDetails,
         fee: Fee
@@ -198,18 +175,14 @@ extension AsyncTransactionProvider: AsyncTransactionProviderType {
 extension AsyncTransactionProvider: TypedTransactionProviderType {
     public func subscribe(
         sender: TransactionSender,
-        node: String,
-        details: NodePaymentDetails
-    ) async throws -> Bool {
-        try await subscribe(sender: sender, node: node, details: details, fee: .standart).isSuccess
-    }
-    
-    public func subscribe(
-        sender: TransactionSender,
         plan: UInt64,
         details: PlanPaymentDetails
     ) async throws -> Bool {
-        try await subscribe(sender: sender, plan: plan, details: details, fee: .standart).isSuccess
+        let result: Cosmos_Base_Abci_V1beta1_TxResponse = try await subscribe(sender: sender, plan: plan, details: details, fee: .standart)
+        
+        print(result)
+        
+        return result.isSuccess
     }
     
     public func cancel(
@@ -218,7 +191,7 @@ extension AsyncTransactionProvider: TypedTransactionProviderType {
         node: String
     ) async throws -> Bool {
         let messages = subscriptions.map { subscriptionID -> Google_Protobuf_Any in
-            let startMessage = Sentinel_Subscription_V2_MsgCancelRequest.with {
+            let startMessage = Sentinel_Subscription_V3_MsgCancelSubscriptionRequest.with {
                 $0.id = subscriptionID
                 $0.from = sender.owner
             }
@@ -258,40 +231,18 @@ extension AsyncTransactionProvider: TypedTransactionProviderType {
 private extension AsyncTransactionProvider {
     func subscribe(
         sender: TransactionSender,
-        node: String,
-        details: NodePaymentDetails,
-        fee: Fee
-    ) async throws -> Cosmos_Base_Abci_V1beta1_TxResponse {
-        let startMessage = Sentinel_Node_V2_MsgSubscribeRequest.with {
-            $0.from = sender.owner
-            $0.nodeAddress = node
-            $0.gigabytes = details.gigabytes
-            $0.hours = details.hours
-            $0.denom = details.denom
-        }
-        
-        let anyMessage = Google_Protobuf_Any.with {
-            $0.typeURL = constants.subscribeToNodeURL
-            $0.value = try! startMessage.serializedData()
-        }
-        
-        return try await broadcast(sender: sender, recipient: node, messages: [anyMessage], fee: fee)
-    }
-    
-    func subscribe(
-        sender: TransactionSender,
         plan: UInt64,
         details: PlanPaymentDetails,
         fee: Fee
     ) async throws -> Cosmos_Base_Abci_V1beta1_TxResponse {
-        let startMessage = Sentinel_Plan_V2_MsgSubscribeRequest.with {
+        let startMessage = Sentinel_Subscription_V3_MsgStartSubscriptionRequest.with {
             $0.from = sender.owner
             $0.id = plan
             $0.denom = details.denom
         }
         
         let anyMessage = Google_Protobuf_Any.with {
-            $0.typeURL = constants.subscribeToPlanURL
+            $0.typeURL = constants.subscribeURL
             $0.value = try! startMessage.serializedData()
         }
         
@@ -306,10 +257,10 @@ private extension AsyncTransactionProvider {
         fee: Fee = .standart
     ) async throws -> Cosmos_Base_Abci_V1beta1_TxResponse {
         let stopMessage = formStopMessage(activeSession: activeSession, sender: sender)
-        let startMessage = Sentinel_Session_V2_MsgStartRequest.with {
+        let startMessage = Sentinel_Subscription_V3_MsgStartSessionRequest.with {
             $0.id = subscriptionID
             $0.from = sender.owner
-            $0.address = node
+            $0.nodeAddress = node
         }
         
         let anyMessage = Google_Protobuf_Any.with {
@@ -373,7 +324,7 @@ extension AsyncTransactionProvider {
     
     private func formStopMessage(activeSession: UInt64?, sender: TransactionSender) -> [Google_Protobuf_Any] {
         guard let activeSession = activeSession else { return [] }
-        let stopMessage = Sentinel_Session_V2_MsgEndRequest.with {
+        let stopMessage = Sentinel_Session_V3_MsgCancelSessionRequest.with {
             $0.id = activeSession
             $0.from = sender.owner
         }

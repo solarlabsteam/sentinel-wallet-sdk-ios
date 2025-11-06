@@ -16,302 +16,302 @@ import SwiftProtobuf
 // Please ensure that you are building against the same version of the API
 // that was used to generate this file.
 fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAPIVersionCheck {
-  struct _2: SwiftProtobuf.ProtobufAPIVersion_2 {}
-  typealias Version = _2
+    struct _2: SwiftProtobuf.ProtobufAPIVersion_2 {}
+    typealias Version = _2
 }
 
 struct Sentinel_Session_V3_QuerySessionsRequest: Sendable {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  var pagination: Cosmos_Base_Query_V1beta1_PageRequest {
-    get {return _pagination ?? Cosmos_Base_Query_V1beta1_PageRequest()}
-    set {_pagination = newValue}
-  }
-  /// Returns true if `pagination` has been explicitly set.
-  var hasPagination: Bool {return self._pagination != nil}
-  /// Clears the value of `pagination`. Subsequent reads from it will return its default value.
-  mutating func clearPagination() {self._pagination = nil}
-
-  var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  init() {}
-
-  fileprivate var _pagination: Cosmos_Base_Query_V1beta1_PageRequest? = nil
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+    
+    var pagination: Cosmos_Base_Query_V1beta1_PageRequest {
+        get {return _pagination ?? Cosmos_Base_Query_V1beta1_PageRequest()}
+        set {_pagination = newValue}
+    }
+    /// Returns true if `pagination` has been explicitly set.
+    var hasPagination: Bool {return self._pagination != nil}
+    /// Clears the value of `pagination`. Subsequent reads from it will return its default value.
+    mutating func clearPagination() {self._pagination = nil}
+    
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+    
+    init() {}
+    
+    fileprivate var _pagination: Cosmos_Base_Query_V1beta1_PageRequest? = nil
 }
 
 struct Sentinel_Session_V3_QuerySessionsForAccountRequest: Sendable {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  var address: String = String()
-
-  var pagination: Cosmos_Base_Query_V1beta1_PageRequest {
-    get {return _pagination ?? Cosmos_Base_Query_V1beta1_PageRequest()}
-    set {_pagination = newValue}
-  }
-  /// Returns true if `pagination` has been explicitly set.
-  var hasPagination: Bool {return self._pagination != nil}
-  /// Clears the value of `pagination`. Subsequent reads from it will return its default value.
-  mutating func clearPagination() {self._pagination = nil}
-
-  var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  init() {}
-
-  fileprivate var _pagination: Cosmos_Base_Query_V1beta1_PageRequest? = nil
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+    
+    var address: String = String()
+    
+    var pagination: Cosmos_Base_Query_V1beta1_PageRequest {
+        get {return _pagination ?? Cosmos_Base_Query_V1beta1_PageRequest()}
+        set {_pagination = newValue}
+    }
+    /// Returns true if `pagination` has been explicitly set.
+    var hasPagination: Bool {return self._pagination != nil}
+    /// Clears the value of `pagination`. Subsequent reads from it will return its default value.
+    mutating func clearPagination() {self._pagination = nil}
+    
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+    
+    init() {}
+    
+    fileprivate var _pagination: Cosmos_Base_Query_V1beta1_PageRequest? = nil
 }
 
 struct Sentinel_Session_V3_QuerySessionsForAllocationRequest: Sendable {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  var id: UInt64 = 0
-
-  var address: String = String()
-
-  var pagination: Cosmos_Base_Query_V1beta1_PageRequest {
-    get {return _pagination ?? Cosmos_Base_Query_V1beta1_PageRequest()}
-    set {_pagination = newValue}
-  }
-  /// Returns true if `pagination` has been explicitly set.
-  var hasPagination: Bool {return self._pagination != nil}
-  /// Clears the value of `pagination`. Subsequent reads from it will return its default value.
-  mutating func clearPagination() {self._pagination = nil}
-
-  var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  init() {}
-
-  fileprivate var _pagination: Cosmos_Base_Query_V1beta1_PageRequest? = nil
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+    
+    var id: UInt64 = 0
+    
+    var address: String = String()
+    
+    var pagination: Cosmos_Base_Query_V1beta1_PageRequest {
+        get {return _pagination ?? Cosmos_Base_Query_V1beta1_PageRequest()}
+        set {_pagination = newValue}
+    }
+    /// Returns true if `pagination` has been explicitly set.
+    var hasPagination: Bool {return self._pagination != nil}
+    /// Clears the value of `pagination`. Subsequent reads from it will return its default value.
+    mutating func clearPagination() {self._pagination = nil}
+    
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+    
+    init() {}
+    
+    fileprivate var _pagination: Cosmos_Base_Query_V1beta1_PageRequest? = nil
 }
 
 struct Sentinel_Session_V3_QuerySessionsForNodeRequest: Sendable {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  var address: String = String()
-
-  var pagination: Cosmos_Base_Query_V1beta1_PageRequest {
-    get {return _pagination ?? Cosmos_Base_Query_V1beta1_PageRequest()}
-    set {_pagination = newValue}
-  }
-  /// Returns true if `pagination` has been explicitly set.
-  var hasPagination: Bool {return self._pagination != nil}
-  /// Clears the value of `pagination`. Subsequent reads from it will return its default value.
-  mutating func clearPagination() {self._pagination = nil}
-
-  var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  init() {}
-
-  fileprivate var _pagination: Cosmos_Base_Query_V1beta1_PageRequest? = nil
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+    
+    var address: String = String()
+    
+    var pagination: Cosmos_Base_Query_V1beta1_PageRequest {
+        get {return _pagination ?? Cosmos_Base_Query_V1beta1_PageRequest()}
+        set {_pagination = newValue}
+    }
+    /// Returns true if `pagination` has been explicitly set.
+    var hasPagination: Bool {return self._pagination != nil}
+    /// Clears the value of `pagination`. Subsequent reads from it will return its default value.
+    mutating func clearPagination() {self._pagination = nil}
+    
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+    
+    init() {}
+    
+    fileprivate var _pagination: Cosmos_Base_Query_V1beta1_PageRequest? = nil
 }
 
 struct Sentinel_Session_V3_QuerySessionsForSubscriptionRequest: Sendable {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  var id: UInt64 = 0
-
-  var pagination: Cosmos_Base_Query_V1beta1_PageRequest {
-    get {return _pagination ?? Cosmos_Base_Query_V1beta1_PageRequest()}
-    set {_pagination = newValue}
-  }
-  /// Returns true if `pagination` has been explicitly set.
-  var hasPagination: Bool {return self._pagination != nil}
-  /// Clears the value of `pagination`. Subsequent reads from it will return its default value.
-  mutating func clearPagination() {self._pagination = nil}
-
-  var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  init() {}
-
-  fileprivate var _pagination: Cosmos_Base_Query_V1beta1_PageRequest? = nil
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+    
+    var id: UInt64 = 0
+    
+    var pagination: Cosmos_Base_Query_V1beta1_PageRequest {
+        get {return _pagination ?? Cosmos_Base_Query_V1beta1_PageRequest()}
+        set {_pagination = newValue}
+    }
+    /// Returns true if `pagination` has been explicitly set.
+    var hasPagination: Bool {return self._pagination != nil}
+    /// Clears the value of `pagination`. Subsequent reads from it will return its default value.
+    mutating func clearPagination() {self._pagination = nil}
+    
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+    
+    init() {}
+    
+    fileprivate var _pagination: Cosmos_Base_Query_V1beta1_PageRequest? = nil
 }
 
 struct Sentinel_Session_V3_QuerySessionRequest: Sendable {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  var id: UInt64 = 0
-
-  var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  init() {}
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+    
+    var id: UInt64 = 0
+    
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+    
+    init() {}
 }
 
 struct Sentinel_Session_V3_QueryParamsRequest: Sendable {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  init() {}
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+    
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+    
+    init() {}
 }
 
 struct Sentinel_Session_V3_QuerySessionsResponse: Sendable {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  var sessions: [SwiftProtobuf.Google_Protobuf_Any] = []
-
-  var pagination: Cosmos_Base_Query_V1beta1_PageResponse {
-    get {return _pagination ?? Cosmos_Base_Query_V1beta1_PageResponse()}
-    set {_pagination = newValue}
-  }
-  /// Returns true if `pagination` has been explicitly set.
-  var hasPagination: Bool {return self._pagination != nil}
-  /// Clears the value of `pagination`. Subsequent reads from it will return its default value.
-  mutating func clearPagination() {self._pagination = nil}
-
-  var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  init() {}
-
-  fileprivate var _pagination: Cosmos_Base_Query_V1beta1_PageResponse? = nil
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+    
+    var sessions: [SwiftProtobuf.Google_Protobuf_Any] = []
+    
+    var pagination: Cosmos_Base_Query_V1beta1_PageResponse {
+        get {return _pagination ?? Cosmos_Base_Query_V1beta1_PageResponse()}
+        set {_pagination = newValue}
+    }
+    /// Returns true if `pagination` has been explicitly set.
+    var hasPagination: Bool {return self._pagination != nil}
+    /// Clears the value of `pagination`. Subsequent reads from it will return its default value.
+    mutating func clearPagination() {self._pagination = nil}
+    
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+    
+    init() {}
+    
+    fileprivate var _pagination: Cosmos_Base_Query_V1beta1_PageResponse? = nil
 }
 
-struct Sentinel_Session_V3_QuerySessionsForAccountResponse: Sendable {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  var sessions: [SwiftProtobuf.Google_Protobuf_Any] = []
-
-  var pagination: Cosmos_Base_Query_V1beta1_PageResponse {
-    get {return _pagination ?? Cosmos_Base_Query_V1beta1_PageResponse()}
-    set {_pagination = newValue}
-  }
-  /// Returns true if `pagination` has been explicitly set.
-  var hasPagination: Bool {return self._pagination != nil}
-  /// Clears the value of `pagination`. Subsequent reads from it will return its default value.
-  mutating func clearPagination() {self._pagination = nil}
-
-  var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  init() {}
-
-  fileprivate var _pagination: Cosmos_Base_Query_V1beta1_PageResponse? = nil
+public struct Sentinel_Session_V3_QuerySessionsForAccountResponse: Sendable {
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+    
+    public var sessions: [SwiftProtobuf.Google_Protobuf_Any] = []
+    
+    var pagination: Cosmos_Base_Query_V1beta1_PageResponse {
+        get {return _pagination ?? Cosmos_Base_Query_V1beta1_PageResponse()}
+        set {_pagination = newValue}
+    }
+    /// Returns true if `pagination` has been explicitly set.
+    var hasPagination: Bool {return self._pagination != nil}
+    /// Clears the value of `pagination`. Subsequent reads from it will return its default value.
+    mutating func clearPagination() {self._pagination = nil}
+    
+    public var unknownFields = SwiftProtobuf.UnknownStorage()
+    
+    public init() {}
+    
+    fileprivate var _pagination: Cosmos_Base_Query_V1beta1_PageResponse? = nil
 }
 
 struct Sentinel_Session_V3_QuerySessionsForAllocationResponse: Sendable {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  var sessions: [SwiftProtobuf.Google_Protobuf_Any] = []
-
-  var pagination: Cosmos_Base_Query_V1beta1_PageResponse {
-    get {return _pagination ?? Cosmos_Base_Query_V1beta1_PageResponse()}
-    set {_pagination = newValue}
-  }
-  /// Returns true if `pagination` has been explicitly set.
-  var hasPagination: Bool {return self._pagination != nil}
-  /// Clears the value of `pagination`. Subsequent reads from it will return its default value.
-  mutating func clearPagination() {self._pagination = nil}
-
-  var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  init() {}
-
-  fileprivate var _pagination: Cosmos_Base_Query_V1beta1_PageResponse? = nil
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+    
+    var sessions: [SwiftProtobuf.Google_Protobuf_Any] = []
+    
+    var pagination: Cosmos_Base_Query_V1beta1_PageResponse {
+        get {return _pagination ?? Cosmos_Base_Query_V1beta1_PageResponse()}
+        set {_pagination = newValue}
+    }
+    /// Returns true if `pagination` has been explicitly set.
+    var hasPagination: Bool {return self._pagination != nil}
+    /// Clears the value of `pagination`. Subsequent reads from it will return its default value.
+    mutating func clearPagination() {self._pagination = nil}
+    
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+    
+    init() {}
+    
+    fileprivate var _pagination: Cosmos_Base_Query_V1beta1_PageResponse? = nil
 }
 
 struct Sentinel_Session_V3_QuerySessionsForNodeResponse: Sendable {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  var sessions: [SwiftProtobuf.Google_Protobuf_Any] = []
-
-  var pagination: Cosmos_Base_Query_V1beta1_PageResponse {
-    get {return _pagination ?? Cosmos_Base_Query_V1beta1_PageResponse()}
-    set {_pagination = newValue}
-  }
-  /// Returns true if `pagination` has been explicitly set.
-  var hasPagination: Bool {return self._pagination != nil}
-  /// Clears the value of `pagination`. Subsequent reads from it will return its default value.
-  mutating func clearPagination() {self._pagination = nil}
-
-  var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  init() {}
-
-  fileprivate var _pagination: Cosmos_Base_Query_V1beta1_PageResponse? = nil
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+    
+    var sessions: [SwiftProtobuf.Google_Protobuf_Any] = []
+    
+    var pagination: Cosmos_Base_Query_V1beta1_PageResponse {
+        get {return _pagination ?? Cosmos_Base_Query_V1beta1_PageResponse()}
+        set {_pagination = newValue}
+    }
+    /// Returns true if `pagination` has been explicitly set.
+    var hasPagination: Bool {return self._pagination != nil}
+    /// Clears the value of `pagination`. Subsequent reads from it will return its default value.
+    mutating func clearPagination() {self._pagination = nil}
+    
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+    
+    init() {}
+    
+    fileprivate var _pagination: Cosmos_Base_Query_V1beta1_PageResponse? = nil
 }
 
 struct Sentinel_Session_V3_QuerySessionsForSubscriptionResponse: Sendable {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  var sessions: [SwiftProtobuf.Google_Protobuf_Any] = []
-
-  var pagination: Cosmos_Base_Query_V1beta1_PageResponse {
-    get {return _pagination ?? Cosmos_Base_Query_V1beta1_PageResponse()}
-    set {_pagination = newValue}
-  }
-  /// Returns true if `pagination` has been explicitly set.
-  var hasPagination: Bool {return self._pagination != nil}
-  /// Clears the value of `pagination`. Subsequent reads from it will return its default value.
-  mutating func clearPagination() {self._pagination = nil}
-
-  var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  init() {}
-
-  fileprivate var _pagination: Cosmos_Base_Query_V1beta1_PageResponse? = nil
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+    
+    var sessions: [SwiftProtobuf.Google_Protobuf_Any] = []
+    
+    var pagination: Cosmos_Base_Query_V1beta1_PageResponse {
+        get {return _pagination ?? Cosmos_Base_Query_V1beta1_PageResponse()}
+        set {_pagination = newValue}
+    }
+    /// Returns true if `pagination` has been explicitly set.
+    var hasPagination: Bool {return self._pagination != nil}
+    /// Clears the value of `pagination`. Subsequent reads from it will return its default value.
+    mutating func clearPagination() {self._pagination = nil}
+    
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+    
+    init() {}
+    
+    fileprivate var _pagination: Cosmos_Base_Query_V1beta1_PageResponse? = nil
 }
 
 struct Sentinel_Session_V3_QuerySessionResponse: Sendable {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  var session: SwiftProtobuf.Google_Protobuf_Any {
-    get {return _session ?? SwiftProtobuf.Google_Protobuf_Any()}
-    set {_session = newValue}
-  }
-  /// Returns true if `session` has been explicitly set.
-  var hasSession: Bool {return self._session != nil}
-  /// Clears the value of `session`. Subsequent reads from it will return its default value.
-  mutating func clearSession() {self._session = nil}
-
-  var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  init() {}
-
-  fileprivate var _session: SwiftProtobuf.Google_Protobuf_Any? = nil
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+    
+    var session: SwiftProtobuf.Google_Protobuf_Any {
+        get {return _session ?? SwiftProtobuf.Google_Protobuf_Any()}
+        set {_session = newValue}
+    }
+    /// Returns true if `session` has been explicitly set.
+    var hasSession: Bool {return self._session != nil}
+    /// Clears the value of `session`. Subsequent reads from it will return its default value.
+    mutating func clearSession() {self._session = nil}
+    
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+    
+    init() {}
+    
+    fileprivate var _session: SwiftProtobuf.Google_Protobuf_Any? = nil
 }
 
 struct Sentinel_Session_V3_QueryParamsResponse: Sendable {
-  // SwiftProtobuf.Message conformance is added in an extension below. See the
-  // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
-  // methods supported on all messages.
-
-  var params: Sentinel_Session_V3_Params {
-    get {return _params ?? Sentinel_Session_V3_Params()}
-    set {_params = newValue}
-  }
-  /// Returns true if `params` has been explicitly set.
-  var hasParams: Bool {return self._params != nil}
-  /// Clears the value of `params`. Subsequent reads from it will return its default value.
-  mutating func clearParams() {self._params = nil}
-
-  var unknownFields = SwiftProtobuf.UnknownStorage()
-
-  init() {}
-
-  fileprivate var _params: Sentinel_Session_V3_Params? = nil
+    // SwiftProtobuf.Message conformance is added in an extension below. See the
+    // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
+    // methods supported on all messages.
+    
+    var params: Sentinel_Session_V3_Params {
+        get {return _params ?? Sentinel_Session_V3_Params()}
+        set {_params = newValue}
+    }
+    /// Returns true if `params` has been explicitly set.
+    var hasParams: Bool {return self._params != nil}
+    /// Clears the value of `params`. Subsequent reads from it will return its default value.
+    mutating func clearParams() {self._params = nil}
+    
+    var unknownFields = SwiftProtobuf.UnknownStorage()
+    
+    init() {}
+    
+    fileprivate var _params: Sentinel_Session_V3_Params? = nil
 }
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
@@ -319,508 +319,508 @@ struct Sentinel_Session_V3_QueryParamsResponse: Sendable {
 fileprivate let _protobuf_package = "sentinel.session.v3"
 
 extension Sentinel_Session_V3_QuerySessionsRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".QuerySessionsRequest"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}pagination\0")
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every case branch when no optimizations are
-      // enabled. https://github.com/apple/swift-protobuf/issues/1034
-      switch fieldNumber {
-      case 1: try { try decoder.decodeSingularMessageField(value: &self._pagination) }()
-      default: break
-      }
+    static let protoMessageName: String = _protobuf_package + ".QuerySessionsRequest"
+    static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}pagination\0")
+    
+    mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+        while let fieldNumber = try decoder.nextFieldNumber() {
+            // The use of inline closures is to circumvent an issue where the compiler
+            // allocates stack space for every case branch when no optimizations are
+            // enabled. https://github.com/apple/swift-protobuf/issues/1034
+            switch fieldNumber {
+            case 1: try { try decoder.decodeSingularMessageField(value: &self._pagination) }()
+            default: break
+            }
+        }
     }
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every if/case branch local when no optimizations
-    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
-    // https://github.com/apple/swift-protobuf/issues/1182
-    try { if let v = self._pagination {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
-    } }()
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: Sentinel_Session_V3_QuerySessionsRequest, rhs: Sentinel_Session_V3_QuerySessionsRequest) -> Bool {
-    if lhs._pagination != rhs._pagination {return false}
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
+    
+    func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+        // The use of inline closures is to circumvent an issue where the compiler
+        // allocates stack space for every if/case branch local when no optimizations
+        // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+        // https://github.com/apple/swift-protobuf/issues/1182
+        try { if let v = self._pagination {
+            try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+        } }()
+        try unknownFields.traverse(visitor: &visitor)
+    }
+    
+    static func ==(lhs: Sentinel_Session_V3_QuerySessionsRequest, rhs: Sentinel_Session_V3_QuerySessionsRequest) -> Bool {
+        if lhs._pagination != rhs._pagination {return false}
+        if lhs.unknownFields != rhs.unknownFields {return false}
+        return true
+    }
 }
 
 extension Sentinel_Session_V3_QuerySessionsForAccountRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".QuerySessionsForAccountRequest"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}address\0\u{1}pagination\0")
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every case branch when no optimizations are
-      // enabled. https://github.com/apple/swift-protobuf/issues/1034
-      switch fieldNumber {
-      case 1: try { try decoder.decodeSingularStringField(value: &self.address) }()
-      case 2: try { try decoder.decodeSingularMessageField(value: &self._pagination) }()
-      default: break
-      }
+    static let protoMessageName: String = _protobuf_package + ".QuerySessionsForAccountRequest"
+    static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}address\0\u{1}pagination\0")
+    
+    mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+        while let fieldNumber = try decoder.nextFieldNumber() {
+            // The use of inline closures is to circumvent an issue where the compiler
+            // allocates stack space for every case branch when no optimizations are
+            // enabled. https://github.com/apple/swift-protobuf/issues/1034
+            switch fieldNumber {
+            case 1: try { try decoder.decodeSingularStringField(value: &self.address) }()
+            case 2: try { try decoder.decodeSingularMessageField(value: &self._pagination) }()
+            default: break
+            }
+        }
     }
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every if/case branch local when no optimizations
-    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
-    // https://github.com/apple/swift-protobuf/issues/1182
-    if !self.address.isEmpty {
-      try visitor.visitSingularStringField(value: self.address, fieldNumber: 1)
+    
+    func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+        // The use of inline closures is to circumvent an issue where the compiler
+        // allocates stack space for every if/case branch local when no optimizations
+        // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+        // https://github.com/apple/swift-protobuf/issues/1182
+        if !self.address.isEmpty {
+            try visitor.visitSingularStringField(value: self.address, fieldNumber: 1)
+        }
+        try { if let v = self._pagination {
+            try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+        } }()
+        try unknownFields.traverse(visitor: &visitor)
     }
-    try { if let v = self._pagination {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
-    } }()
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: Sentinel_Session_V3_QuerySessionsForAccountRequest, rhs: Sentinel_Session_V3_QuerySessionsForAccountRequest) -> Bool {
-    if lhs.address != rhs.address {return false}
-    if lhs._pagination != rhs._pagination {return false}
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
+    
+    static func ==(lhs: Sentinel_Session_V3_QuerySessionsForAccountRequest, rhs: Sentinel_Session_V3_QuerySessionsForAccountRequest) -> Bool {
+        if lhs.address != rhs.address {return false}
+        if lhs._pagination != rhs._pagination {return false}
+        if lhs.unknownFields != rhs.unknownFields {return false}
+        return true
+    }
 }
 
 extension Sentinel_Session_V3_QuerySessionsForAllocationRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".QuerySessionsForAllocationRequest"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}id\0\u{1}address\0\u{1}pagination\0")
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every case branch when no optimizations are
-      // enabled. https://github.com/apple/swift-protobuf/issues/1034
-      switch fieldNumber {
-      case 1: try { try decoder.decodeSingularUInt64Field(value: &self.id) }()
-      case 2: try { try decoder.decodeSingularStringField(value: &self.address) }()
-      case 3: try { try decoder.decodeSingularMessageField(value: &self._pagination) }()
-      default: break
-      }
+    static let protoMessageName: String = _protobuf_package + ".QuerySessionsForAllocationRequest"
+    static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}id\0\u{1}address\0\u{1}pagination\0")
+    
+    mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+        while let fieldNumber = try decoder.nextFieldNumber() {
+            // The use of inline closures is to circumvent an issue where the compiler
+            // allocates stack space for every case branch when no optimizations are
+            // enabled. https://github.com/apple/swift-protobuf/issues/1034
+            switch fieldNumber {
+            case 1: try { try decoder.decodeSingularUInt64Field(value: &self.id) }()
+            case 2: try { try decoder.decodeSingularStringField(value: &self.address) }()
+            case 3: try { try decoder.decodeSingularMessageField(value: &self._pagination) }()
+            default: break
+            }
+        }
     }
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every if/case branch local when no optimizations
-    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
-    // https://github.com/apple/swift-protobuf/issues/1182
-    if self.id != 0 {
-      try visitor.visitSingularUInt64Field(value: self.id, fieldNumber: 1)
+    
+    func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+        // The use of inline closures is to circumvent an issue where the compiler
+        // allocates stack space for every if/case branch local when no optimizations
+        // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+        // https://github.com/apple/swift-protobuf/issues/1182
+        if self.id != 0 {
+            try visitor.visitSingularUInt64Field(value: self.id, fieldNumber: 1)
+        }
+        if !self.address.isEmpty {
+            try visitor.visitSingularStringField(value: self.address, fieldNumber: 2)
+        }
+        try { if let v = self._pagination {
+            try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
+        } }()
+        try unknownFields.traverse(visitor: &visitor)
     }
-    if !self.address.isEmpty {
-      try visitor.visitSingularStringField(value: self.address, fieldNumber: 2)
+    
+    static func ==(lhs: Sentinel_Session_V3_QuerySessionsForAllocationRequest, rhs: Sentinel_Session_V3_QuerySessionsForAllocationRequest) -> Bool {
+        if lhs.id != rhs.id {return false}
+        if lhs.address != rhs.address {return false}
+        if lhs._pagination != rhs._pagination {return false}
+        if lhs.unknownFields != rhs.unknownFields {return false}
+        return true
     }
-    try { if let v = self._pagination {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 3)
-    } }()
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: Sentinel_Session_V3_QuerySessionsForAllocationRequest, rhs: Sentinel_Session_V3_QuerySessionsForAllocationRequest) -> Bool {
-    if lhs.id != rhs.id {return false}
-    if lhs.address != rhs.address {return false}
-    if lhs._pagination != rhs._pagination {return false}
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
 }
 
 extension Sentinel_Session_V3_QuerySessionsForNodeRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".QuerySessionsForNodeRequest"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}address\0\u{1}pagination\0")
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every case branch when no optimizations are
-      // enabled. https://github.com/apple/swift-protobuf/issues/1034
-      switch fieldNumber {
-      case 1: try { try decoder.decodeSingularStringField(value: &self.address) }()
-      case 2: try { try decoder.decodeSingularMessageField(value: &self._pagination) }()
-      default: break
-      }
+    static let protoMessageName: String = _protobuf_package + ".QuerySessionsForNodeRequest"
+    static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}address\0\u{1}pagination\0")
+    
+    mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+        while let fieldNumber = try decoder.nextFieldNumber() {
+            // The use of inline closures is to circumvent an issue where the compiler
+            // allocates stack space for every case branch when no optimizations are
+            // enabled. https://github.com/apple/swift-protobuf/issues/1034
+            switch fieldNumber {
+            case 1: try { try decoder.decodeSingularStringField(value: &self.address) }()
+            case 2: try { try decoder.decodeSingularMessageField(value: &self._pagination) }()
+            default: break
+            }
+        }
     }
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every if/case branch local when no optimizations
-    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
-    // https://github.com/apple/swift-protobuf/issues/1182
-    if !self.address.isEmpty {
-      try visitor.visitSingularStringField(value: self.address, fieldNumber: 1)
+    
+    func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+        // The use of inline closures is to circumvent an issue where the compiler
+        // allocates stack space for every if/case branch local when no optimizations
+        // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+        // https://github.com/apple/swift-protobuf/issues/1182
+        if !self.address.isEmpty {
+            try visitor.visitSingularStringField(value: self.address, fieldNumber: 1)
+        }
+        try { if let v = self._pagination {
+            try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+        } }()
+        try unknownFields.traverse(visitor: &visitor)
     }
-    try { if let v = self._pagination {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
-    } }()
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: Sentinel_Session_V3_QuerySessionsForNodeRequest, rhs: Sentinel_Session_V3_QuerySessionsForNodeRequest) -> Bool {
-    if lhs.address != rhs.address {return false}
-    if lhs._pagination != rhs._pagination {return false}
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
+    
+    static func ==(lhs: Sentinel_Session_V3_QuerySessionsForNodeRequest, rhs: Sentinel_Session_V3_QuerySessionsForNodeRequest) -> Bool {
+        if lhs.address != rhs.address {return false}
+        if lhs._pagination != rhs._pagination {return false}
+        if lhs.unknownFields != rhs.unknownFields {return false}
+        return true
+    }
 }
 
 extension Sentinel_Session_V3_QuerySessionsForSubscriptionRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".QuerySessionsForSubscriptionRequest"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}id\0\u{1}pagination\0")
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every case branch when no optimizations are
-      // enabled. https://github.com/apple/swift-protobuf/issues/1034
-      switch fieldNumber {
-      case 1: try { try decoder.decodeSingularUInt64Field(value: &self.id) }()
-      case 2: try { try decoder.decodeSingularMessageField(value: &self._pagination) }()
-      default: break
-      }
+    static let protoMessageName: String = _protobuf_package + ".QuerySessionsForSubscriptionRequest"
+    static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}id\0\u{1}pagination\0")
+    
+    mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+        while let fieldNumber = try decoder.nextFieldNumber() {
+            // The use of inline closures is to circumvent an issue where the compiler
+            // allocates stack space for every case branch when no optimizations are
+            // enabled. https://github.com/apple/swift-protobuf/issues/1034
+            switch fieldNumber {
+            case 1: try { try decoder.decodeSingularUInt64Field(value: &self.id) }()
+            case 2: try { try decoder.decodeSingularMessageField(value: &self._pagination) }()
+            default: break
+            }
+        }
     }
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every if/case branch local when no optimizations
-    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
-    // https://github.com/apple/swift-protobuf/issues/1182
-    if self.id != 0 {
-      try visitor.visitSingularUInt64Field(value: self.id, fieldNumber: 1)
+    
+    func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+        // The use of inline closures is to circumvent an issue where the compiler
+        // allocates stack space for every if/case branch local when no optimizations
+        // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+        // https://github.com/apple/swift-protobuf/issues/1182
+        if self.id != 0 {
+            try visitor.visitSingularUInt64Field(value: self.id, fieldNumber: 1)
+        }
+        try { if let v = self._pagination {
+            try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+        } }()
+        try unknownFields.traverse(visitor: &visitor)
     }
-    try { if let v = self._pagination {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
-    } }()
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: Sentinel_Session_V3_QuerySessionsForSubscriptionRequest, rhs: Sentinel_Session_V3_QuerySessionsForSubscriptionRequest) -> Bool {
-    if lhs.id != rhs.id {return false}
-    if lhs._pagination != rhs._pagination {return false}
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
+    
+    static func ==(lhs: Sentinel_Session_V3_QuerySessionsForSubscriptionRequest, rhs: Sentinel_Session_V3_QuerySessionsForSubscriptionRequest) -> Bool {
+        if lhs.id != rhs.id {return false}
+        if lhs._pagination != rhs._pagination {return false}
+        if lhs.unknownFields != rhs.unknownFields {return false}
+        return true
+    }
 }
 
 extension Sentinel_Session_V3_QuerySessionRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".QuerySessionRequest"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}id\0")
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every case branch when no optimizations are
-      // enabled. https://github.com/apple/swift-protobuf/issues/1034
-      switch fieldNumber {
-      case 1: try { try decoder.decodeSingularUInt64Field(value: &self.id) }()
-      default: break
-      }
+    static let protoMessageName: String = _protobuf_package + ".QuerySessionRequest"
+    static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}id\0")
+    
+    mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+        while let fieldNumber = try decoder.nextFieldNumber() {
+            // The use of inline closures is to circumvent an issue where the compiler
+            // allocates stack space for every case branch when no optimizations are
+            // enabled. https://github.com/apple/swift-protobuf/issues/1034
+            switch fieldNumber {
+            case 1: try { try decoder.decodeSingularUInt64Field(value: &self.id) }()
+            default: break
+            }
+        }
     }
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    if self.id != 0 {
-      try visitor.visitSingularUInt64Field(value: self.id, fieldNumber: 1)
+    
+    func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+        if self.id != 0 {
+            try visitor.visitSingularUInt64Field(value: self.id, fieldNumber: 1)
+        }
+        try unknownFields.traverse(visitor: &visitor)
     }
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: Sentinel_Session_V3_QuerySessionRequest, rhs: Sentinel_Session_V3_QuerySessionRequest) -> Bool {
-    if lhs.id != rhs.id {return false}
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
+    
+    static func ==(lhs: Sentinel_Session_V3_QuerySessionRequest, rhs: Sentinel_Session_V3_QuerySessionRequest) -> Bool {
+        if lhs.id != rhs.id {return false}
+        if lhs.unknownFields != rhs.unknownFields {return false}
+        return true
+    }
 }
 
 extension Sentinel_Session_V3_QueryParamsRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".QueryParamsRequest"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap()
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    // Load everything into unknown fields
-    while try decoder.nextFieldNumber() != nil {}
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: Sentinel_Session_V3_QueryParamsRequest, rhs: Sentinel_Session_V3_QueryParamsRequest) -> Bool {
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
+    static let protoMessageName: String = _protobuf_package + ".QueryParamsRequest"
+    static let _protobuf_nameMap = SwiftProtobuf._NameMap()
+    
+    mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+        // Load everything into unknown fields
+        while try decoder.nextFieldNumber() != nil {}
+    }
+    
+    func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+        try unknownFields.traverse(visitor: &visitor)
+    }
+    
+    static func ==(lhs: Sentinel_Session_V3_QueryParamsRequest, rhs: Sentinel_Session_V3_QueryParamsRequest) -> Bool {
+        if lhs.unknownFields != rhs.unknownFields {return false}
+        return true
+    }
 }
 
 extension Sentinel_Session_V3_QuerySessionsResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".QuerySessionsResponse"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}sessions\0\u{1}pagination\0")
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every case branch when no optimizations are
-      // enabled. https://github.com/apple/swift-protobuf/issues/1034
-      switch fieldNumber {
-      case 1: try { try decoder.decodeRepeatedMessageField(value: &self.sessions) }()
-      case 2: try { try decoder.decodeSingularMessageField(value: &self._pagination) }()
-      default: break
-      }
+    static let protoMessageName: String = _protobuf_package + ".QuerySessionsResponse"
+    static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}sessions\0\u{1}pagination\0")
+    
+    mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+        while let fieldNumber = try decoder.nextFieldNumber() {
+            // The use of inline closures is to circumvent an issue where the compiler
+            // allocates stack space for every case branch when no optimizations are
+            // enabled. https://github.com/apple/swift-protobuf/issues/1034
+            switch fieldNumber {
+            case 1: try { try decoder.decodeRepeatedMessageField(value: &self.sessions) }()
+            case 2: try { try decoder.decodeSingularMessageField(value: &self._pagination) }()
+            default: break
+            }
+        }
     }
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every if/case branch local when no optimizations
-    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
-    // https://github.com/apple/swift-protobuf/issues/1182
-    if !self.sessions.isEmpty {
-      try visitor.visitRepeatedMessageField(value: self.sessions, fieldNumber: 1)
+    
+    func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+        // The use of inline closures is to circumvent an issue where the compiler
+        // allocates stack space for every if/case branch local when no optimizations
+        // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+        // https://github.com/apple/swift-protobuf/issues/1182
+        if !self.sessions.isEmpty {
+            try visitor.visitRepeatedMessageField(value: self.sessions, fieldNumber: 1)
+        }
+        try { if let v = self._pagination {
+            try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+        } }()
+        try unknownFields.traverse(visitor: &visitor)
     }
-    try { if let v = self._pagination {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
-    } }()
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: Sentinel_Session_V3_QuerySessionsResponse, rhs: Sentinel_Session_V3_QuerySessionsResponse) -> Bool {
-    if lhs.sessions != rhs.sessions {return false}
-    if lhs._pagination != rhs._pagination {return false}
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
+    
+    static func ==(lhs: Sentinel_Session_V3_QuerySessionsResponse, rhs: Sentinel_Session_V3_QuerySessionsResponse) -> Bool {
+        if lhs.sessions != rhs.sessions {return false}
+        if lhs._pagination != rhs._pagination {return false}
+        if lhs.unknownFields != rhs.unknownFields {return false}
+        return true
+    }
 }
 
 extension Sentinel_Session_V3_QuerySessionsForAccountResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".QuerySessionsForAccountResponse"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}sessions\0\u{1}pagination\0")
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every case branch when no optimizations are
-      // enabled. https://github.com/apple/swift-protobuf/issues/1034
-      switch fieldNumber {
-      case 1: try { try decoder.decodeRepeatedMessageField(value: &self.sessions) }()
-      case 2: try { try decoder.decodeSingularMessageField(value: &self._pagination) }()
-      default: break
-      }
+    public static let protoMessageName: String = _protobuf_package + ".QuerySessionsForAccountResponse"
+    public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}sessions\0\u{1}pagination\0")
+    
+    mutating public func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+        while let fieldNumber = try decoder.nextFieldNumber() {
+            // The use of inline closures is to circumvent an issue where the compiler
+            // allocates stack space for every case branch when no optimizations are
+            // enabled. https://github.com/apple/swift-protobuf/issues/1034
+            switch fieldNumber {
+            case 1: try { try decoder.decodeRepeatedMessageField(value: &self.sessions) }()
+            case 2: try { try decoder.decodeSingularMessageField(value: &self._pagination) }()
+            default: break
+            }
+        }
     }
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every if/case branch local when no optimizations
-    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
-    // https://github.com/apple/swift-protobuf/issues/1182
-    if !self.sessions.isEmpty {
-      try visitor.visitRepeatedMessageField(value: self.sessions, fieldNumber: 1)
+    
+    public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+        // The use of inline closures is to circumvent an issue where the compiler
+        // allocates stack space for every if/case branch local when no optimizations
+        // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+        // https://github.com/apple/swift-protobuf/issues/1182
+        if !self.sessions.isEmpty {
+            try visitor.visitRepeatedMessageField(value: self.sessions, fieldNumber: 1)
+        }
+        try { if let v = self._pagination {
+            try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+        } }()
+        try unknownFields.traverse(visitor: &visitor)
     }
-    try { if let v = self._pagination {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
-    } }()
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: Sentinel_Session_V3_QuerySessionsForAccountResponse, rhs: Sentinel_Session_V3_QuerySessionsForAccountResponse) -> Bool {
-    if lhs.sessions != rhs.sessions {return false}
-    if lhs._pagination != rhs._pagination {return false}
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
+    
+    public static func ==(lhs: Sentinel_Session_V3_QuerySessionsForAccountResponse, rhs: Sentinel_Session_V3_QuerySessionsForAccountResponse) -> Bool {
+        if lhs.sessions != rhs.sessions {return false}
+        if lhs._pagination != rhs._pagination {return false}
+        if lhs.unknownFields != rhs.unknownFields {return false}
+        return true
+    }
 }
 
 extension Sentinel_Session_V3_QuerySessionsForAllocationResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".QuerySessionsForAllocationResponse"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}sessions\0\u{1}pagination\0")
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every case branch when no optimizations are
-      // enabled. https://github.com/apple/swift-protobuf/issues/1034
-      switch fieldNumber {
-      case 1: try { try decoder.decodeRepeatedMessageField(value: &self.sessions) }()
-      case 2: try { try decoder.decodeSingularMessageField(value: &self._pagination) }()
-      default: break
-      }
+    static let protoMessageName: String = _protobuf_package + ".QuerySessionsForAllocationResponse"
+    static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}sessions\0\u{1}pagination\0")
+    
+    mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+        while let fieldNumber = try decoder.nextFieldNumber() {
+            // The use of inline closures is to circumvent an issue where the compiler
+            // allocates stack space for every case branch when no optimizations are
+            // enabled. https://github.com/apple/swift-protobuf/issues/1034
+            switch fieldNumber {
+            case 1: try { try decoder.decodeRepeatedMessageField(value: &self.sessions) }()
+            case 2: try { try decoder.decodeSingularMessageField(value: &self._pagination) }()
+            default: break
+            }
+        }
     }
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every if/case branch local when no optimizations
-    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
-    // https://github.com/apple/swift-protobuf/issues/1182
-    if !self.sessions.isEmpty {
-      try visitor.visitRepeatedMessageField(value: self.sessions, fieldNumber: 1)
+    
+    func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+        // The use of inline closures is to circumvent an issue where the compiler
+        // allocates stack space for every if/case branch local when no optimizations
+        // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+        // https://github.com/apple/swift-protobuf/issues/1182
+        if !self.sessions.isEmpty {
+            try visitor.visitRepeatedMessageField(value: self.sessions, fieldNumber: 1)
+        }
+        try { if let v = self._pagination {
+            try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+        } }()
+        try unknownFields.traverse(visitor: &visitor)
     }
-    try { if let v = self._pagination {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
-    } }()
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: Sentinel_Session_V3_QuerySessionsForAllocationResponse, rhs: Sentinel_Session_V3_QuerySessionsForAllocationResponse) -> Bool {
-    if lhs.sessions != rhs.sessions {return false}
-    if lhs._pagination != rhs._pagination {return false}
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
+    
+    static func ==(lhs: Sentinel_Session_V3_QuerySessionsForAllocationResponse, rhs: Sentinel_Session_V3_QuerySessionsForAllocationResponse) -> Bool {
+        if lhs.sessions != rhs.sessions {return false}
+        if lhs._pagination != rhs._pagination {return false}
+        if lhs.unknownFields != rhs.unknownFields {return false}
+        return true
+    }
 }
 
 extension Sentinel_Session_V3_QuerySessionsForNodeResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".QuerySessionsForNodeResponse"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}sessions\0\u{1}pagination\0")
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every case branch when no optimizations are
-      // enabled. https://github.com/apple/swift-protobuf/issues/1034
-      switch fieldNumber {
-      case 1: try { try decoder.decodeRepeatedMessageField(value: &self.sessions) }()
-      case 2: try { try decoder.decodeSingularMessageField(value: &self._pagination) }()
-      default: break
-      }
+    static let protoMessageName: String = _protobuf_package + ".QuerySessionsForNodeResponse"
+    static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}sessions\0\u{1}pagination\0")
+    
+    mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+        while let fieldNumber = try decoder.nextFieldNumber() {
+            // The use of inline closures is to circumvent an issue where the compiler
+            // allocates stack space for every case branch when no optimizations are
+            // enabled. https://github.com/apple/swift-protobuf/issues/1034
+            switch fieldNumber {
+            case 1: try { try decoder.decodeRepeatedMessageField(value: &self.sessions) }()
+            case 2: try { try decoder.decodeSingularMessageField(value: &self._pagination) }()
+            default: break
+            }
+        }
     }
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every if/case branch local when no optimizations
-    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
-    // https://github.com/apple/swift-protobuf/issues/1182
-    if !self.sessions.isEmpty {
-      try visitor.visitRepeatedMessageField(value: self.sessions, fieldNumber: 1)
+    
+    func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+        // The use of inline closures is to circumvent an issue where the compiler
+        // allocates stack space for every if/case branch local when no optimizations
+        // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+        // https://github.com/apple/swift-protobuf/issues/1182
+        if !self.sessions.isEmpty {
+            try visitor.visitRepeatedMessageField(value: self.sessions, fieldNumber: 1)
+        }
+        try { if let v = self._pagination {
+            try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+        } }()
+        try unknownFields.traverse(visitor: &visitor)
     }
-    try { if let v = self._pagination {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
-    } }()
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: Sentinel_Session_V3_QuerySessionsForNodeResponse, rhs: Sentinel_Session_V3_QuerySessionsForNodeResponse) -> Bool {
-    if lhs.sessions != rhs.sessions {return false}
-    if lhs._pagination != rhs._pagination {return false}
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
+    
+    static func ==(lhs: Sentinel_Session_V3_QuerySessionsForNodeResponse, rhs: Sentinel_Session_V3_QuerySessionsForNodeResponse) -> Bool {
+        if lhs.sessions != rhs.sessions {return false}
+        if lhs._pagination != rhs._pagination {return false}
+        if lhs.unknownFields != rhs.unknownFields {return false}
+        return true
+    }
 }
 
 extension Sentinel_Session_V3_QuerySessionsForSubscriptionResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".QuerySessionsForSubscriptionResponse"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}sessions\0\u{1}pagination\0")
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every case branch when no optimizations are
-      // enabled. https://github.com/apple/swift-protobuf/issues/1034
-      switch fieldNumber {
-      case 1: try { try decoder.decodeRepeatedMessageField(value: &self.sessions) }()
-      case 2: try { try decoder.decodeSingularMessageField(value: &self._pagination) }()
-      default: break
-      }
+    static let protoMessageName: String = _protobuf_package + ".QuerySessionsForSubscriptionResponse"
+    static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}sessions\0\u{1}pagination\0")
+    
+    mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+        while let fieldNumber = try decoder.nextFieldNumber() {
+            // The use of inline closures is to circumvent an issue where the compiler
+            // allocates stack space for every case branch when no optimizations are
+            // enabled. https://github.com/apple/swift-protobuf/issues/1034
+            switch fieldNumber {
+            case 1: try { try decoder.decodeRepeatedMessageField(value: &self.sessions) }()
+            case 2: try { try decoder.decodeSingularMessageField(value: &self._pagination) }()
+            default: break
+            }
+        }
     }
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every if/case branch local when no optimizations
-    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
-    // https://github.com/apple/swift-protobuf/issues/1182
-    if !self.sessions.isEmpty {
-      try visitor.visitRepeatedMessageField(value: self.sessions, fieldNumber: 1)
+    
+    func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+        // The use of inline closures is to circumvent an issue where the compiler
+        // allocates stack space for every if/case branch local when no optimizations
+        // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+        // https://github.com/apple/swift-protobuf/issues/1182
+        if !self.sessions.isEmpty {
+            try visitor.visitRepeatedMessageField(value: self.sessions, fieldNumber: 1)
+        }
+        try { if let v = self._pagination {
+            try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
+        } }()
+        try unknownFields.traverse(visitor: &visitor)
     }
-    try { if let v = self._pagination {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 2)
-    } }()
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: Sentinel_Session_V3_QuerySessionsForSubscriptionResponse, rhs: Sentinel_Session_V3_QuerySessionsForSubscriptionResponse) -> Bool {
-    if lhs.sessions != rhs.sessions {return false}
-    if lhs._pagination != rhs._pagination {return false}
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
+    
+    static func ==(lhs: Sentinel_Session_V3_QuerySessionsForSubscriptionResponse, rhs: Sentinel_Session_V3_QuerySessionsForSubscriptionResponse) -> Bool {
+        if lhs.sessions != rhs.sessions {return false}
+        if lhs._pagination != rhs._pagination {return false}
+        if lhs.unknownFields != rhs.unknownFields {return false}
+        return true
+    }
 }
 
 extension Sentinel_Session_V3_QuerySessionResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".QuerySessionResponse"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}session\0")
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every case branch when no optimizations are
-      // enabled. https://github.com/apple/swift-protobuf/issues/1034
-      switch fieldNumber {
-      case 1: try { try decoder.decodeSingularMessageField(value: &self._session) }()
-      default: break
-      }
+    static let protoMessageName: String = _protobuf_package + ".QuerySessionResponse"
+    static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}session\0")
+    
+    mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+        while let fieldNumber = try decoder.nextFieldNumber() {
+            // The use of inline closures is to circumvent an issue where the compiler
+            // allocates stack space for every case branch when no optimizations are
+            // enabled. https://github.com/apple/swift-protobuf/issues/1034
+            switch fieldNumber {
+            case 1: try { try decoder.decodeSingularMessageField(value: &self._session) }()
+            default: break
+            }
+        }
     }
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every if/case branch local when no optimizations
-    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
-    // https://github.com/apple/swift-protobuf/issues/1182
-    try { if let v = self._session {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
-    } }()
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: Sentinel_Session_V3_QuerySessionResponse, rhs: Sentinel_Session_V3_QuerySessionResponse) -> Bool {
-    if lhs._session != rhs._session {return false}
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
+    
+    func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+        // The use of inline closures is to circumvent an issue where the compiler
+        // allocates stack space for every if/case branch local when no optimizations
+        // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+        // https://github.com/apple/swift-protobuf/issues/1182
+        try { if let v = self._session {
+            try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+        } }()
+        try unknownFields.traverse(visitor: &visitor)
+    }
+    
+    static func ==(lhs: Sentinel_Session_V3_QuerySessionResponse, rhs: Sentinel_Session_V3_QuerySessionResponse) -> Bool {
+        if lhs._session != rhs._session {return false}
+        if lhs.unknownFields != rhs.unknownFields {return false}
+        return true
+    }
 }
 
 extension Sentinel_Session_V3_QueryParamsResponse: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  static let protoMessageName: String = _protobuf_package + ".QueryParamsResponse"
-  static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}params\0")
-
-  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
-    while let fieldNumber = try decoder.nextFieldNumber() {
-      // The use of inline closures is to circumvent an issue where the compiler
-      // allocates stack space for every case branch when no optimizations are
-      // enabled. https://github.com/apple/swift-protobuf/issues/1034
-      switch fieldNumber {
-      case 1: try { try decoder.decodeSingularMessageField(value: &self._params) }()
-      default: break
-      }
+    static let protoMessageName: String = _protobuf_package + ".QueryParamsResponse"
+    static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}params\0")
+    
+    mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+        while let fieldNumber = try decoder.nextFieldNumber() {
+            // The use of inline closures is to circumvent an issue where the compiler
+            // allocates stack space for every case branch when no optimizations are
+            // enabled. https://github.com/apple/swift-protobuf/issues/1034
+            switch fieldNumber {
+            case 1: try { try decoder.decodeSingularMessageField(value: &self._params) }()
+            default: break
+            }
+        }
     }
-  }
-
-  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
-    // The use of inline closures is to circumvent an issue where the compiler
-    // allocates stack space for every if/case branch local when no optimizations
-    // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
-    // https://github.com/apple/swift-protobuf/issues/1182
-    try { if let v = self._params {
-      try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
-    } }()
-    try unknownFields.traverse(visitor: &visitor)
-  }
-
-  static func ==(lhs: Sentinel_Session_V3_QueryParamsResponse, rhs: Sentinel_Session_V3_QueryParamsResponse) -> Bool {
-    if lhs._params != rhs._params {return false}
-    if lhs.unknownFields != rhs.unknownFields {return false}
-    return true
-  }
+    
+    func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+        // The use of inline closures is to circumvent an issue where the compiler
+        // allocates stack space for every if/case branch local when no optimizations
+        // are enabled. https://github.com/apple/swift-protobuf/issues/1034 and
+        // https://github.com/apple/swift-protobuf/issues/1182
+        try { if let v = self._params {
+            try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
+        } }()
+        try unknownFields.traverse(visitor: &visitor)
+    }
+    
+    static func ==(lhs: Sentinel_Session_V3_QueryParamsResponse, rhs: Sentinel_Session_V3_QueryParamsResponse) -> Bool {
+        if lhs._params != rhs._params {return false}
+        if lhs.unknownFields != rhs.unknownFields {return false}
+        return true
+    }
 }

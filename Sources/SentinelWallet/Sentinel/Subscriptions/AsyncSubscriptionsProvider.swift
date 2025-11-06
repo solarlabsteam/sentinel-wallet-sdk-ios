@@ -19,10 +19,6 @@ public protocol AsyncSubscriptionsProviderType {
 public protocol TypedSubscriptionsProviderType {
     func fetchBalance(for wallet: String) async throws -> [Cosmos_Base_V1beta1_Coin]
     func fetchSubscriptions(limit: UInt64, offset: UInt64, for wallet: String) async throws -> Sentinel_Subscription_V3_QuerySubscriptionsForAccountResponse
-    func fetchAllocation(
-        for wallet: String,
-        subscription: UInt64
-    ) async throws -> Sentinel_Subscription_V2_Allocation
     func fetchSessions(for wallet: String) async throws -> UInt64?
 }
 
@@ -119,25 +115,6 @@ extension AsyncSubscriptionsProvider: TypedSubscriptionsProviderType {
         return response
     }
     
-    public func fetchAllocation(
-        for wallet: String,
-        subscription: UInt64
-    ) async throws -> Sentinel_Subscription_V2_Allocation {
-        let channel = connectionProvider.channel(for: configuration.host, port: configuration.port)
-        defer { try? channel.close().wait()}
-        
-        var callOptions = CallOptions()
-        callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(5000))
-        
-        let request = Sentinel_Subscription_V2_QueryAllocationRequest.with {
-            $0.address = wallet
-            $0.id = subscription
-        }
-        
-        let client = Sentinel_Subscription_V2_QueryServiceAsyncClient(channel: channel)
-        return try await client.queryAllocation(request, callOptions: callOptions).allocation
-    }
-    
     public func fetchSessions(for wallet: String) async throws -> UInt64? {
         try await fetchSessions(for: wallet)?.id
     }
@@ -156,18 +133,20 @@ private extension AsyncSubscriptionsProvider {
         return try await client.allBalances(req, callOptions: callOptions)
     }
     
-    func fetchSessions(for wallet: String) async throws -> Sentinel_Session_V2_Session? {
+    func fetchSessions(for wallet: String) async throws -> Sentinel_Session_V3_BaseSession? {
         let channel = connectionProvider.channel(for: configuration.host, port: configuration.port)
         defer { try? channel.close().wait()}
         
         var callOptions = CallOptions()
         callOptions.timeLimit = TimeLimit.timeout(TimeAmount.milliseconds(5000))
         
-        let request = Sentinel_Session_V2_QuerySessionsForAccountRequest.with { $0.address = wallet }
+        let request = Sentinel_Session_V3_QuerySessionsForAccountRequest.with { $0.address = wallet }
         
-        let client = Sentinel_Session_V2_QueryServiceAsyncClient(channel: channel)
-        return try await client.querySessionsForAccount(request, callOptions: callOptions)
-            .sessions
-            .first(where: { $0.status == .active })
+        let client = Sentinel_Session_V3_QueryServiceAsyncClient(channel: channel)
+        let result = try await client.querySessionsForAccount(request, callOptions: callOptions)
+        let session = result.sessions
+            .compactMap { try? Sentinel_Session_V3_BaseSession(serializedData: $0.value) }
+        
+        return session.first(where: { $0.status == .active || $0.status == .unspecified })
     }
 }
