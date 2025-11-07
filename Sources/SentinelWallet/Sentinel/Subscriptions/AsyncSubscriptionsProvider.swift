@@ -145,6 +145,8 @@ private extension AsyncSubscriptionsProvider {
         let client = Sentinel_Session_V3_QueryServiceAsyncClient(channel: channel)
         let result = try await client.querySessionsForAccount(request, callOptions: callOptions)
         
-        return TypedSessionResponse(from: result)
+        let typedResponse = TypedSessionResponse(from: result)
+        if typedResponse.sessions.isEmpty { return nil }
+        return typedResponse
     }
 }
