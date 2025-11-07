@@ -34,6 +34,10 @@ extension TransactionSignerService: TransactionSignerServiceType {
         return try? SegwitAddrCoder.shared.encode2(hrp: "sent", program: ripemd160)
     }
     
+    public func getPublicKey(for mnemonic: [String]) -> PublicKey? {
+        Signer.getKey(for: mnemonic).publicKey
+    }
+    
     public func generateSignature(for data: Data, with mnemonic: [String]) -> String? {
         let key = Signer.getKey(for: mnemonic)
         return try? ECDSA.compactSign(data: data.sha256(), privateKey: key.raw).base64EncodedString()
