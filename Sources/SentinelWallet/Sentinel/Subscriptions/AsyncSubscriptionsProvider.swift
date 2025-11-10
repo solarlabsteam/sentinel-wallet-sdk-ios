@@ -116,7 +116,7 @@ extension AsyncSubscriptionsProvider: TypedSubscriptionsProviderType {
     }
     
     public func fetchSessions(for wallet: String) async throws -> UInt64? {
-        try await fetchSessions(for: wallet)?.sessions.first(where: { $0.baseSession.status == .active })?.baseSession.id
+        try await fetchSessions(for: wallet)?.sessions.last(where: { $0.baseSession.status == .active })?.baseSession.id
     }
 }
 
